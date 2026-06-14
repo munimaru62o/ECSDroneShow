@@ -80,11 +80,11 @@ bool Game::Init()
 
 void Game::ConfigureDxLib()
 {
+    SetOutApplicationLogValidFlag(FALSE);
     ChangeWindowMode(!m_config.window.isFullscreen);
     SetGraphMode(m_config.window.width, m_config.window.height, 32);
     SetMainWindowText(_TEXT("ECS Demo"));
     SetAlwaysRunFlag(TRUE);
-    SetOutApplicationLogValidFlag(FALSE);
 }
 
 
@@ -171,6 +171,10 @@ void Game::Shutdown()
 bool Game::ShouldRun() const
 {
     if (!m_isRunning) {
+        return false;
+    }
+
+    if (ProcessMessage() == -1) {
         return false;
     }
 
