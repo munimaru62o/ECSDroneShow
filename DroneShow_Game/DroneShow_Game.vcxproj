@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{5c4a44a4-d928-4864-8b1b-3cee52e24f06}</ProjectGuid>
+    <RootNamespace>DroneShowGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)ECSEngine\src;$(SolutionDir)External\nlohmann;$(SolutionDir)External\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)ECSEngine\src;$(SolutionDir)External\nlohmann;$(SolutionDir)External\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)ECSEngine\src;$(SolutionDir)External\nlohmann;$(SolutionDir)External\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)ECSEngine\src;$(SolutionDir)External\nlohmann;$(SolutionDir)External\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Game\ComponentRegistry\ComponentRegistry.h" />
+    <ClInclude Include="src\Game\ComponentRegistry\RenderComponentRegistry.h" />
+    <ClInclude Include="src\Game\Components\GameComponents.h" />
+    <ClInclude Include="src\Game\Data\Config\GameConfig.h" />
+    <ClInclude Include="src\Game\Data\Prefab\PrefabData.h" />
+    <ClInclude Include="src\Game\Data\Timeline\FormationData.h" />
+    <ClInclude Include="src\Game\Data\Timeline\TimelineData.h" />
+    <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Game\Loaders\DirectoryLoader.h" />
+    <ClInclude Include="src\Game\Loaders\JsonLoader.h" />
+    <ClInclude Include="src\Game\Loader\ConfigLoader.h" />
+    <ClInclude Include="src\Game\Managers\InputManager.h" />
+    <ClInclude Include="src\Game\Managers\PrefabManager.h" />
+    <ClInclude Include="src\Game\Managers\TimelineManager.h" />
+    <ClInclude Include="src\Game\Parsers\JsonParser.h" />
+    <ClInclude Include="src\Game\Parsers\Json\AnimationJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\BehaviorJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\DataJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\ForceJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\GameJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\MathJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\PhysicsJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\RenderJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\SceneJsonParsers.h" />
+    <ClInclude Include="src\Game\Parsers\Json\SpatialJsonParsers.h" />
+    <ClInclude Include="src\Game\Registration\RegisterAllComponents.h" />
+    <ClInclude Include="src\Game\Registration\RegisterAllSystems.h" />
+    <ClInclude Include="src\Game\Registry\ComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\AnimationComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\BehaviorComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\CoreComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\ForceComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\GameComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\PhysicsComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\RenderComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\SceneComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Components\SpatialComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\AnimationComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\BehaviorComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\ComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\CoreComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\ForceComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\GameComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\PhysicsComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\RenderComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\SceneComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Component\SpatialComponentRegistry.h" />
+    <ClInclude Include="src\Game\Registry\SystemRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\AnimationSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\BehaviorSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\ForceSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\GameSystemRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\PhysicsSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\RenderSystemRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\SceneSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Registry\Systems\SpatialSystemsRegistry.h" />
+    <ClInclude Include="src\Game\Systems\TimelineDirectorSystem.h" />
+    <ClInclude Include="src\Game\Systems\FormationSystemPointCloud.h" />
+    <ClInclude Include="src\Game\Systems\FormationSystemWireframe.h" />
+    <ClInclude Include="src\Game\Traits\AnimationSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\BehaviorSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\ForceSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\GameSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\PhysicsSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\RenderSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\SceneSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\SequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\SpatialSequenceTraits.h" />
+    <ClInclude Include="src\Game\Traits\SequenceTraitsBase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Game\Managers\PrefabManager.cpp" />
+    <ClCompile Include="src\Game\Managers\TimelineManager.cpp" />
+    <ClCompile Include="src\Game\Registration\RegisterAllComponents.cpp" />
+    <ClCompile Include="src\Game\Registration\RegisterAllSystems.cpp" />
+    <ClCompile Include="src\Game\Systems\FormationSystemPointCloud.cpp" />
+    <ClCompile Include="src\Game\Systems\FormationSystemWireframe.cpp" />
+    <ClCompile Include="src\Game\Systems\TimelineDirectorSystem.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

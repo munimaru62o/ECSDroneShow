@@ -1,0 +1,780 @@
+{
+  "name": "DroneShow",
+  "sequences": [
+    {
+      "name": "pulse",
+      "duration": 5.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.3,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 20]
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Lit"
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [4.0, 4.0, 4.0] 
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [90, 150, 180],
+          "duration": 3.0
+        },
+        "SpinAnimationRequestComponent": {
+          "isRandomAxis": true,
+          "minSpeed": 3.0,
+          "maxSpeed": 5.0,
+          "duration": 5.0
+        },
+        "SpeedConstraintComponent": { 
+          "max": 500.0,
+          "min": 50.0
+        },
+        "BoundaryComponent": { 
+          "radius": 80.0,
+          "force": 10.0 
+        },
+        "AttractionComponent": { 
+          "profile" : {
+            "distance" : "Sphere",
+            "falloff" : "Linear",
+            "radius": 200.0,
+            "innerScale": 0.2,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 80, 
+          "maxForce": 200.0
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 150.0,
+          "maxSpeed": 500.0 
+        }
+      }
+    },
+    {
+      "name": "formation_cube",
+      "duration": 7.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Toon"
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [3.0, 3.0, 3.0] 
+        },
+        "FormationComponentWireframe": {
+          "file": "data/formation/wireframe/cube.json",
+          "scale": 150.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 5.0
+        },
+        "SteeringComponent": {
+          "stiffness": 40.0
+        },
+        "OrbitComponent": {
+          "axis": [ 1.0, 1.0, 0.0 ],
+          "speed": -0.2
+        },
+        "ColorFadeRequestComponent": {
+          "targetColor": [ 80, 220, 50 ],
+          "duration": 2.0
+        }
+      }
+    },
+    {
+      "name": "boids_insect_swarm",
+      "duration": 10.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.1,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [3.0, 3.0, 3.0] 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Toon"
+        },
+        "VelocityRotationComponent": {},
+        "SpatialPartitionComponent": {},
+        "BoidsComponent": {
+          "separationWeight": 500.0,
+          "alignmentWeight": 0.0,
+          "cohesionWeight": 10.0,
+          "visionRadius": 100.0,
+          "maxForce": 1300.0
+        },
+        "JitterMovementComponent": {
+          "strength": 500.0
+        },
+        "SpeedConstraintComponent": {
+          "max": 700.0,
+          "min": 150.0
+        },
+        "BoundaryComponent": {
+          "center": [0, 0, 300],
+          "radius": 500.0,
+          "force": 10.0
+        },
+        "ColorFadeRequestComponent": {
+          "targetColor": [ 230, 190, 30 ],
+          "duration": 2.0
+        },
+        "RandomVelocityRequestComponent": {
+          "minSpeed": 100.0,
+          "maxSpeed": 200.0
+        },
+        "WanderComponent": {
+          "strength": 300.0,
+          "frequency": 10.0
+        },
+        "AttractionComponent": { 
+          "profile" : {
+            "distance" : "Sphere",
+            "falloff" : "Linear",
+            "radius": 500.0,
+            "innerScale": 1.0,
+            "outerScale": 0.0
+          },
+          "center": [0, -100, 0], 
+          "strength": -1000, 
+          "maxForce": 2000.0
+        }
+      }
+    },
+    {
+      "name": "beating_heart",
+      "duration": 5.0,
+      "components": {
+        "SpeedConstraintComponent": { 
+          "max": 500.0, 
+          "min": 10.0
+        },
+        "BoundaryComponent": { 
+          "radius": 150.0, 
+          "force": 10.0
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Lit"
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [5.0, 5.0, 5.0] 
+        },
+        "AttractionComponent": { 
+          "profile" : {
+            "distance" : "Sphere",
+            "falloff" : "Linear",
+            "radius": 100.0,
+            "innerScale": 0.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 300, 
+          "maxForce": 500.0
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [255, 20, 50], 
+          "duration": 2.0 
+        },
+        "ColorBlinkComponent": { 
+          "color1": [255, 20, 50], 
+          "color2": [50, 0, 10], 
+          "speed": 1.2,
+          "delayTime": 2.0
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 10.0, 
+          "maxSpeed": 100.0
+        }
+      }
+    },
+    {
+      "name": "formation_lorenz",
+      "duration": 6.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Toon"
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [3.0, 3.0, 3.0] 
+        },
+        "FormationComponentWireframe": {
+          "file": "data/formation/wireframe/lorenz.json",
+          "scale": 300.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 5.0
+        },
+        "SteeringComponent": {
+          "stiffness": 30.0
+        },
+        "OrbitComponent": {
+          "axis": [ 1.0, 1.0, 0.0 ],
+          "speed": 0.15
+        },
+        "ColorFadeRequestComponent": {
+          "targetColor": [ 230, 20, 50 ],
+          "duration": 3.0
+        }
+      }
+    },
+    {
+      "name": "fish_sphere",
+      "duration": 7.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [0.8, 0.8, 5.0] 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Hologram"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [100, 200, 255],
+          "duration": 3.0 
+        }
+      }
+    },
+    {
+      "name": "boids_school_of_fish",
+      "duration": 20.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [1.0, -0.5, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [30, 10, 10]
+        },
+        "SpatialPartitionComponent": {},
+        "BoidsComponent": {
+          "separationWeight": 5.0,
+          "alignmentWeight": 50.0,
+          "cohesionWeight": 20.0,
+          "visionRadius": 100.0,
+          "maxForce": 100.0
+        },
+        "VelocityRotationComponent": {},
+        "BoundaryComponent": {
+          "center": [0, 0, 0], 
+          "radius": 800.0, 
+          "force": 300.0 
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [0.8, 0.8, 5.0] 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Hologram"
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [30, 100, 220],
+           "duration": 3.0 
+        },
+        "WanderComponent": {
+          "strength": 50.0,
+          "frequency": 3.0
+        },
+        "DartComponent": {
+          "strength": 120.0,
+          "intervalMin": 2.0,
+          "intervalMax": 8.0
+        },
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": -50.0, 
+          "maxForce": 100.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 300.0,
+          "maxForce": 1000.0
+        }
+      }
+    },
+    {
+      "name": "boids_virus",
+      "duration": 8.0,
+      "components": {
+        "VelocityRotationComponent": {},
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.1,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "SpatialPartitionComponent": {},
+        "BoidsComponent": {
+          "separationWeight": 5.0,
+          "alignmentWeight": 100.0,
+          "cohesionWeight": 800.0,
+          "visionRadius": 50.0,
+          "maxForce": 500.0
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [3.0, 3.0, 3.0] 
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Lit"
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [100, 255, 120],
+          "duration": 2.0 
+        },
+        "WanderComponent": {
+          "strength": 20.0,
+          "frequency": 0.2
+        },
+        "AttractionComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500.0,
+            "innerScale": 0.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0],
+          "strength": 150.0,
+          "maxForce": 500.0
+        },
+        "RandomVelocityRequestComponent": {
+          "minSpeed": 50.0,
+          "maxSpeed": 150.0
+        },
+        "BoundaryComponent": {
+          "center": [0, 0, 0],
+          "radius": 800.0,
+          "force": 10.0
+        }
+      }
+    },
+    {
+      "name": "comet_stream",
+      "duration": 12.0,
+      "components": {
+        "VelocityRotationComponent": {},
+        "SpeedConstraintComponent": { 
+          "max": 300.0, 
+          "min": 200.0 
+        },
+        "SpinAnimationRequestComponent": { 
+          "isRandomAxis": true,
+          "minSpeed": 3.0, 
+          "maxSpeed": 5.0, 
+          "duration": 12.0
+        },
+        "BoundaryComponent": { 
+          "radius": 800.0, 
+          "force": 30.0 
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [1.5, 1.5, 1.5] 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Hologram"
+        },
+        "AttractionComponent": { 
+          "profile" : {
+            "distance" : "Sphere",
+            "falloff" : "Linear",
+            "radius": 500.0,
+            "innerScale": 1.0,
+            "outerScale": 0.0
+          },
+          "center": [0, 0, 0], 
+          "strength": -800, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile" : {
+            "distance" : "Sphere",
+            "falloff" : "Linear",
+            "radius": 800.0,
+            "innerScale": 0.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0.6, 1, 0], 
+          "strength": 100.0,
+          "maxForce": 500.0
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [140, 130, 255], 
+          "duration": 4.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 100.0, 
+          "maxSpeed": 2000.0 
+        }
+      }
+    },
+    {
+      "name": "zero_gravity",
+      "duration": 5.0,
+      "components": {
+        "WanderComponent": {
+          "strength": 2.0,
+          "frequency": 0.1
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [1.5, 1.5, 1.5] 
+        },
+        "SpeedConstraintComponent": { 
+          "max": 30.0, 
+          "min": 2.0 
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [255, 255, 255], 
+          "duration": 1.0 
+        },
+        "SpinAnimationRequestComponent": { 
+          "isRandomAxis": true,
+          "minSpeed": 0.3, 
+          "maxSpeed": 0.5, 
+          "duration": 5.0
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 5.0, 
+          "maxSpeed": 30.0 
+        }
+      }
+    },
+    {
+      "name": "sand_fountain",
+      "duration": 15.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [1.0, -0.5, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [30, 10, 10]
+        },
+        "SpinAnimationRequestComponent": { 
+          "isRandomAxis": true,
+          "minSpeed": 1.2, 
+          "maxSpeed": 1.2, 
+          "duration": 1.0
+        },
+        "BoundaryComponent": {
+          "center": [0, 0, 0], 
+          "radius": 1000.0, 
+          "force": 500.0 
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [1.5, 1.5, 1.5] 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "ColorFadeRequestComponent": {
+          "targetColor": [150, 190, 150],
+          "duration": 3.0
+        },
+       "WanderComponent": {
+          "strength": 150.0,
+          "frequency": 5.0
+        },
+        "GravityComponent": {
+          "direction" : [0, -1, 0],
+          "strength" : 1200.0
+        },
+        "AttractionComponent": { 
+          "profile" : {
+            "distance" : "AxisY",
+            "falloff" : "Linear",
+            "radius": 500.0,
+            "innerScale": 1.0,
+            "outerScale": 0.0
+          },
+          "plane": "XZ",
+          "center": [0, -500, 0], 
+          "strength": 2000.0, 
+          "maxForce": 3000.0
+        },
+        "SwirlComponent": {
+          "profile" : {
+            "distance" : "AxisY",
+            "falloff" : "Linear",
+            "radius": 300.0,
+            "innerScale": 1.0,
+            "outerScale": 0.5
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 2500.0
+        },
+        "LiftComponent": {
+          "profile": {
+            "distance": "Cylinder",
+            "falloff": "Linear",
+            "radius": 300,
+            "innerScale": 1.0,
+            "outerScale": 0.1
+          },
+          "center": [0, -500, 0],
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 1000.0, 
+          "maxSpeed": 1000.0 
+        },
+        "SpeedConstraintComponent": { 
+          "max": 2000.0,
+          "min": 100.0
+        },
+        "PlaneConstraintComponent": {
+          "normal": [0, 1, 0],
+          "distance": -500
+        }
+      }
+    },
+    {
+      "name": "crystal_dome",
+      "duration": 7.0,
+      "components": {
+        "VelocityRotationComponent": {},
+        "BoundaryComponent": {
+          "center": [0, 0, 0],
+          "radius": 1000.0,
+          "force": 500.0
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [0.5, 3.0, 0.5] 
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Hologram"
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor":  [120, 220, 255],
+           "duration": 2.0 
+        },
+        "GravityComponent": {
+          "direction": [0, -1, 0],
+          "strength": 200.0
+        },
+        "AttractionComponent": {
+          "profile": {
+            "distance": "Cylinder",
+            "falloff": "Linear",
+            "radius": 200.0,
+            "innerScale": 1.0,
+            "outerScale": 0.0
+          },
+          "plane": "XZ",
+          "center": [0, 0, 0],
+          "strength": 1000.0,
+          "maxForce": 1500.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Cylinder",
+            "falloff": "Linear",
+            "radius": 300.0,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0],
+          "axis": [0, 1, 0],
+          "strength": 1200.0,
+          "maxForce": 2000.0
+        },
+        "LiftComponent": {
+          "profile": {
+            "distance": "Cylinder",
+            "falloff": "Linear",
+            "radius": 300.0,
+            "innerScale": 1.0,
+            "outerScale": 0.2
+          },
+          "center": [0, 0, 0],
+          "axis": [0, 1, 0],
+          "strength": 500.0,
+          "maxForce": 1000.0
+        },
+        "RandomVelocityRequestComponent": {
+          "minSpeed": 50.0,
+          "maxSpeed": 200.0
+        }
+      }
+    },
+    {
+      "name": "boids_melt",
+      "duration": 10.0,
+      "components": {
+        "VelocityRotationComponent": {},
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.1,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "SpatialPartitionComponent": {},
+        "BoidsComponent": {
+          "separationWeight": 50.0,
+          "alignmentWeight": 100.0,
+          "cohesionWeight": 800.0,
+          "visionRadius": 100.0,
+          "maxForce": 300.0
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [2.0, 2.0, 2.0] 
+        },
+        "MaterialRequestComponent": {
+          "shaderType": "Lit"
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor": [5, 100, 190],
+           "duration": 2.0 
+        },
+        "WanderComponent": {
+          "strength": 20.0,
+          "frequency": 0.2
+        },
+        "AttractionComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500.0,
+            "innerScale": 0.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0],
+          "strength": 150.0,
+          "maxForce": 500.0
+        },
+        "RandomVelocityRequestComponent": {
+          "minSpeed": 50.0,
+          "maxSpeed": 150.0
+        },
+        "BoundaryComponent": {
+          "center": [0, 0, 0],
+          "radius": 800.0,
+          "force": 10.0
+        }
+      }
+    },
+    {
+      "name": "formation_superformula",
+      "duration": 7.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+         "MaterialRequestComponent": {
+          "shaderType": "Toon"
+        },
+        "ColorFadeRequestComponent": { 
+          "targetColor":  [90, 150, 220],
+           "duration": 3.0 
+        },
+        "PrimitiveMeshComponent": { 
+          "type": "Cube",
+          "scale": [3.0, 3.0, 3.0] 
+        },
+        "FormationComponentWireframe": {
+          "file": "data/formation/wireframe/superformula.json",
+          "scale": 300.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 5.0
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "OrbitComponent": {
+          "axis": [ 0.5, 1.0, 0.0 ],
+          "speed": -0.15
+        }
+      }
+    }
+  ]
+}

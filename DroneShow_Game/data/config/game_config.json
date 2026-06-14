@@ -1,0 +1,23 @@
+{
+  "window": {
+    "width": 1280,
+    "height": 720,
+    "isFullscreen": false
+  },
+  "camera": {
+    "position": [0, 200, 800]
+  },
+  "spawn": {
+    "initialSpawnCount": 50000,
+    "userSpawnNum": 1000,
+    "userDestroyNum": 1000
+  },
+  "prefab": {
+    "folderPath": "data/prefab/",
+    "spawnName": "DroneCube"
+  },
+  "timeline": {
+    "folderPath": "data/timeline/",
+    "playName": "DroneShow"
+  }
+}

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{d507da4a-79aa-4de7-989e-0ac75addfb2c}</ProjectGuid>
+    <RootNamespace>ECSDemo</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)External\DxLib;$(ProjectDir)src;$(SolutionDir)External\OpenSimplex2</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\DxLib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)External\DxLib;$(ProjectDir)src;$(SolutionDir)External\OpenSimplex2</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\DxLib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)External\DxLib;$(ProjectDir)src;$(SolutionDir)External\OpenSimplex2</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\DxLib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)External\DxLib;$(ProjectDir)src;$(SolutionDir)External\OpenSimplex2</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\DxLib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\External\OpenSimplex2\OpenSimplex2S.cpp" />
+    <ClCompile Include="src\Engine\Debug\DebugDrawManager.cpp" />
+    <ClCompile Include="src\Engine\ECS\ComponentOperationFactory.cpp" />
+    <ClCompile Include="src\Engine\ECS\Coordinator.cpp" />
+    <ClCompile Include="src\Engine\ECS\EntityManager.cpp" />
+    <ClCompile Include="src\Engine\ECS\EntitySparseSet.cpp" />
+    <ClCompile Include="src\Engine\Math\Matrix4.cpp" />
+    <ClCompile Include="src\Engine\Math\Quaternion.cpp" />
+    <ClCompile Include="src\Engine\Math\SimplexNoise.cpp" />
+    <ClCompile Include="src\Engine\Render\PrimitiveMeshFactory.cpp" />
+    <ClCompile Include="src\Engine\Render\RenderManager.cpp" />
+    <ClCompile Include="src\Engine\Systems\Animation\ColorBlinkSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Animation\ColorFadeRequestSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Animation\ColorFadeSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Animation\SpinAnimationRequestSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Animation\SpinAnimationSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Behavior\OrbitSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Behavior\SteeringSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\AttractionSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\BoidsSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\BoundarySystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\DartSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\ForceClearSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\GravitySystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\JitterMovementSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\LiftSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\RandomSwirlAxisRequestSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\SwirlSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Force\WanderSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\DampingSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\PlaneConstraintSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\RandomVelocityRequestSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\SpeedConstraintSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\TransformIntegrationSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\VelocityDirectionSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Physics\VelocityIntegrationSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Render\MaterialRequestSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Render\PrimitiveMeshRenderSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Scene\SceneLightingSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Spatial\SpatialBoidCacheSystem.cpp" />
+    <ClCompile Include="src\Engine\Systems\Spatial\SpatialPartitionSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ECS\Components\AnimationComponents.h" />
+    <ClInclude Include="src\ECS\Components\BehaviorComponents.h" />
+    <ClInclude Include="src\ECS\Components\CoreComponents.h" />
+    <ClInclude Include="src\ECS\Components\ForceComponents.h" />
+    <ClInclude Include="src\ECS\Components\PhysicsComponents.h" />
+    <ClInclude Include="src\ECS\Components\RenderComponents.h" />
+    <ClInclude Include="src\ECS\Components\SpatialComponents.h" />
+    <ClInclude Include="src\ECS\Core\ComponentArray.h" />
+    <ClInclude Include="src\ECS\Core\ComponentManager.h" />
+    <ClInclude Include="src\ECS\Core\Coordinator.h" />
+    <ClInclude Include="src\ECS\Core\EntityManager.h" />
+    <ClInclude Include="src\ECS\Core\EntitySparseSet.h" />
+    <ClInclude Include="src\ECS\Core\Math\Color.h" />
+    <ClInclude Include="src\ECS\Core\Math\Constants.h" />
+    <ClInclude Include="src\ECS\Core\Math\Quaternion.h" />
+    <ClInclude Include="src\ECS\Core\Math\Vector3.h" />
+    <ClInclude Include="src\ECS\Core\Random.h" />
+    <ClInclude Include="src\ECS\Core\SpatialGrid.h" />
+    <ClInclude Include="src\ECS\Core\System.h" />
+    <ClInclude Include="src\ECS\Core\SystemManager.h" />
+    <ClInclude Include="src\ECS\Core\ThreadPool.h" />
+    <ClInclude Include="src\ECS\Core\Time.h" />
+    <ClInclude Include="src\ECS\Core\Types.h" />
+    <ClInclude Include="src\ECS\Systems\Animation\ColorBlinkSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Animation\ColorFadeRequestSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Animation\ColorFadeSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Animation\SpinAnimationSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Behavior\OrbitSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Behavior\SteeringSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Force\AttractorSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Force\BoidsSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Force\BoundarySystem.h" />
+    <ClInclude Include="src\ECS\Systems\Force\ForceClearSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Force\NoiseMovementSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Physics\DampingSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Physics\TransformIntegrationSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Physics\SpeedConstraintSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Physics\VelocityIntegrationSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Spatial\SpatialBoidCacheSystem.h" />
+    <ClInclude Include="src\ECS\Systems\Spatial\SpatialPartitionSystem.h" />
+    <ClInclude Include="src\ECS\Traits\ComponentTraits.h" />
+    <ClInclude Include="src\Engine\Components\AnimationComponents.h" />
+    <ClInclude Include="src\Engine\Components\BehaviorComponents.h" />
+    <ClInclude Include="src\Engine\Components\CoreComponents.h" />
+    <ClInclude Include="src\Engine\Components\ForceComponents.h" />
+    <ClInclude Include="src\Engine\Components\PhysicsComponents.h" />
+    <ClInclude Include="src\Engine\Components\RenderComponents.h" />
+    <ClInclude Include="src\Engine\Components\SceneComponents.h" />
+    <ClInclude Include="src\Engine\Components\SpatialComponents.h" />
+    <ClInclude Include="src\Engine\Debug\DebugTypes.h" />
+    <ClInclude Include="src\Engine\Debug\DebugDrawManager.h" />
+    <ClInclude Include="src\Engine\ECS\ComponentArray.h" />
+    <ClInclude Include="src\Engine\ECS\ComponentEvents.h" />
+    <ClInclude Include="src\Engine\ECS\ComponentManager.h" />
+    <ClInclude Include="src\Engine\ECS\ComponentOperationFactory.h" />
+    <ClInclude Include="src\Engine\ECS\Coordinator.h" />
+    <ClInclude Include="src\Engine\ECS\EntityManager.h" />
+    <ClInclude Include="src\Engine\ECS\EntitySparseSet.h" />
+    <ClInclude Include="src\Engine\ECS\System.h" />
+    <ClInclude Include="src\Engine\ECS\SystemManager.h" />
+    <ClInclude Include="src\Engine\ECS\SystemPhases.h" />
+    <ClInclude Include="src\Engine\ECS\ThreadCommandContext.h" />
+    <ClInclude Include="src\Engine\ECS\ECSTypes.h" />
+    <ClInclude Include="src\Engine\Math\Color.h" />
+    <ClInclude Include="src\Engine\Math\Constants.h" />
+    <ClInclude Include="src\Engine\Math\Matrix4.h" />
+    <ClInclude Include="src\Engine\Math\SimplexNoise.h" />
+    <ClInclude Include="src\Engine\Math\Quaternion.h" />
+    <ClInclude Include="src\Engine\Math\GlobalRandom.h" />
+    <ClInclude Include="src\Engine\Math\SeededRandom.h" />
+    <ClInclude Include="src\Engine\Math\StatelessRandom.h" />
+    <ClInclude Include="src\Engine\Math\Vector3.h" />
+    <ClInclude Include="src\Engine\Physics\ForcePlane.h" />
+    <ClInclude Include="src\Engine\Physics\ForceProfile.h" />
+    <ClInclude Include="src\Engine\Platform\DirectXConversion.h" />
+    <ClInclude Include="src\Engine\Platform\DxLibConversion.h" />
+    <ClInclude Include="src\Engine\Render\PrimitiveMeshFactory.h" />
+    <ClInclude Include="src\Engine\Render\RenderManager.h" />
+    <ClInclude Include="src\Engine\Render\RenderTypes.h" />
+    <ClInclude Include="src\Engine\Spatial\SpatialGrid.h" />
+    <ClInclude Include="src\Engine\Systems\Animation\ColorBlinkSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Animation\ColorFadeRequestSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Animation\ColorFadeSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Animation\SpinAnimationRequestSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Animation\SpinAnimationSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Behavior\OrbitSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Behavior\SteeringSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\AttractionSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\BoidsSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\BoundarySystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\DartSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\ForceClearSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\GravitySystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\JitterMovementSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\LiftSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\RandomSwirlAxisRequestSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\SwirlSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Force\WanderSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\DampingSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\PlaneConstraintSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\RandomVelocityRequestSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\SpeedConstraintSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\TransformIntegrationSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\VelocityDirectionSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\VelocityIntegrationSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Physics\DirectionRotationSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Render\MaterialRequestSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Render\PrimitiveMeshRenderSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Scene\SceneLightingSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Spatial\SpatialBoidCacheSystem.h" />
+    <ClInclude Include="src\Engine\Systems\Spatial\SpatialPartitionSystem.h" />
+    <ClInclude Include="src\Engine\Traits\AnimationComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\BehaviorComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\ComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\ComponentTraitsBase.h" />
+    <ClInclude Include="src\Engine\Traits\CoreComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\ForceComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\PhysicsComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\RenderComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\SceneComponentTraits.h" />
+    <ClInclude Include="src\Engine\Traits\SpatialComponentTraits.h" />
+    <ClInclude Include="src\Engine\Utils\NonCopyable.h" />
+    <ClInclude Include="src\Engine\Utils\SpatialGrid.h" />
+    <ClInclude Include="src\Engine\Utils\ThreadPool.h" />
+    <ClInclude Include="src\Engine\Utils\Time.h" />
+    <ClInclude Include="src\Game\Components\GameComponents.h" />
+    <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Game\Managers\ConfigManager.h" />
+    <ClInclude Include="src\Game\Managers\PrefabManager.h" />
+    <ClInclude Include="src\Game\Managers\TimelineManager.h" />
+    <ClInclude Include="src\Game\Systems\FormationDirectorSystem.h" />
+    <ClInclude Include="src\Game\Systems\FormationSystemPointCloud.h" />
+    <ClInclude Include="src\Game\Systems\FormationSystemWireframe.h" />
+    <ClInclude Include="src\Game\Traits\ComponentTraits.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

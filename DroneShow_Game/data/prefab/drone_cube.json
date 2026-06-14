@@ -1,0 +1,11 @@
+{
+  "name": "DroneCube",
+  "components": {
+    "PrimitiveMeshComponent": { 
+      "type": "Cube",
+      "scale": [3.0, 3.0, 3.0] 
+    },
+    "DampingComponent": {},
+    "DroneComponent": {}
+  }
+}

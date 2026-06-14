@@ -1,0 +1,381 @@
+{
+  "name": "PictureShow",
+  "sequences": [
+    {
+      "name": "formation_picture1",
+      "duration": 7.0,
+      "components": {
+        "SceneLightingComponent": {
+          "direction": [-1.0, -1.0, 1.0],
+          "ambient": 0.5,
+          "lightColor": [255, 255, 255],
+          "fillColor": [5, 5, 10]
+        },
+        "FormationComponentPointCloud": { 
+          "file": "data/formation/pointcloud/pic1.json", 
+          "scale": 500.0 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Unlit"
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 0.5
+        },
+        "OrbitComponent": {
+          "axis": [0.0, 1.0, 0.0],
+          "speed": 0.05
+        }
+      }
+    },
+    {
+      "name": "shuffle",
+      "duration": 5.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        }
+      }
+    },
+    {
+      "name": "formation_picture2",
+      "duration": 7.0,
+      "components": {
+        "FormationComponentPointCloud": { 
+          "file": "data/formation/pointcloud/pic2.json", 
+          "scale": 500.0 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Unlit"
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 0.5
+        },
+        "OrbitComponent": {
+          "axis": [0.0, 1.0, 0.0],
+          "speed": 0.05
+        }
+      }
+    },
+    {
+      "name": "shuffle",
+      "duration": 5.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        }
+      }
+    },
+    {
+      "name": "formation_picture3",
+      "duration": 7.0,
+      "components": {
+        "FormationComponentPointCloud": { 
+          "file": "data/formation/pointcloud/pic3.json", 
+          "scale": 500.0 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Unlit"
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 0.5
+        },
+        "OrbitComponent": {
+          "axis": [0.0, 1.0, 0.0],
+          "speed": 0.05
+        }
+      }
+    },
+    {
+      "name": "shuffle",
+      "duration": 5.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        }
+      }
+    },
+    {
+      "name": "formation_picture4",
+      "duration": 7.0,
+      "components": {
+        "FormationComponentPointCloud": { 
+          "file": "data/formation/pointcloud/pic4.json", 
+          "scale": 300.0 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Unlit"
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 0.5
+        },
+        "OrbitComponent": {
+          "axis": [0.0, 1.0, 0.0],
+          "speed": 0.05
+        }
+      }
+    },
+     {
+      "name": "shuffle",
+      "duration": 5.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        }
+      }
+    },
+    {
+      "name": "formation_picture5",
+      "duration": 7.0,
+      "components": {
+        "FormationComponentPointCloud": { 
+          "file": "data/formation/pointcloud/pic5.json", 
+          "scale": 300.0 
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Hologram"
+        },
+        "SteeringComponent": {
+          "stiffness": 20.0
+        },
+        "FormationRotationComponent": {
+          "rotateSpeed": 0.5
+        },
+        "OrbitComponent": {
+          "axis": [0.2, 1.0, 0.0],
+          "speed": 0.1
+        }
+      }
+    },
+    {
+      "name": "shuffle",
+      "duration": 5.0,
+      "components": {
+        "AttractionComponent": { 
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Constant",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "strength": 500.0, 
+          "maxForce": 1000.0
+        },
+        "SwirlComponent": {
+          "profile": {
+            "distance": "Sphere",
+            "falloff": "Linear",
+            "radius": 500,
+            "innerScale": 1.0,
+            "outerScale": 1.0
+          },
+          "center": [0, 0, 0], 
+          "axis": [0, 1, 0], 
+          "strength": 2000.0,
+          "maxForce": 3000.0
+        },
+        "MaterialRequestComponent":{
+          "shaderType": "Lit"
+        },
+        "VelocityRotationComponent": {},
+        "RandomSwirlAxisRequestComponent": { 
+          "axisCount": 4, 
+          "noiseStrength": 0.2
+        },
+        "SpeedConstraintComponent": { 
+          "max": 400.0, 
+          "min": 100.0 
+        },
+        "BoundaryComponent": { 
+          "radius": 500.0, 
+          "force": 100.0 
+        },
+        "RandomVelocityRequestComponent": { 
+          "minSpeed": 400.0, 
+          "maxSpeed": 800.0 
+        }
+      }
+    }
+  ]
+}

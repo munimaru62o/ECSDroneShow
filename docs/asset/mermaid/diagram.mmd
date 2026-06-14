@@ -1,0 +1,119 @@
+
+classDiagram
+    direction LR
+    %% ===================================================
+    %% Application
+    %% ===================================================
+    
+    class Game {
+        +Init()
+        +Run()
+        +Shutdown()
+    }
+    
+    class TimelineManager
+    class PrefabManager
+    class InputManager
+    class DirectoryLoader
+    class JsonLoader
+    class ComponentRegistry
+    
+    Game *-- Coordinator
+    Game *-- TimelineManager
+    Game *-- PrefabManager
+    Game *-- InputManager
+    Game ..> DirectoryLoader
+    Game ..> JsonLoader
+    Game *-- ComponentRegistry
+    
+    
+    %% ===================================================
+    %% ECS Core
+    %% ===================================================
+    
+    class Coordinator {
+        +CreateEntity()
+        +DestroyEntity()
+        +RegisterComponent()
+        +RegisterSystem()
+        +UpdatePhase()
+    }
+    
+    class EntityManager
+    class ComponentManager
+    class SystemManager
+    class ThreadPool
+    
+    Coordinator *-- EntityManager
+    Coordinator *-- ComponentManager
+    Coordinator *-- SystemManager
+    Coordinator *-- ThreadPool
+    
+    
+    %% ===================================================
+    %% Components
+    %% ===================================================
+    
+    class ComponentArray~T~
+    class EntitySparseSet
+    class ComponentEvents~T~
+    
+    ComponentManager *-- ComponentArray~T~
+    ComponentArray~T~ *-- EntitySparseSet
+    ComponentArray~T~ *-- ComponentEvents~T~
+    
+    
+    %% ===================================================
+    %% Systems
+    %% ===================================================
+    
+    class System {
+        <<abstract>>
+        +Update()
+    }
+    
+    class SpatialPartitionSystem
+    class SpatialBoidCacheSystem
+    class BoidsSystem
+    class SteeringSystem
+    class TransformIntegrationSystem
+    class PrimitiveMeshRenderSystem
+    class FormationSystemWireframe
+    class FormationSystemPointCloud
+    class TimelineDirectorSystem
+    
+    System <|-- SpatialPartitionSystem
+    System <|-- SpatialBoidCacheSystem
+    System <|-- BoidsSystem
+    System <|-- SteeringSystem
+    System <|-- TransformIntegrationSystem
+    System <|-- PrimitiveMeshRenderSystem
+    System <|-- FormationSystemWireframe
+    System <|-- FormationSystemPointCloud
+    System <|-- TimelineDirectorSystem
+    
+    SystemManager *-- System
+    System *-- EntitySparseSet
+    
+    
+    %% ===================================================
+    %% Game Specific
+    %% ===================================================
+    
+    TimelineDirectorSystem --> TimelineManager
+    FormationSystemWireframe --> TimelineManager
+    FormationSystemPointCloud --> TimelineManager
+    TimelineDirectorSystem --> ComponentRegistry
+    PrefabManager --> Coordinator
+    PrefabManager --> ComponentRegistry
+    
+    
+    %% ===================================================
+    %% Spatial
+    %% ===================================================
+    
+    class SpatialGrid
+    
+    SpatialPartitionSystem *-- SpatialGrid
+    SpatialBoidCacheSystem --> SpatialGrid
+    BoidsSystem --> SpatialGrid
