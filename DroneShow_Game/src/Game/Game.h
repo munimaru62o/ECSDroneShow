@@ -35,7 +35,7 @@ public:
     void Shutdown();
 
 private:
-    [[nodiscard]] bool ShouldRun() const;
+    [[nodiscard]] bool ShouldRun();
 
     void ConfigureDxLib();
     void InitializeGraphics();

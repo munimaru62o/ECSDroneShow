@@ -168,7 +168,7 @@ void Game::Shutdown()
 }
 
 
-bool Game::ShouldRun() const
+bool Game::ShouldRun()
 {
     if (!m_isRunning) {
         return false;
@@ -178,9 +178,6 @@ bool Game::ShouldRun() const
         return false;
     }
 
-    if (m_inputManager && m_inputManager->IsKeyDown(KEY_INPUT_ESCAPE)) {
-        return false;
-    }
     return true;
 }
 
@@ -300,6 +297,10 @@ void Game::HandleInput()
 {
     if (m_inputManager) {
         m_inputManager->Update();
+
+        if (m_inputManager->IsKeyDown(KEY_INPUT_ESCAPE)) {
+            m_isRunning = false;
+        }
 
         // Press [1] to spawn entities
         if (m_inputManager->IsKeyDown(KEY_INPUT_1)) {
