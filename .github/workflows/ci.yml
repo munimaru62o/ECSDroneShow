@@ -18,7 +18,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build the solution
-      run: msbuild ECSDemo.sln /p:Configuration=Release /p:Platform=x64
+      run: msbuild ECSDroneShow.sln /p:Configuration=Release /p:Platform=x64
 
     - name: Run Unit Tests
       run: .\x64\Release\DroneShow_Test.exe
