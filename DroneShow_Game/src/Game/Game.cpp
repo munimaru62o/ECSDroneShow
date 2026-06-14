@@ -80,11 +80,11 @@ bool Game::Init()
 
 void Game::ConfigureDxLib()
 {
+    SetOutApplicationLogValidFlag(FALSE);
     ChangeWindowMode(!m_config.window.isFullscreen);
     SetGraphMode(m_config.window.width, m_config.window.height, 32);
     SetMainWindowText(_TEXT("ECS Demo"));
     SetAlwaysRunFlag(TRUE);
-    SetOutApplicationLogValidFlag(FALSE);
 }
 
 
@@ -168,15 +168,16 @@ void Game::Shutdown()
 }
 
 
-bool Game::ShouldRun() const
+bool Game::ShouldRun()
 {
     if (!m_isRunning) {
         return false;
     }
 
-    if (m_inputManager && m_inputManager->IsKeyDown(KEY_INPUT_ESCAPE)) {
+    if (ProcessMessage() == -1) {
         return false;
     }
+
     return true;
 }
 
@@ -296,6 +297,10 @@ void Game::HandleInput()
 {
     if (m_inputManager) {
         m_inputManager->Update();
+
+        if (m_inputManager->IsKeyDown(KEY_INPUT_ESCAPE)) {
+            m_isRunning = false;
+        }
 
         // Press [1] to spawn entities
         if (m_inputManager->IsKeyDown(KEY_INPUT_1)) {
