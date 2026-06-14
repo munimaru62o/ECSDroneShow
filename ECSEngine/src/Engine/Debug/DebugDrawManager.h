@@ -37,5 +37,6 @@ public:
 
 private:
     std::vector<Debug::Line> m_lines;
+    std::vector<Debug::Line> m_linesToDraw;
     std::mutex m_mutex;
 };
