@@ -28,11 +28,16 @@ void DebugDrawManager::RenderAndClear()
         return;
     }
 
-    for (const auto& line : m_lines) {
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_linesToDraw.swap(m_lines);
+    }
+
+    for (const auto& line : m_linesToDraw) {
         VECTOR p1 = ToDxVec(line.start);
         VECTOR p2 = ToDxVec(line.end);
-
         DrawLine3D(p1, p2, ToDxColor(line.color));
     }
-    m_lines.clear();
+
+    m_linesToDraw.clear();
 }
