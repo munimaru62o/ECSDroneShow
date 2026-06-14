@@ -1,0 +1,24 @@
+name: C++ CI (MSBuild)
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build the solution
+      run: msbuild ECSDemo.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Run Unit Tests
+      run: .\x64\Release\DroneShow_Test.exe
