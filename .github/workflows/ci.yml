@@ -14,6 +14,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
+
+    - name: Restore NuGet Packages
+      run: nuget restore ECSDroneShow.sln
+
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
