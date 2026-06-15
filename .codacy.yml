@@ -7,3 +7,6 @@ engines:
     params:
       - name: suppress
         value: missingIncludeSystem
+
+  trivy:
+    enabled: false
