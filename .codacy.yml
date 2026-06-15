@@ -1,0 +1,9 @@
+exclude_paths:
+  - External/**
+
+engines:
+  cppcheck:
+    enabled: true
+    params:
+      - name: suppress
+        value: missingIncludeSystem
