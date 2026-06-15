@@ -58,15 +58,3 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Codacy Analysis
-        uses: codacy/codacy-analysis-cli-action@562ee3e92b8e92df8b67e0a5ff8aa8e261919c08 # v4.4.7
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          config-file: .codacy.yml
-          verbose: true
-          output: results.sarif
-          format: sarif
-          tools: cppcheck
-          args: --languages Cpp
-          gh-code-scanning-compat: true
