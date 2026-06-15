@@ -203,12 +203,6 @@
     <ClInclude Include="src\ECS\Systems\Physics\TransformIntegrationSystem.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Systems\Render\CubeRenderSystem.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\Systems\Render\SphereRenderSystem.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\ECS\Core\EntitySparseSet.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

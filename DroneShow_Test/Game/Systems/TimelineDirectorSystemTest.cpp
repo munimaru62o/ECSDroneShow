@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Common/ECSTestFixture.h"
 #include "Game/Systems/TimelineDirectorSystem.h"
 #include "Game/Managers/TimelineManager.h"

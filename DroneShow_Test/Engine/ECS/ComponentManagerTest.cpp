@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/ECS/ComponentManager.h"
 
 // Dummy components for testing purposes

@@ -1,0 +1,17 @@
+---
+exclude_paths:
+  - External/**
+  - "**/*.config"
+
+engines:
+  cppcheck:
+    enabled: true
+    params:
+      - name: suppress
+        value: missingIncludeSystem
+
+  trivy:
+    enabled: false
+
+languages:
+  - Cpp

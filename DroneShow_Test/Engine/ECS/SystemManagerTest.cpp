@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/ECS/SystemManager.h"
 #include "Engine/ECS/SystemPhases.h"
 #include "Engine/ECS/Coordinator.h"

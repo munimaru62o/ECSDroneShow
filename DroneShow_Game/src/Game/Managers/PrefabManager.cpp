@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 munimaru62o. All rights reserved.
+// Copyright (c) 2026 munimaru62o. All rights reserved.
 
 #include "Game/Managers/PrefabManager.h"
 #include "Game/Loaders/DirectoryLoader.h"

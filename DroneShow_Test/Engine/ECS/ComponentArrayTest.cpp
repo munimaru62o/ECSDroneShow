@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/ECS/ComponentArray.h"
 
 // Dummy component for testing purposes

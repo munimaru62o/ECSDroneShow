@@ -1,0 +1,60 @@
+name: Build and Analyze
+
+on:
+  push:
+    branches:
+    - "main"
+    - "dev"
+    - "develop"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+      - "THIRD_PARTY_LICENSES"
+
+  pull_request:
+    branches:
+    - "main"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "LICENSE"
+      - "THIRD_PARTY_LICENSES"
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@fd55a6f3b34392fa83fde1454582407d8c714123 # v4.0.0
+
+    - name: Restore NuGet Packages
+      run: nuget restore ECSDroneShow.sln
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
+
+    - name: Build the solution
+      run: msbuild ECSDroneShow.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Run Unit Tests
+      run: .\x64\Release\DroneShow_Test.exe
+
+  code-analytics:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
