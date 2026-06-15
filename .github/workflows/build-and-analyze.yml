@@ -68,4 +68,5 @@ jobs:
           output: results.sarif
           format: sarif
           tools: cppcheck
+          args: --languages Cpp
           gh-code-scanning-compat: true

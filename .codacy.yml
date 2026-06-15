@@ -11,3 +11,6 @@ engines:
 
   trivy:
     enabled: false
+
+languages:
+  - Cpp
