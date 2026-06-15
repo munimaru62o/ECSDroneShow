@@ -6,11 +6,6 @@ on:
     - "main"
     - "dev"
     - "develop"
-    - "feat/**"
-    - "fix/**"
-    - "refactor/**"
-    - "chore/**"
-    - "test/**"
     paths-ignore:
       - "**.md"
       - "docs/**"
