@@ -1,5 +1,6 @@
 exclude_paths:
   - External/**
+  - "**/*.config"
 
 engines:
   cppcheck:
