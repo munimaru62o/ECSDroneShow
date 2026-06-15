@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Engine/ECS/Coordinator.h"
 #include "Engine/ECS/System.h"
 #include "Engine/Traits/ComponentTraits.h"

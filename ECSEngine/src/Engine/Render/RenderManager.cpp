@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 munimaru62o. All rights reserved.
+// Copyright (c) 2026 munimaru62o. All rights reserved.
 
 #include "RenderManager.h"
 #include "Engine/ECS/ECSTypes.h"

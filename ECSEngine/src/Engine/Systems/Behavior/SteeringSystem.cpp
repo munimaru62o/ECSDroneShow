@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 munimaru62o. All rights reserved.
+// Copyright (c) 2026 munimaru62o. All rights reserved.
 
 #include "Engine/Systems/Behavior/SteeringSystem.h"
 #include "Engine/ECS/Coordinator.h"

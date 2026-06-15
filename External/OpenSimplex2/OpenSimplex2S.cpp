@@ -1,4 +1,4 @@
-﻿#include "OpenSimplex2S.hpp"
+#include "OpenSimplex2S.hpp"
 
 OpenSimplex2S::Grad2 OpenSimplex2S::GRADIENTS_2D[OpenSimplex2S::PSIZE] {};
 OpenSimplex2S::Grad3 OpenSimplex2S::GRADIENTS_3D[OpenSimplex2S::PSIZE] {};
