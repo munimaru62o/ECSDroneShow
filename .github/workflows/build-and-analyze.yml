@@ -70,12 +70,16 @@ jobs:
         with:
           name: coverage-report
 
-        # 1. Convert Windows backslashes to Linux forward slashes
-        # 2. Map the Windows runner workspace path to the current Linux workspace path
-        # This allows SonarQube (running on Linux) to correctly locate the source files
       - name: Fix coverage paths for Linux
         run: |
+          # 1. Convert Windows backslashes to Linux forward slashes
           sed -i 's/\\/\//g' coverage.xml
+          
+          # 2. Prepend the missing "D:/" if the path starts with "a/"
+          # This converts "a/ECSDroneShow/..." to "D:/a/ECSDroneShow/..."
+          sed -i 's/filename="a\//filename="D:\/a\//g' coverage.xml
+          
+          # 3. Map the Windows workspace path to the current Linux workspace
           WINDOWS_WORKSPACE="D:/a/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
           LINUX_WORKSPACE="${{ github.workspace }}"
           sed -i "s|$WINDOWS_WORKSPACE|$LINUX_WORKSPACE|g" coverage.xml
