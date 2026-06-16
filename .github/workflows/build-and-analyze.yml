@@ -37,15 +37,15 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
 
-    - name: Build the solution
-      run: msbuild ECSDroneShow.sln /p:Configuration=Release /p:Platform=x64
-
     - name: Install OpenCppCoverage
       run: choco install opencppcoverage -y
     
+    - name: Build the solution
+      run: msbuild ECSDroneShow.sln /p:Configuration=Debug /p:Platform=x64
+
     - name: Run Unit Tests with Coverage
       run: |
-        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --sources "${{ github.workspace }}" -- .\x64\Release\DroneShow_Test.exe
+        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --sources "${{ github.workspace }}" -- .\x64\Debug\DroneShow_Test.exe
       shell: powershell
 
     - name: Upload Coverage Report
