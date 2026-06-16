@@ -75,12 +75,10 @@ jobs:
           # 1. Convert Windows backslashes to Linux forward slashes
           sed -i 's/\\/\//g' coverage.xml
           
-          # 2. Map the "a/ECSDroneShow/..." path prefix directly to the Linux workspace absolute path
-          # This ensures the filename attribute matches the absolute path used by SonarQube on Linux
-          LINUX_WORKSPACE="${{ github.workspace }}"
-          sed -i "s|filename=\"a/ECSDroneShow/ECSDroneShow/|filename=\"$LINUX_WORKSPACE/|g" coverage.xml
+          # 2. Make paths relative to the repository root
+          sed -i 's|filename="a/ECSDroneShow/ECSDroneShow/|filename="|g' coverage.xml
           
-          # 3. Clean up Windows-specific absolute paths from package names to avoid confusion
+          # 3. Clean up Windows-specific absolute paths from package names
           sed -i "s|D:/a/ECSDroneShow/ECSDroneShow/||g" coverage.xml
 
       - name: Upload Corrected Coverage Report for Debug
