@@ -85,19 +85,12 @@ jobs:
           LINUX_WORKSPACE="${{ github.workspace }}"
           sed -i "s|<source>D:</source>|<source>$LINUX_WORKSPACE</source>|g" coverage.xml
 
-      - name: Upload Corrected Coverage Report for Debug
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: debug-coverage-xml
-          path: coverage.xml
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -X
             -Dsonar.cfamily.cobertura.reportPaths=coverage.xml
 
       - name: SonarQube Quality Gate check
