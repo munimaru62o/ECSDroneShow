@@ -7,7 +7,7 @@
 
 struct SimplexNoise::Impl
 {
-    Impl(uint32_t seed) :
+    explicit Impl(uint32_t seed) :
         noiseInstance(seed)
     {};
     OpenSimplex2S noiseInstance;
