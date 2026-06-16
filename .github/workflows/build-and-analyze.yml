@@ -95,8 +95,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.coverageReportPaths=coverage.xml
-            -Dsonar.sources=DroneShow_Game/src
+            -Dsonar.cfamily.cobertura.reportPaths=coverage.xml
 
       - name: SonarQube Quality Gate check
         uses: SonarSource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
