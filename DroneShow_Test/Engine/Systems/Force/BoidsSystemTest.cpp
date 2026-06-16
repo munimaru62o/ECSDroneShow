@@ -325,7 +325,10 @@ TEST_F(BoidsTestFixture, Boids_TimeSlicingUsesCachedDirection)
     coordinator.AddComponent(boidA, boidsParam);
 
     coordinator.AddComponent(boidB, transformB);
-    // ... setup B identically ...
+    coordinator.AddComponent(boidB, velocityB);
+    coordinator.AddComponent(boidB, forceB);
+    coordinator.AddComponent(boidB, spatialB);
+    coordinator.AddComponent(boidB, boidsParam);
 
     // Act
     BuildGridForTest({ boidA, boidB });

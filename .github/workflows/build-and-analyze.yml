@@ -37,15 +37,15 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
 
-    - name: Build the solution
-      run: msbuild ECSDroneShow.sln /p:Configuration=Release /p:Platform=x64
-
     - name: Install OpenCppCoverage
       run: choco install opencppcoverage -y
     
+    - name: Build the solution
+      run: msbuild ECSDroneShow.sln /p:Configuration=Debug /p:Platform=x64
+
     - name: Run Unit Tests with Coverage
       run: |
-        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --sources "${{ github.workspace }}" -- .\x64\Release\DroneShow_Test.exe
+        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --sources "${{ github.workspace }}" -- .\x64\Debug\DroneShow_Test.exe
       shell: powershell
 
     - name: Upload Coverage Report
@@ -70,15 +70,20 @@ jobs:
         with:
           name: coverage-report
 
-        # 1. Convert Windows backslashes to Linux forward slashes
-        # 2. Map the Windows runner workspace path to the current Linux workspace path
-        # This allows SonarQube (running on Linux) to correctly locate the source files
       - name: Fix coverage paths for Linux
         run: |
+          # 1. Convert Windows backslashes to Linux forward slashes
           sed -i 's/\\/\//g' coverage.xml
-          WINDOWS_WORKSPACE="D:/a/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
+          
+          # 2. Make paths relative to the repository root
+          sed -i 's|filename="a/ECSDroneShow/ECSDroneShow/|filename="|g' coverage.xml
+          
+          # 3. Clean up Windows-specific absolute paths from package names
+          sed -i "s|D:/a/ECSDroneShow/ECSDroneShow/||g" coverage.xml
+          
+          # 4. Fix the Cobertura <source> root path
           LINUX_WORKSPACE="${{ github.workspace }}"
-          sed -i "s|$WINDOWS_WORKSPACE|$LINUX_WORKSPACE|g" coverage.xml
+          sed -i "s|<source>D:</source>|<source>$LINUX_WORKSPACE</source>|g" coverage.xml
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
