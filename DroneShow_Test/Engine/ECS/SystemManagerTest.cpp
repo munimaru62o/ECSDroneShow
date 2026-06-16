@@ -6,8 +6,8 @@
 // ---------------------------------------------------------
 // Dummy Systems and Globals for Testing
 // ---------------------------------------------------------
-
 // Global array to record the execution order of systems
+// sonar-ignore-next-line
 static std::vector<int> g_executionOrder;
 
 class DummySystemA : public System

@@ -16,10 +16,6 @@
  */
 class ECSTestFixture : public ::testing::Test
 {
-protected:
-    Coordinator coordinator;
-    ComponentRegistry registry;
-
     /**
      * @brief Setup method executed immediately before each TEST_F runs.
      * * Initializes the Coordinator, registers all core and game-specific components
@@ -49,4 +45,9 @@ protected:
      */
     void TearDown() override
     {}
+
+// sonar-ignore-next-line
+protected:
+    Coordinator coordinator;
+    ComponentRegistry registry;
 };
