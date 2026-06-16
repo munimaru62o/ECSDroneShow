@@ -16,7 +16,12 @@ void VelocityIntegrationSystem::Update(Coordinator& coordinator, float dt, doubl
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &forceArray,
+        &velocityArray,
+        dt
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& force = forceArray.GetData(entity);

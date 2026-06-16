@@ -40,7 +40,16 @@ void BoidsSystem::Update(Coordinator& coordinator, float dt, double simulationTi
     auto& boidsArray = coordinator.GetComponentArray<BoidsComponent>();
     auto& forceArray =  coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        this,
+        &entities,
+        &cache,
+        &transformArray,
+        &velocitieArray,
+        &boidsArray,
+        &forceArray,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& transform = transformArray.GetData(entity);

@@ -24,7 +24,12 @@ void LiftSystem::Update(Coordinator& coordinator, float dt, double simulationTim
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& liftArray = coordinator.GetComponentArray<LiftComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &forceArray,
+        &liftArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& transform = transformArray.GetData(entity);

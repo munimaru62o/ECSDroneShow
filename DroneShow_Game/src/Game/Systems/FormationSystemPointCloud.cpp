@@ -47,7 +47,15 @@ void FormationSystemPointCloud::Update(Coordinator& coordinator, float dt, doubl
         return;
     }
 
-    ParallelFor(numEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(numEntities, [
+        &entities,
+        &formationArray,
+        &targetArray,
+        &materialArray,
+        &formationDataPtr,
+        numEntities,
+        numPoints
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& formation = formationArray.GetData(entity);

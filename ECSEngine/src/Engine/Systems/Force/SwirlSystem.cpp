@@ -25,7 +25,12 @@ void SwirlSystem::Update(Coordinator& coordinator, float dt, double simulationTi
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& swirlArray = coordinator.GetComponentArray<SwirlComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &forceArray,
+        &swirlArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& transform = transformArray.GetData(entity);

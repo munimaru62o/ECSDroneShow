@@ -22,7 +22,14 @@ void WanderSystem::Update(Coordinator& coordinator, float dt, double simulationT
     auto& wanderArray = coordinator.GetComponentArray<WanderComponent>();
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        this,
+        &entities,
+        &wanderArray,
+        &forceArray,
+        &coordinator,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& wander = wanderArray.GetData(entity);

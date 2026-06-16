@@ -18,7 +18,11 @@ void JitterMovementSystem::Update(Coordinator& coordinator, float dt, double sim
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& noiseArray = coordinator.GetComponentArray<JitterMovementComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &forceArray,
+        &noiseArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& force = forceArray.GetData(entity);

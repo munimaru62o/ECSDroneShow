@@ -18,7 +18,11 @@ void DampingSystem::Update(Coordinator& coordinator, float dt, double simulation
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
     auto& dampingArray = coordinator.GetComponentArray<DampingComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &velocityArray,
+        &dampingArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& velocity = velocityArray.GetData(entity);

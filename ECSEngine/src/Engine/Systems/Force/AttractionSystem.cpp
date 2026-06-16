@@ -24,7 +24,12 @@ void AttractionSystem::Update(Coordinator& coordinator, float dt, double simulat
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& attractionArray = coordinator.GetComponentArray<AttractionComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &forceArray,
+        &attractionArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& transform = transformArray.GetData(entity);

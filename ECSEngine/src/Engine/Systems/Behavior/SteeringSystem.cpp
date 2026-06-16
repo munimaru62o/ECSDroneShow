@@ -17,7 +17,14 @@ void SteeringSystem::Update(Coordinator& coordinator, float dt, double simulatio
     auto& steeringArray = coordinator.GetComponentArray<SteeringComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &targetArray,
+        &steeringArray,
+        &velocityArray,
+        dt
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
 

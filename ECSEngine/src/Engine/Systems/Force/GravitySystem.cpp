@@ -17,7 +17,11 @@ void GravitySystem::Update(Coordinator& coordinator, float dt, double simulation
     auto& gravityArray = coordinator.GetComponentArray<GravityComponent>();
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &gravityArray,
+        &forceArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& gravity = gravityArray.GetData(entity);

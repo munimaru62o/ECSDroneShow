@@ -20,7 +20,11 @@ void SpeedConstraintSystem::Update(Coordinator& coordinator, float dt, double si
     auto& speedLimitArray = coordinator.GetComponentArray<SpeedConstraintComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &speedLimitArray,
+        &velocityArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& speedLimit = speedLimitArray.GetData(entity);

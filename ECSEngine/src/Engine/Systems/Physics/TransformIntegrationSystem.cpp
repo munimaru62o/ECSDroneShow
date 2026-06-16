@@ -16,7 +16,12 @@ void TransformIntegrationSystem::Update(Coordinator& coordinator, float dt, doub
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &velocityArray,
+        dt
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& transform = transformArray.GetData(entity);

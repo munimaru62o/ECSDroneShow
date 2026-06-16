@@ -18,7 +18,12 @@ void PlaneConstraintSystem::Update(Coordinator& coordinator, float dt, double si
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &constraintArray,
+        &transformArray,
+        &velocityArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& constraint = constraintArray.GetData(entity);

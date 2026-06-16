@@ -19,7 +19,13 @@ void ColorFadeSystem::Update(Coordinator& coordinator, float dt, double simulati
     auto& fadeArray = coordinator.GetComponentArray<ColorFadeComponent>();
     auto& materialArray = coordinator.GetComponentArray<MaterialComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &fadeArray,
+        &materialArray,
+        &coordinator,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& material = materialArray.GetData(entity);

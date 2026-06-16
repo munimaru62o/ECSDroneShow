@@ -43,7 +43,13 @@ public:
         auto& directionArray = coordinator.GetComponentArray<DirectionComponent>();
         auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
 
-        ParallelFor(static_cast<int>(entities.size()), [&](int startIdx, int endIdx) {
+        ParallelFor(static_cast<int>(entities.size()), [
+            &entities,
+            &rotationArray,
+            &directionArray,
+            &transformArray,
+            dt
+        ](int startIdx, int endIdx) {
             for (int i = startIdx; i < endIdx; ++i) {
 
                 Entity entity = entities[i];

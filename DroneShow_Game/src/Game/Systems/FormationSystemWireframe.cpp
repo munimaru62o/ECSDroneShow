@@ -48,7 +48,12 @@ void FormationSystemWireframe::Update(Coordinator& coordinator, float dt, double
 
     // Edge case: If the formation is just a single point, collapse all drones to that point
     if (numPoints == 1) {
-        ParallelFor(numEntities, [&](int startIdx, int endIdx) {
+        ParallelFor(numEntities, [
+            &entities,
+            &targetArray,
+            &formationArray,
+            &formationDataPtr
+        ](int startIdx, int endIdx) {
             for (int i = startIdx; i < endIdx; ++i) {
                 auto& target = targetArray.GetData(entities[i]);
                 target.value = formationDataPtr->points[0].position * formationArray.GetData(entities[i]).scale;
@@ -64,7 +69,16 @@ void FormationSystemWireframe::Update(Coordinator& coordinator, float dt, double
     int baseCount = numEntities / numEdges;
     int remainder = numEntities % numEdges;
 
-    ParallelFor(numEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(numEntities, [
+        &entities,
+        &formationArray,
+        &targetArray,
+        &directionArray,
+        &formationDataPtr,
+        baseCount,
+        remainder,
+        numEntities
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& formation = formationArray.GetData(entity);

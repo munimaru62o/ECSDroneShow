@@ -17,7 +17,13 @@ void SpinAnimationSystem::Update(Coordinator& coordinator, float dt, double simu
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& spinArray = coordinator.GetComponentArray<SpinAnimationComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &transformArray,
+        &spinArray,
+        &coordinator,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
 

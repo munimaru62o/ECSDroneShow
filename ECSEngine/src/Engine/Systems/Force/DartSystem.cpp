@@ -22,7 +22,13 @@ void DartSystem::Update(Coordinator& coordinator, float dt, double simulationTim
     auto& dartArray = coordinator.GetComponentArray<DartComponent>();
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &dartArray,
+        &forceArray,
+        &coordinator,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& dart = dartArray.GetData(entity);

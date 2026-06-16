@@ -17,7 +17,11 @@ void VelocityDirectionSystem::Update(Coordinator& coordinator, float dt, double 
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
     auto& directionArray = coordinator.GetComponentArray<DirectionComponent>();
 
-    ParallelFor(static_cast<int>(entities.size()), [&](int startIdx, int endIdx) {
+    ParallelFor(static_cast<int>(entities.size()), [
+        &entities,
+        &velocityArray,
+        &directionArray
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& velocity = velocityArray.GetData(entity);

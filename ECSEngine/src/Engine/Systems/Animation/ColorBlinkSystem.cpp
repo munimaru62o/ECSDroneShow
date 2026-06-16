@@ -19,7 +19,12 @@ void ColorBlinkSystem::Update(Coordinator& coordinator, float dt, double simulat
     auto& blinkArray = coordinator.GetComponentArray<ColorBlinkComponent>();
     auto& materialArray = coordinator.GetComponentArray<MaterialComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &materialArray,
+        &blinkArray,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& material = materialArray.GetData(entity);

@@ -19,7 +19,13 @@ void OrbitSystem::Update(Coordinator& coordinator, float dt, double simulationTi
     auto& targetArray = coordinator.GetComponentArray<TargetComponent>();
     auto& orbitArray = coordinator.GetComponentArray<OrbitComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        &entities,
+        &targetArray,
+        &orbitArray,
+        &coordinator,
+        simulationTime
+    ](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             auto& target = targetArray.GetData(entity);

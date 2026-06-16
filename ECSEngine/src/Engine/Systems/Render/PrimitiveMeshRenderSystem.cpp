@@ -67,7 +67,13 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
     auto& materialArray = coordinator.GetComponentArray<MaterialComponent>();
 
     // 1. Parallel Collection Phase (Lock-free)
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [
+        this,
+        &entities,
+        &transformArray,
+        &meshArray,
+        &materialArray
+    ](int startIdx, int endIdx) {
         int workerIndex = ThreadPool::GetCurrentWorkerIndex();
         if (workerIndex < 0) {
             workerIndex = static_cast<int>(m_threadBuffers.size()) - 1;
