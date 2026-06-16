@@ -6,7 +6,7 @@ class BoundaryTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    BoundarySystem* system;
+    BoundarySystem* system = nullptr;
 
     void SetUpSystems() override
     {

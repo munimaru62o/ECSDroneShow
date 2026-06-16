@@ -6,7 +6,7 @@ class AttractionTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    AttractionSystem* system;
+    AttractionSystem* system = nullptr;
 
     void SetUpSystems() override
     {

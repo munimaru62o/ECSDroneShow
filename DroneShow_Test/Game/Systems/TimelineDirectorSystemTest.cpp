@@ -11,7 +11,7 @@ class TimelineDirectorTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    TimelineDirectorSystem* directorSystem;
+    TimelineDirectorSystem* directorSystem = nullptr;
 
     // sonar-ignore-next-line
     TimelineData timeline;

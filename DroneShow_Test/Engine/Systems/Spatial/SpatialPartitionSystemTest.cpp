@@ -6,7 +6,7 @@ class SpatialPartitionTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    SpatialPartitionSystem* system;
+    SpatialPartitionSystem* system = nullptr;
 
     void SetUpSystems() override
     {

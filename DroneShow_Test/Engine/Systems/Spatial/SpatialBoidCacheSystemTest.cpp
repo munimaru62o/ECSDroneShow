@@ -7,10 +7,10 @@ class SpatialBoidCacheTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    SpatialPartitionSystem* partitionSystem;
+    SpatialPartitionSystem* partitionSystem = nullptr;
 
     // sonar-ignore-next-line
-    SpatialBoidCacheSystem* cacheSystem;
+    SpatialBoidCacheSystem* cacheSystem = nullptr;
 
     void SetUpSystems() override
     {

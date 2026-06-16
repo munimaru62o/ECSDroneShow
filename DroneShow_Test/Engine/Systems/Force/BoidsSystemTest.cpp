@@ -7,7 +7,7 @@ class BoidsTestFixture : public ECSTestFixture
 {
 protected:
     // sonar-ignore-next-line
-    BoidsSystem* boidsSystem;
+    BoidsSystem* boidsSystem = nullptr;
 
     // sonar-ignore-next-line
     SpatialBoidCacheSystem* cacheSystem;
