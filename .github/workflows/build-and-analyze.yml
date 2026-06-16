@@ -97,6 +97,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
+            -X
             -Dsonar.cfamily.cobertura.reportPaths=coverage.xml
 
       - name: SonarQube Quality Gate check
