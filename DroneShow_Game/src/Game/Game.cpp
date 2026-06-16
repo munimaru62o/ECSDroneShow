@@ -1,4 +1,4 @@
-// Copyright (c) 2026 munimaru62o. All rights reserved.
+﻿// Copyright (c) 2026 munimaru62o. All rights reserved.
 
 #include "Game.h"
 
@@ -83,7 +83,7 @@ void Game::ConfigureDxLib()
     SetOutApplicationLogValidFlag(FALSE);
     ChangeWindowMode(!m_config.window.isFullscreen);
     SetGraphMode(m_config.window.width, m_config.window.height, 32);
-    SetMainWindowText(_TEXT("ECS Demo"));
+    SetMainWindowText(_TEXT("ECS DroneShow"));
     SetAlwaysRunFlag(TRUE);
 }
 
