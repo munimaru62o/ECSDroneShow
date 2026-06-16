@@ -4,9 +4,16 @@
 
 #include "Engine/ECS/System.h"
 
+#include <vector>
+
 class Coordinator;
 class SpatialGrid;
 class SpatialBoidCacheSystem;
+struct SpatialBoidData;
+struct TransformComponent;
+struct VelocityComponent;
+struct BoidsComponent;
+struct ForceComponent;
 
 /**
  * @class BoidsSystem
@@ -42,5 +49,8 @@ public:
     }
 
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, const TransformComponent& transform, const VelocityComponent& velocity, BoidsComponent& boids, ForceComponent& force, const std::vector<SpatialBoidData>& cache, double simulationTime);
 };
 

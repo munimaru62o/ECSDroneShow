@@ -18,22 +18,21 @@ void JitterMovementSystem::Update(Coordinator& coordinator, float dt, double sim
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& noiseArray = coordinator.GetComponentArray<JitterMovementComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &forceArray,
-        &noiseArray
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &forceArray, &noiseArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& force = forceArray.GetData(entity);
-            auto& noise = noiseArray.GetData(entity);
-
-            // Generate a random direction on the unit sphere.
-            // noise.seed is updated in-place via reference, maintaining determinism.
-            const Vector3 randomDir = SeededRandom::OnUnitSphere(noise.seed);
-
-            // Accumulate the jitter force
-            force.value += randomDir * noise.strength;
+            ProcessEntity(forceArray.GetData(entity), noiseArray.GetData(entity));
         }
     });
+}
+
+
+void JitterMovementSystem::ProcessEntity(ForceComponent& force, JitterMovementComponent& noise)
+{
+    // Generate a random direction on the unit sphere.
+    // noise.seed is updated in-place via reference, maintaining determinism.
+    const Vector3 randomDir = SeededRandom::OnUnitSphere(noise.seed);
+
+    // Accumulate the jitter force
+    force.value += randomDir * noise.strength;
 }

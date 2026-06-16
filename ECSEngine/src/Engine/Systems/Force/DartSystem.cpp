@@ -22,33 +22,30 @@ void DartSystem::Update(Coordinator& coordinator, float dt, double simulationTim
     auto& dartArray = coordinator.GetComponentArray<DartComponent>();
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &dartArray,
-        &forceArray,
-        &coordinator,
-        simulationTime
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &coordinator, simulationTime, &entities, &dartArray, &forceArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& dart = dartArray.GetData(entity);
-            auto& force = forceArray.GetData(entity);
-
-            if (simulationTime > dart.nextDartTime) {
-                dart.cachedDirection =  SeededRandom::OnUnitSphere(dart.seed);
-                dart.nextDartTime = simulationTime + SeededRandom::Range(dart.seed, dart.intervalMin, dart.intervalMax);
-            }
-            Vector3 forceDir = dart.cachedDirection * dart.strength;
-            force.value += forceDir;
-
-            if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-                const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
-                DebugDrawManager::GetInstance().AddLine(
-                    transform.position,
-                    transform.position + forceDir * Debug::Scale::Force,
-                    Debug::DrawColor::Force::Dart
-                );
-            }
+            ProcessEntity(entity, coordinator, simulationTime, dartArray.GetData(entity), forceArray.GetData(entity));
         }
     });
+}
+
+
+void DartSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, DartComponent& dart, ForceComponent& force)
+{
+    if (simulationTime > dart.nextDartTime) {
+        dart.cachedDirection = SeededRandom::OnUnitSphere(dart.seed);
+        dart.nextDartTime = simulationTime + SeededRandom::Range(dart.seed, dart.intervalMin, dart.intervalMax);
+    }
+    Vector3 forceDir = dart.cachedDirection * dart.strength;
+    force.value += forceDir;
+
+    if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
+        const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
+        DebugDrawManager::GetInstance().AddLine(
+            transform.position,
+            transform.position + forceDir * Debug::Scale::Force,
+            Debug::DrawColor::Force::Dart
+        );
+    }
 }

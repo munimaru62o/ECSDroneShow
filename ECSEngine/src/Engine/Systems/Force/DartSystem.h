@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct DartComponent;
+struct ForceComponent;
 
 /**
  * @class DartSystem
@@ -26,5 +28,8 @@ class DartSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, DartComponent& dart, ForceComponent& force);
 };
 

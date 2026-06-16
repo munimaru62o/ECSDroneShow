@@ -6,6 +6,8 @@
 #include "Engine/Math/SimplexNoise.h"
 
 class Coordinator;
+struct WanderComponent;
+struct ForceComponent;
 
 /**
  * @class WanderSystem
@@ -29,6 +31,7 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, WanderComponent& wander, ForceComponent& force);
+
     SimplexNoise m_noise;
 };
-

@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct TransformComponent;
+struct SpinAnimationComponent;
 
 /**
  * @class SpinAnimationSystem
@@ -23,4 +25,7 @@ class SpinAnimationSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TransformComponent& transform, const SpinAnimationComponent& spin);
 };

@@ -5,6 +5,9 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct TransformComponent;
+struct BoundaryComponent;
+struct ForceComponent;
 
 /**
  * @class BoundarySystem
@@ -22,5 +25,8 @@ class BoundarySystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, const TransformComponent& transform, const BoundaryComponent& boundary, ForceComponent& force);
 };
 

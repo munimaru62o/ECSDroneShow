@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct GravityComponent;
+struct ForceComponent;
 
 /**
  * @class GravitySystem
@@ -21,5 +23,8 @@ class GravitySystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(const GravityComponent& gravity, ForceComponent& force);
 };
 

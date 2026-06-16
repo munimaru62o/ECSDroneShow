@@ -20,29 +20,28 @@ void SpeedConstraintSystem::Update(Coordinator& coordinator, float dt, double si
     auto& speedLimitArray = coordinator.GetComponentArray<SpeedConstraintComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &speedLimitArray,
-        &velocityArray
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &speedLimitArray, &velocityArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& speedLimit = speedLimitArray.GetData(entity);
-            auto& velocity = velocityArray.GetData(entity);
-
-            const float speedSq = velocity.value.LengthSq();
-            const float maxSq = speedLimit.max * speedLimit.max;
-            const float minSq = speedLimit.min * speedLimit.min;
-
-            if (speedSq > maxSq) {
-                float speed = std::sqrt(speedSq);
-                float scale = speedLimit.max / speed;
-                velocity.value *= scale;
-            } else if (speedSq < minSq && speedSq > MathConstants::ZERO_TOLERANCE) {
-                float speed = std::sqrt(speedSq);
-                float scale = speedLimit.min / speed;
-                velocity.value *= scale;
-            }
+            ProcessEntity(speedLimitArray.GetData(entity), velocityArray.GetData(entity));
         }
     });
+}
+
+
+void SpeedConstraintSystem::ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity)
+{
+    const float speedSq = velocity.value.LengthSq();
+    const float maxSq = speedLimit.max * speedLimit.max;
+    const float minSq = speedLimit.min * speedLimit.min;
+
+    if (speedSq > maxSq) {
+        float speed = std::sqrt(speedSq);
+        float scale = speedLimit.max / speed;
+        velocity.value *= scale;
+    } else if (speedSq < minSq && speedSq > MathConstants::ZERO_TOLERANCE) {
+        float speed = std::sqrt(speedSq);
+        float scale = speedLimit.min / speed;
+        velocity.value *= scale;
+    }
 }

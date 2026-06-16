@@ -16,19 +16,17 @@ void TransformIntegrationSystem::Update(Coordinator& coordinator, float dt, doub
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &transformArray,
-        &velocityArray,
-        dt
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, dt, &entities, &transformArray, &velocityArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& transform = transformArray.GetData(entity);
-            auto& velocity = velocityArray.GetData(entity);
-
-            // Perform Euler integration to update the final position
-            transform.position += velocity.value * dt;
+            ProcessEntity(transformArray.GetData(entity), velocityArray.GetData(entity), dt);
         }
     });
+}
+
+
+void TransformIntegrationSystem::ProcessEntity(TransformComponent& transform, const VelocityComponent& velocity, float dt)
+{
+    // Perform Euler integration to update the final position
+    transform.position += velocity.value * dt;
 }

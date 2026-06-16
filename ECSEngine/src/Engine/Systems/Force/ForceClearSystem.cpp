@@ -15,14 +15,16 @@ void ForceClearSystem::Update(Coordinator& coordinator, float dt, double simulat
 
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &forceArray
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &forceArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& force = forceArray.GetData(entity);
-            force.value = {};
+            ProcessEntity(forceArray.GetData(entity));
         }
     });
+}
+
+
+void ForceClearSystem::ProcessEntity(ForceComponent& force)
+{
+    force.value = {};
 }

@@ -17,27 +17,24 @@ void SpinAnimationSystem::Update(Coordinator& coordinator, float dt, double simu
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& spinArray = coordinator.GetComponentArray<SpinAnimationComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &transformArray,
-        &spinArray,
-        &coordinator,
-        simulationTime
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &coordinator, simulationTime, &entities, &transformArray, &spinArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-
-            auto& transform = transformArray.GetData(entity);
-            const auto& spin = spinArray.GetData(entity);
-            const float elapsedTime = static_cast<float>(simulationTime - spin.creationTime);
-
-            if (spin.duration <= 0.0f || elapsedTime < spin.duration) {
-                float currentAngle = spin.speed * elapsedTime;
-                Quaternion spinRot = Quaternion::FromAxisAngle(spin.axis, currentAngle);
-                transform.rotation = spin.baseRotation * spinRot;
-            } else {
-                coordinator.DeferRemoveComponent<SpinAnimationComponent>(entity);
-            }
+            ProcessEntity(entity, coordinator, simulationTime, transformArray.GetData(entity), spinArray.GetData(entity));
         }
     });
+}
+
+
+void SpinAnimationSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TransformComponent& transform, const SpinAnimationComponent& spin)
+{
+    const float elapsedTime = static_cast<float>(simulationTime - spin.creationTime);
+
+    if (spin.duration <= 0.0f || elapsedTime < spin.duration) {
+        float currentAngle = spin.speed * elapsedTime;
+        Quaternion spinRot = Quaternion::FromAxisAngle(spin.axis, currentAngle);
+        transform.rotation = spin.baseRotation * spinRot;
+    } else {
+        coordinator.DeferRemoveComponent<SpinAnimationComponent>(entity);
+    }
 }

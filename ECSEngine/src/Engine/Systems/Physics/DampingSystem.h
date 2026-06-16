@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct VelocityComponent;
+struct DampingComponent;
 
 /**
  * @class DampingSystem
@@ -23,5 +25,8 @@ class DampingSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(VelocityComponent& velocity, const DampingComponent& damping);
 };
 

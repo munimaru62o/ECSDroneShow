@@ -40,145 +40,145 @@ void BoidsSystem::Update(Coordinator& coordinator, float dt, double simulationTi
     auto& boidsArray = coordinator.GetComponentArray<BoidsComponent>();
     auto& forceArray =  coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [
-        this,
-        &entities,
-        &cache,
-        &transformArray,
-        &velocityArray,
-        &boidsArray,
-        &forceArray,
-        simulationTime
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &transformArray, &velocityArray, &boidsArray, &forceArray, &cache, simulationTime](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& transform = transformArray.GetData(entity);
-            const auto& velocity = velocityArray.GetData(entity);
-            auto& boids = boidsArray.GetData(entity);
-            auto& force = forceArray.GetData(entity);
-            const Vector3& position = transform.position;
+            ProcessEntity(entity, transformArray.GetData(entity), velocityArray.GetData(entity), boidsArray.GetData(entity), forceArray.GetData(entity), cache, simulationTime);
+        }
+    });
+}
 
-            // Optimization: Time-slicing. Only compute expensive neighbor searches at specified intervals.
-            if (boids.nextUpdateTime <= simulationTime) {
-                float velocitySq = velocity.value.LengthSq();
-                if (velocitySq < MathConstants::ZERO_TOLERANCE) {
-                    continue;
-                }
-                Vector3 forward = velocity.value / std::sqrt(velocitySq);
 
-                Vector3 separation = {};
-                Vector3 alignment = {};
-                Vector3 cohesion = {};
-                int neighborCount = 0;
+void BoidsSystem::ProcessEntity(
+    Entity entity,
+    const TransformComponent& transform,
+    const VelocityComponent& velocity,
+    BoidsComponent& boids,
+    ForceComponent& force,
+    const std::vector<SpatialBoidData>& cache,
+    double simulationTime
+) {
+    const Vector3& position = transform.position;
 
-                // Threshold to prevent CPU spikes in extremely dense clusters
-                const int MAX_NEIGHBORS = 16;
-                bool searchFinished = false;
+    // Optimization: Time-slicing. Only compute expensive neighbor searches at specified intervals.
+    if (boids.nextUpdateTime <= simulationTime) {
+        float velocitySq = velocity.value.LengthSq();
+        if (velocitySq < MathConstants::ZERO_TOLERANCE) {
+            return;
+        }
+        Vector3 forward = velocity.value / std::sqrt(velocitySq);
 
-                // Use squared distance to avoid expensive sqrt operations during comparisons
-                float visionRadiusSq = boids.visionRadius * boids.visionRadius;
+        Vector3 separation = {};
+        Vector3 alignment = {};
+        Vector3 cohesion = {};
+        int neighborCount = 0;
 
-                // 1. Calculate the vision bounding box (min/max coordinates)
-                Vector3 minBounds = position - Vector3{ boids.visionRadius, boids.visionRadius, boids.visionRadius };
-                Vector3 maxBounds = position + Vector3{ boids.visionRadius, boids.visionRadius, boids.visionRadius };
+        // Threshold to prevent CPU spikes in extremely dense clusters
+        const int MAX_NEIGHBORS = 16;
+        bool searchFinished = false;
 
-                // 2. Convert world coordinates to cell indices (CellCoord)
-                auto minCell = m_grid->GetCellCoordFromPosition(minBounds);
-                auto maxCell = m_grid->GetCellCoordFromPosition(maxBounds);
-                int gridSize = m_grid->GetGridSize();
+        // Use squared distance to avoid expensive sqrt operations during comparisons
+        float visionRadiusSq = boids.visionRadius * boids.visionRadius;
 
-                // 3. Safely clamp indices to prevent out-of-bounds grid access
-                int minX = (std::max)(0, minCell.x);
-                int maxX = (std::min)(gridSize - 1, maxCell.x);
-                int minY = (std::max)(0, minCell.y);
-                int maxY = (std::min)(gridSize - 1, maxCell.y);
-                int minZ = (std::max)(0, minCell.z);
-                int maxZ = (std::min)(gridSize - 1, maxCell.z);
+        // 1. Calculate the vision bounding box (min/max coordinates)
+        Vector3 minBounds = position - Vector3{ boids.visionRadius, boids.visionRadius, boids.visionRadius };
+        Vector3 maxBounds = position + Vector3{ boids.visionRadius, boids.visionRadius, boids.visionRadius };
 
-                // 4. Efficiently iterate only through the filtered surrounding cells
-                for (int z = minZ; z <= maxZ && !searchFinished; ++z) {
-                    for (int y = minY; y <= maxY && !searchFinished; ++y) {
-                        for (int x = minX; x <= maxX && !searchFinished; ++x) {
+        // 2. Convert world coordinates to cell indices (CellCoord)
+        auto minCell = m_grid->GetCellCoordFromPosition(minBounds);
+        auto maxCell = m_grid->GetCellCoordFromPosition(maxBounds);
+        int gridSize = m_grid->GetGridSize();
 
-                            int otherCellIndex = m_grid->GetFlatIndex(SpatialGrid::CellCoord{ x, y, z });
-                            int offset = m_grid->GetCellOffsets()[otherCellIndex];
-                            int count = m_grid->GetCellCounts()[otherCellIndex];
+        // 3. Safely clamp indices to prevent out-of-bounds grid access
+        int minX = (std::max)(0, minCell.x);
+        int maxX = (std::min)(gridSize - 1, maxCell.x);
+        int minY = (std::max)(0, minCell.y);
+        int maxY = (std::min)(gridSize - 1, maxCell.y);
+        int minZ = (std::max)(0, minCell.z);
+        int maxZ = (std::min)(gridSize - 1, maxCell.z);
 
-                            for (int j = 0; j < count; ++j) {
+        // 4. Efficiently iterate only through the filtered surrounding cells
+        for (int z = minZ; z <= maxZ && !searchFinished; ++z) {
+            for (int y = minY; y <= maxY && !searchFinished; ++y) {
+                for (int x = minX; x <= maxX && !searchFinished; ++x) {
 
-                                const auto& other = cache[offset + j];
-                                if (entity == other.entity) {
-                                    continue;
-                                }
+                    int otherCellIndex = m_grid->GetFlatIndex(SpatialGrid::CellCoord{ x, y, z });
+                    int offset = m_grid->GetCellOffsets()[otherCellIndex];
+                    int count = m_grid->GetCellCounts()[otherCellIndex];
 
-                                const auto& otherPosition = other.position;
-                                const auto& otherVelocity = other.velocity;
+                    for (int j = 0; j < count; ++j) {
 
-                                Vector3 delta = position - otherPosition;
-                                float distSq = delta.LengthSq();
+                        const auto& other = cache[offset + j];
+                        if (entity == other.entity) {
+                            continue;
+                        }
 
-                                // Exclude if out of vision range, or if too close (prevents division by zero)
-                                if (distSq < 0.001f || distSq > visionRadiusSq) {
-                                    continue;
-                                }
+                        const auto& otherPosition = other.position;
+                        const auto& otherVelocity = other.velocity;
 
-                                // 1. Separation: Apply stronger repulsive weights to closer entities
-                                const float weight = 1.0f / (distSq + 0.0001f);
-                                separation += delta * weight;
+                        Vector3 delta = position - otherPosition;
+                        float distSq = delta.LengthSq();
 
-                                // 2. Alignment & 3. Cohesion: Accumulate values to be averaged later
-                                alignment += otherVelocity;
-                                cohesion += otherPosition;
-                                neighborCount++;
+                        // Exclude if out of vision range, or if too close (prevents division by zero)
+                        if (distSq < 0.001f || distSq > visionRadiusSq) {
+                            continue;
+                        }
 
-                                // Early exit if max neighbors reached
-                                if (neighborCount >= MAX_NEIGHBORS) {
-                                    searchFinished = true;
-                                    break;
-                                }
-                            }
+                        // 1. Separation: Apply stronger repulsive weights to closer entities
+                        const float weight = 1.0f / (distSq + 0.0001f);
+                        separation += delta * weight;
+
+                        // 2. Alignment & 3. Cohesion: Accumulate values to be averaged later
+                        alignment += otherVelocity;
+                        cohesion += otherPosition;
+                        neighborCount++;
+
+                        // Early exit if max neighbors reached
+                        if (neighborCount >= MAX_NEIGHBORS) {
+                            searchFinished = true;
+                            break;
                         }
                     }
                 }
-
-                if (neighborCount <= 0) {
-                    continue;
-                }
-
-                // Average the accumulated vectors and calculate the desired steering relative to current state
-                float invNeighborCount = 1.0f / static_cast<float>(neighborCount);
-                separation *= invNeighborCount;
-                alignment = (alignment * invNeighborCount) - velocity.value;
-                cohesion = (cohesion * invNeighborCount) - position;
-
-                // Multiply each Boid rule by its weight and synthesize the final steering force
-                Vector3 steeringForce =
-                    separation * boids.separationWeight +
-                    alignment * boids.alignmentWeight +
-                    cohesion * boids.cohesionWeight;
-
-                // Normalize and clamp only if the force exceeds the maximum limit
-                float forceSq = steeringForce.LengthSq();
-                float maxForceSq = boids.maxForce * boids.maxForce;
-                if (forceSq > maxForceSq) {
-                    steeringForce = steeringForce.Normalized() * boids.maxForce;
-                }
-
-                boids.cachedDirection = steeringForce;
-                boids.nextUpdateTime = simulationTime + boids.updateInterval * boids.updateIntervalScale;
-            }
-
-            // Apply the cached force every frame
-            force.value += boids.cachedDirection;
-
-            // Debug drawing
-            if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-                DebugDrawManager::GetInstance().AddLine(
-                    transform.position,
-                    transform.position + boids.cachedDirection * Debug::Scale::Force,
-                    Debug::DrawColor::Force::Boids
-                );
             }
         }
-    });
+
+        if (neighborCount <= 0) {
+            return;
+        }
+
+        // Average the accumulated vectors and calculate the desired steering relative to current state
+        float invNeighborCount = 1.0f / static_cast<float>(neighborCount);
+        separation *= invNeighborCount;
+        alignment = (alignment * invNeighborCount) - velocity.value;
+        cohesion = (cohesion * invNeighborCount) - position;
+
+        // Multiply each Boid rule by its weight and synthesize the final steering force
+        Vector3 steeringForce =
+            separation * boids.separationWeight +
+            alignment * boids.alignmentWeight +
+            cohesion * boids.cohesionWeight;
+
+        // Normalize and clamp only if the force exceeds the maximum limit
+        float forceSq = steeringForce.LengthSq();
+        float maxForceSq = boids.maxForce * boids.maxForce;
+        if (forceSq > maxForceSq) {
+            steeringForce = steeringForce.Normalized() * boids.maxForce;
+        }
+
+        boids.cachedDirection = steeringForce;
+        boids.nextUpdateTime = simulationTime + boids.updateInterval * boids.updateIntervalScale;
+    }
+
+    // Apply the cached force every frame
+    force.value += boids.cachedDirection;
+
+    // Debug drawing
+    if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
+        DebugDrawManager::GetInstance().AddLine(
+            transform.position,
+            transform.position + boids.cachedDirection * Debug::Scale::Force,
+            Debug::DrawColor::Force::Boids
+        );
+    }
 }

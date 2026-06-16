@@ -8,7 +8,9 @@
 #include <vector>
 #include <array>
 
-class Coordinator;
+struct TransformComponent;
+struct MaterialComponent;
+struct PrimitiveMeshComponent;
 
 /**
  * @class PrimitiveMeshRenderSystem
@@ -45,6 +47,8 @@ private:
         // [Shader][Mesh] -> Flat Index
         return static_cast<size_t>(shader) * NUM_MESH_TYPES + static_cast<size_t>(mesh);
     }
+
+    void ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer);
 
     std::vector<ThreadLocalBuffer> m_threadBuffers;
     std::array<MeshID, NUM_MESH_TYPES> m_meshIds;

@@ -48,12 +48,7 @@ void FormationSystemWireframe::Update(Coordinator& coordinator, float dt, double
 
     // Edge case: If the formation is just a single point, collapse all drones to that point
     if (numPoints == 1) {
-        ParallelFor(numEntities, [
-            &entities,
-            &targetArray,
-            &formationArray,
-            &formationDataPtr
-        ](int startIdx, int endIdx) {
+        ParallelFor(numEntities, [&entities, &targetArray, &formationArray, &formationDataPtr](int startIdx, int endIdx) {
             for (int i = startIdx; i < endIdx; ++i) {
                 auto& target = targetArray.GetData(entities[i]);
                 target.value = formationDataPtr->points[0].position * formationArray.GetData(entities[i]).scale;
@@ -69,66 +64,67 @@ void FormationSystemWireframe::Update(Coordinator& coordinator, float dt, double
     int baseCount = numEntities / numEdges;
     int remainder = numEntities % numEdges;
 
-    ParallelFor(numEntities, [
-        &entities,
-        &formationArray,
-        &targetArray,
-        &directionArray,
-        &formationDataPtr,
-        baseCount,
-        remainder,
-        numEntities
-    ](int startIdx, int endIdx) {
+    ParallelFor(numEntities, [this, &entities, &formationArray, &targetArray, &directionArray, formationDataPtr, baseCount, remainder, numEntities](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& formation = formationArray.GetData(entity);
-            auto& target = targetArray.GetData(entity);
-            auto& direction = directionArray.GetData(entity);
-
-            int edgeIndex = 0;
-            int localIdx = 0;
-            int currentEdgeCount = 0;
-
-            // Distribute the remainder evenly across the first 'remainder' edges
-            int threshold = remainder * (baseCount + 1);
-            if (i < threshold) {
-                edgeIndex = i / (baseCount + 1);
-                localIdx = i % (baseCount + 1);
-                currentEdgeCount = baseCount + 1;
-            } else {
-                int adjustedIdx = i - threshold;
-                edgeIndex = remainder + (adjustedIdx / baseCount);
-                localIdx = adjustedIdx % baseCount;
-                currentEdgeCount = baseCount;
-            }
-
-            int indexA = edgeIndex;
-            int indexB = edgeIndex + 1;
-
-            const auto& pointA = formationDataPtr->points[indexA];
-            const auto& pointB = formationDataPtr->points[indexB];
-
-            // Calculate interpolation factor (t) along the edge segment
-            float t = 0.0f;
-            if (currentEdgeCount > 1) {
-                // Denominator remains currentEdgeCount to prevent drones from overlapping 
-                // exactly at the vertex shared with the next edge
-                t = static_cast<float>(localIdx) / static_cast<float>(currentEdgeCount);
-            }
-
-            // Explicitly snap the very last drone to the terminal vertex
-            if (i == numEntities - 1) {
-                t = 1.0f;
-            }
-
-            const Vector3 edge = pointB.position - pointA.position;
-
-            // Output the tangential direction (facing along the wireframe line)
-            direction.value = edge.Normalized();
-
-            // Calculate the scaled target position
-            const Vector3 targetPoint = (pointA.position + edge * t) * formation.scale;
-            target.value = targetPoint;
+            ProcessEntity(i, formationArray.GetData(entity), targetArray.GetData(entity), directionArray.GetData(entity), formationDataPtr, baseCount, remainder, numEntities);
         }
     });
+}
+
+
+void FormationSystemWireframe::ProcessEntity(
+    int i,
+    const FormationComponentWireframe& formation,
+    TargetComponent& target,
+    DirectionComponent& direction,
+    const FormationData* formationDataPtr,
+    int baseCount,
+    int remainder,
+    int numEntities
+) {
+    int edgeIndex = 0;
+    int localIdx = 0;
+    int currentEdgeCount = 0;
+
+    // Distribute the remainder evenly across the first 'remainder' edges
+    int threshold = remainder * (baseCount + 1);
+    if (i < threshold) {
+        edgeIndex = i / (baseCount + 1);
+        localIdx = i % (baseCount + 1);
+        currentEdgeCount = baseCount + 1;
+    } else {
+        int adjustedIdx = i - threshold;
+        edgeIndex = remainder + (adjustedIdx / baseCount);
+        localIdx = adjustedIdx % baseCount;
+        currentEdgeCount = baseCount;
+    }
+
+    int indexA = edgeIndex;
+    int indexB = edgeIndex + 1;
+
+    const auto& pointA = formationDataPtr->points[indexA];
+    const auto& pointB = formationDataPtr->points[indexB];
+
+    // Calculate interpolation factor (t) along the edge segment
+    float t = 0.0f;
+    if (currentEdgeCount > 1) {
+        // Denominator remains currentEdgeCount to prevent drones from overlapping 
+        // exactly at the vertex shared with the next edge
+        t = static_cast<float>(localIdx) / static_cast<float>(currentEdgeCount);
+    }
+
+    // Explicitly snap the very last drone to the terminal vertex
+    if (i == numEntities - 1) {
+        t = 1.0f;
+    }
+
+    const Vector3 edge = pointB.position - pointA.position;
+
+    // Output the tangential direction (facing along the wireframe line)
+    direction.value = edge.Normalized();
+
+    // Calculate the scaled target position
+    const Vector3 targetPoint = (pointA.position + edge * t) * formation.scale;
+    target.value = targetPoint;
 }

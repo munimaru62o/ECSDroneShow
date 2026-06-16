@@ -23,46 +23,43 @@ void BoundarySystem::Update(Coordinator& coordinator, float dt, double simulatio
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& boundaryArray = coordinator.GetComponentArray<BoundaryComponent>();
 
-    ParallelFor(totalEntities, [
-        &entities,
-        &transformArray,
-        &forceArray,
-        &boundaryArray
-    ](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &transformArray, &boundaryArray, &forceArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& transform = transformArray.GetData(entity);
-            const auto& boundary = boundaryArray.GetData(entity);
-            auto& force = forceArray.GetData(entity);
-
-            // Calculate the vector pointing OUTWARD from the boundary center to the entity
-            const Vector3 offset = transform.position - boundary.center;
-            const float distSq = offset.LengthSq();
-            const float radiusSq = boundary.radius * boundary.radius;
-
-            // Only apply force if the entity has breached the spherical boundary
-            if (distSq > radiusSq && distSq > MathConstants::ZERO_TOLERANCE) {
-                float dist = std::sqrt(distSq);
-
-                // Calculate the penetration depth multiplied by the spring force constant
-                float push = (dist - boundary.radius) * boundary.force;
-
-                // (offset / dist) normalizes the vector. 
-                // We calculate the outward force direction and magnitude simultaneously.
-                Vector3 forceDir = offset / dist * push;
-
-                // Subtracting the outward force effectively pulls the entity back toward the center
-                force.value -= forceDir;
-
-                // Debug visualization
-                if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-                    DebugDrawManager::GetInstance().AddLine(
-                        transform.position,
-                        transform.position + forceDir * Debug::Scale::Force,
-                        Debug::DrawColor::Force::Boundary
-                    );
-                }
-            }
+            ProcessEntity(entity, transformArray.GetData(entity), boundaryArray.GetData(entity), forceArray.GetData(entity));
         }
     });
+}
+
+
+void BoundarySystem::ProcessEntity(Entity entity, const TransformComponent& transform, const BoundaryComponent& boundary, ForceComponent& force)
+{
+    // Calculate the vector pointing OUTWARD from the boundary center to the entity
+    const Vector3 offset = transform.position - boundary.center;
+    const float distSq = offset.LengthSq();
+    const float radiusSq = boundary.radius * boundary.radius;
+
+    // Only apply force if the entity has breached the spherical boundary
+    if (distSq > radiusSq && distSq > MathConstants::ZERO_TOLERANCE) {
+        float dist = std::sqrt(distSq);
+
+        // Calculate the penetration depth multiplied by the spring force constant
+        float push = (dist - boundary.radius) * boundary.force;
+
+        // (offset / dist) normalizes the vector. 
+        // We calculate the outward force direction and magnitude simultaneously.
+        Vector3 forceDir = offset / dist * push;
+
+        // Subtracting the outward force effectively pulls the entity back toward the center
+        force.value -= forceDir;
+
+        // Debug visualization
+        if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
+            DebugDrawManager::GetInstance().AddLine(
+                transform.position,
+                transform.position + forceDir * Debug::Scale::Force,
+                Debug::DrawColor::Force::Boundary
+            );
+        }
+    }
 }
