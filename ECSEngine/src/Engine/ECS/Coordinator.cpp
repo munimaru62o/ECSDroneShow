@@ -33,6 +33,7 @@ void Coordinator::Init()
 void Coordinator::EndFrame()
 {
     m_componentManager->ClearEvents();
+    FlushCommands();
 }
 
 Entity Coordinator::CreateEntity()
