@@ -84,6 +84,12 @@ jobs:
           LINUX_WORKSPACE="${{ github.workspace }}"
           sed -i "s|$WINDOWS_WORKSPACE|$LINUX_WORKSPACE|g" coverage.xml
 
+      - name: Upload Corrected Coverage Report for Debug
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-coverage-xml
+          path: coverage.xml
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
         env:
