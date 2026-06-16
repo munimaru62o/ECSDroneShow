@@ -8,8 +8,11 @@
 #include <json.hpp>
 
 
-inline void from_json(const nlohmann::json& j, DroneComponent& c)
-{}
+inline void from_json(const nlohmann::json& /*j*/, DroneComponent& /*c*/)
+{
+    // DroneComponent is currently a tag component with no data members.
+    // Included here to fulfill the nlohmann::json deserialization requirements.
+}
 
 inline void from_json(const nlohmann::json& j, FormationComponentWireframe& c)
 {

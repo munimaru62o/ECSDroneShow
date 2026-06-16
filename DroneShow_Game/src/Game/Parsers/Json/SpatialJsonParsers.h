@@ -8,5 +8,8 @@
 #include <json.hpp>
 
 
-inline void from_json(const nlohmann::json& j, SpatialPartitionComponent& c)
-{}
+inline void from_json(const nlohmann::json& /*j*/, SpatialPartitionComponent& /*c*/)
+{
+    // SpatialPartitionComponent is currently a tag component with no data members.
+    // Included here to fulfill the nlohmann::json deserialization requirements.
+}
