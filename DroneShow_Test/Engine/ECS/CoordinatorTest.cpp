@@ -33,9 +33,6 @@ struct ComponentTraits<TestCoreComponent>
 class TestHealthSystem : public System
 {
 public:
-    void Init(Coordinator& coordinator) override {}
-    void Update(Coordinator& coordinator, float dt, double simulationTime) override {}
-
     // Helper to return the number of entities currently managed by this system
     size_t GetEntityCount() const
     {

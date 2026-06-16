@@ -37,14 +37,18 @@ class ECSTestFixture : public ::testing::Test
      * specific systems before Coordinator::InitSystems() is called.
      */
     virtual void SetUpSystems()
-    {}
+    {
+        // Implementation is optional.
+    }
 
     /**
      * @brief Teardown method executed immediately after each TEST_F completes.
      * Useful for safely cleaning up memory or resetting global states.
      */
-    void TearDown() override
-    {}
+    virtual void TearDown() override
+    {
+        // Implementation is optional.
+    }
 
 // sonar-ignore-next-line
 protected:

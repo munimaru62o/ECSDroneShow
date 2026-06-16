@@ -10,7 +10,10 @@
 class TimelineDirectorTestFixture : public ECSTestFixture
 {
 protected:
+    // sonar-ignore-next-line
     TimelineDirectorSystem* directorSystem;
+
+    // sonar-ignore-next-line
     TimelineData timeline;
 
     void SetUpSystems() override
