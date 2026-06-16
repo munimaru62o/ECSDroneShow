@@ -32,7 +32,7 @@ void BoundarySystem::Update(Coordinator& coordinator, float dt, double simulatio
 }
 
 
-void BoundarySystem::ProcessEntity(Entity entity, const TransformComponent& transform, const BoundaryComponent& boundary, ForceComponent& force)
+void BoundarySystem::ProcessEntity(Entity entity, const TransformComponent& transform, const BoundaryComponent& boundary, ForceComponent& force) const
 {
     // Calculate the vector pointing OUTWARD from the boundary center to the entity
     const Vector3 offset = transform.position - boundary.center;

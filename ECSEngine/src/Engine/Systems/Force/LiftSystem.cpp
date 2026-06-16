@@ -33,7 +33,7 @@ void LiftSystem::Update(Coordinator& coordinator, float dt, double simulationTim
 }
 
 
-void LiftSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const LiftComponent& lift, ForceComponent& force)
+void LiftSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const LiftComponent& lift, ForceComponent& force) const
 {
     Vector3 offset = lift.center - transform.position;
     float scale = lift.profile.Evaluate(offset);

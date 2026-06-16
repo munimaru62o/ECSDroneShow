@@ -31,7 +31,7 @@ void DartSystem::Update(Coordinator& coordinator, float dt, double simulationTim
 }
 
 
-void DartSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, DartComponent& dart, ForceComponent& force)
+void DartSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, DartComponent& dart, ForceComponent& force) const
 {
     if (simulationTime > dart.nextDartTime) {
         dart.cachedDirection = SeededRandom::OnUnitSphere(dart.seed);

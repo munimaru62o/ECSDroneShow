@@ -26,7 +26,7 @@ void SpinAnimationSystem::Update(Coordinator& coordinator, float dt, double simu
 }
 
 
-void SpinAnimationSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TransformComponent& transform, const SpinAnimationComponent& spin)
+void SpinAnimationSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TransformComponent& transform, const SpinAnimationComponent& spin) const
 {
     const float elapsedTime = static_cast<float>(simulationTime - spin.creationTime);
 

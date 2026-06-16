@@ -126,7 +126,7 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
 }
 
 
-void PrimitiveMeshRenderSystem::ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer)
+void PrimitiveMeshRenderSystem::ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer) const
 {
     // Calculate the flat 1D index for this specific Shader and Mesh combination
     size_t batchIdx = GetBatchIndex(material.shaderType, mesh.type);

@@ -57,7 +57,7 @@ void BoidsSystem::ProcessEntity(
     ForceComponent& force,
     const std::vector<SpatialBoidData>& cache,
     double simulationTime
-) {
+) const {
     const Vector3& position = transform.position;
 
     // Optimization: Time-slicing. Only compute expensive neighbor searches at specified intervals.

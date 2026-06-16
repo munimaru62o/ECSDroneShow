@@ -27,5 +27,5 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(Entity entity, Coordinator& coordinator, MaterialComponent& material, const ColorFadeComponent& fade, double simulationTime);
+    void ProcessEntity(Entity entity, Coordinator& coordinator, MaterialComponent& material, const ColorFadeComponent& fade, double simulationTime) const;
 };

@@ -82,7 +82,7 @@ void FormationSystemWireframe::ProcessEntity(
     int baseCount,
     int remainder,
     int numEntities
-) {
+) const {
     int edgeIndex = 0;
     int localIdx = 0;
     int currentEdgeCount = 0;

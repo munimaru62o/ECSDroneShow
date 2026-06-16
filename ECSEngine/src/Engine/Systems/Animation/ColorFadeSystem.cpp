@@ -28,7 +28,7 @@ void ColorFadeSystem::Update(Coordinator& coordinator, float dt, double simulati
 }
 
 
-void ColorFadeSystem::ProcessEntity(Entity entity, Coordinator& coordinator, MaterialComponent& material, const ColorFadeComponent& fade, double simulationTime)
+void ColorFadeSystem::ProcessEntity(Entity entity, Coordinator& coordinator, MaterialComponent& material, const ColorFadeComponent& fade, double simulationTime) const
 {
     float elapsedTime = static_cast<float>(simulationTime - fade.creationTime);
 

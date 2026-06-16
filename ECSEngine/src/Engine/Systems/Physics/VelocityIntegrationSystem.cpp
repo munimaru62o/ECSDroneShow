@@ -25,7 +25,7 @@ void VelocityIntegrationSystem::Update(Coordinator& coordinator, float dt, doubl
 }
 
 
-void VelocityIntegrationSystem::ProcessEntity(const ForceComponent& force, VelocityComponent& velocity, float dt)
+void VelocityIntegrationSystem::ProcessEntity(const ForceComponent& force, VelocityComponent& velocity, float dt) const
 {
     // Apply acceleration (assuming mass = 1.0) to update velocity: v = v + (a * dt)
     velocity.value += force.value * dt;

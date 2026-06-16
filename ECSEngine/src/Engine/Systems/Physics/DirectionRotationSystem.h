@@ -52,7 +52,7 @@ public:
     }
 
 private:
-    void ProcessEntity(const TRotationComponent& rotation, const DirectionComponent& direction, TransformComponent& transform, float dt)
+    void ProcessEntity(const TRotationComponent& rotation, const DirectionComponent& direction, TransformComponent& transform, float dt) const
     {
         if (direction.value.LengthSq() > MathConstants::ZERO_TOLERANCE) {
             const Quaternion targetRot = Quaternion::LookRotation(direction.value, Vector3::Up());

@@ -28,6 +28,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TargetComponent& target, const OrbitComponent& orbit);
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TargetComponent& target, const OrbitComponent& orbit) const;
 };
 

@@ -31,7 +31,7 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, WanderComponent& wander, ForceComponent& force);
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, WanderComponent& wander, ForceComponent& force) const;
 
     SimplexNoise m_noise;
 };

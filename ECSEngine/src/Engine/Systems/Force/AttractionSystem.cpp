@@ -33,7 +33,7 @@ void AttractionSystem::Update(Coordinator& coordinator, float dt, double simulat
 }
 
 
-void AttractionSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const AttractionComponent& attraction, ForceComponent& force)
+void AttractionSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const AttractionComponent& attraction, ForceComponent& force) const
 {
     // 1. Calculate the vector pointing from the entity to the attraction center
     Vector3 toCenter = attraction.center - transform.position;

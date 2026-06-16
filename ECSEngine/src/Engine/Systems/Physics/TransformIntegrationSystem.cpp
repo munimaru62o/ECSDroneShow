@@ -25,7 +25,7 @@ void TransformIntegrationSystem::Update(Coordinator& coordinator, float dt, doub
 }
 
 
-void TransformIntegrationSystem::ProcessEntity(TransformComponent& transform, const VelocityComponent& velocity, float dt)
+void TransformIntegrationSystem::ProcessEntity(TransformComponent& transform, const VelocityComponent& velocity, float dt) const
 {
     // Perform Euler integration to update the final position
     transform.position += velocity.value * dt;

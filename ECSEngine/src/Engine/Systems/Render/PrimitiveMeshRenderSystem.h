@@ -48,7 +48,7 @@ private:
         return static_cast<size_t>(shader) * NUM_MESH_TYPES + static_cast<size_t>(mesh);
     }
 
-    void ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer);
+    void ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer) const;
 
     std::vector<ThreadLocalBuffer> m_threadBuffers;
     std::array<MeshID, NUM_MESH_TYPES> m_meshIds;

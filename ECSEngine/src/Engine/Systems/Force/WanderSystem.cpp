@@ -31,7 +31,7 @@ void WanderSystem::Update(Coordinator& coordinator, float dt, double simulationT
 }
 
 
-void WanderSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, WanderComponent& wander, ForceComponent& force)
+void WanderSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, WanderComponent& wander, ForceComponent& force) const
 {
     // Optimization: Time-slicing. Only compute expensive noise functions at specified intervals.
     if (wander.nextUpdateTime <= simulationTime) {

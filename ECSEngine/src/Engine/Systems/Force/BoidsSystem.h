@@ -51,6 +51,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(Entity entity, const TransformComponent& transform, const VelocityComponent& velocity, BoidsComponent& boids, ForceComponent& force, const std::vector<SpatialBoidData>& cache, double simulationTime);
+    void ProcessEntity(Entity entity, const TransformComponent& transform, const VelocityComponent& velocity, BoidsComponent& boids, ForceComponent& force, const std::vector<SpatialBoidData>& cache, double simulationTime) const;
 };
 

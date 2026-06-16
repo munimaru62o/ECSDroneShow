@@ -28,7 +28,7 @@ void OrbitSystem::Update(Coordinator& coordinator, float dt, double simulationTi
 }
 
 
-void OrbitSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TargetComponent& target, const OrbitComponent& orbit)
+void OrbitSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TargetComponent& target, const OrbitComponent& orbit) const
 {
     const float elapsedTime = static_cast<float>(simulationTime - orbit.creationTime);
 

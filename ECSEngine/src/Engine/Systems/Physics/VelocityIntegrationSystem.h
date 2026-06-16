@@ -27,6 +27,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(const ForceComponent& force, VelocityComponent& velocity, float dt);
+    void ProcessEntity(const ForceComponent& force, VelocityComponent& velocity, float dt) const;
 };
 

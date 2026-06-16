@@ -26,6 +26,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity);
+    void ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity) const;
 };
 

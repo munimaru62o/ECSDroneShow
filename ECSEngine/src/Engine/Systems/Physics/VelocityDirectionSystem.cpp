@@ -26,7 +26,7 @@ void VelocityDirectionSystem::Update(Coordinator& coordinator, float dt, double 
 }
 
 
-void VelocityDirectionSystem::ProcessEntity(const VelocityComponent& velocity, DirectionComponent& direction)
+void VelocityDirectionSystem::ProcessEntity(const VelocityComponent& velocity, DirectionComponent& direction) const
 {
     // Ignore infinitesimally small velocities to prevent jitter and zero-division
     if (velocity.value.LengthSq() < MathConstants::ZERO_TOLERANCE) {

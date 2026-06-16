@@ -27,7 +27,7 @@ void DampingSystem::Update(Coordinator& coordinator, float dt, double simulation
 }
 
 
-void DampingSystem::ProcessEntity(VelocityComponent& velocity, const DampingComponent& damping)
+void DampingSystem::ProcessEntity(VelocityComponent& velocity, const DampingComponent& damping) const
 {
     assert(damping.factor >= 0.0f && "damping.factor is less than 0.0");
     assert(damping.factor <= 1.0f && "damping.factor is larger than 1.0");

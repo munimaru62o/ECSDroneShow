@@ -27,7 +27,7 @@ void PlaneConstraintSystem::Update(Coordinator& coordinator, float dt, double si
 }
 
 
-void PlaneConstraintSystem::ProcessEntity(const PlaneConstraintComponent& constraint, const TransformComponent& transform, VelocityComponent& velocity)
+void PlaneConstraintSystem::ProcessEntity(const PlaneConstraintComponent& constraint, const TransformComponent& transform, VelocityComponent& velocity) const
 {
     // Calculate the signed distance from the entity's position to the mathematical plane.
     // A negative value indicates the entity has penetrated or is behind the plane.

@@ -24,7 +24,7 @@ void ForceClearSystem::Update(Coordinator& coordinator, float dt, double simulat
 }
 
 
-void ForceClearSystem::ProcessEntity(ForceComponent& force)
+void ForceClearSystem::ProcessEntity(ForceComponent& force) const
 {
     force.value = {};
 }

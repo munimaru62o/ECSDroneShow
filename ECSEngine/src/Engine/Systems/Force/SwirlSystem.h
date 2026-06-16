@@ -28,6 +28,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(Entity entity, const TransformComponent& transform, const SwirlComponent& swirl, ForceComponent& force);
+    void ProcessEntity(Entity entity, const TransformComponent& transform, const SwirlComponent& swirl, ForceComponent& force) const;
 };
 

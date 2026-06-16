@@ -27,6 +27,6 @@ public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
 
 private:
-    void ProcessEntity(ForceComponent& force, JitterMovementComponent& noise);
+    void ProcessEntity(ForceComponent& force, JitterMovementComponent& noise) const;
 };
 

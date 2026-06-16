@@ -38,7 +38,7 @@ public:
     }
 
 private:
-    void ProcessEntity(int i, const FormationComponentWireframe& formation, TargetComponent& target, DirectionComponent& direction, const FormationData* formationDataPtr, int baseCount, int remainder, int numEntities);
+    void ProcessEntity(int i, const FormationComponentWireframe& formation, TargetComponent& target, DirectionComponent& direction, const FormationData* formationDataPtr, int baseCount, int remainder, int numEntities) const;
 
     TimelineManager* m_timelineManager = nullptr;
 };

@@ -64,7 +64,7 @@ void FormationSystemPointCloud::ProcessEntity(
     const FormationData* formationDataPtr,
     int numEntities,
     int numPoints
-) {
+) const {
     int pointIndex = 0;
     if (numEntities < numPoints) {
         // Downsampling: evenly skip points to maintain the overall silhouette

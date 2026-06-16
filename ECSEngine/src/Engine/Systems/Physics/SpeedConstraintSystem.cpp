@@ -29,7 +29,7 @@ void SpeedConstraintSystem::Update(Coordinator& coordinator, float dt, double si
 }
 
 
-void SpeedConstraintSystem::ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity)
+void SpeedConstraintSystem::ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity) const
 {
     const float speedSq = velocity.value.LengthSq();
     const float maxSq = speedLimit.max * speedLimit.max;

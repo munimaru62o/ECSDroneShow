@@ -27,7 +27,7 @@ void JitterMovementSystem::Update(Coordinator& coordinator, float dt, double sim
 }
 
 
-void JitterMovementSystem::ProcessEntity(ForceComponent& force, JitterMovementComponent& noise)
+void JitterMovementSystem::ProcessEntity(ForceComponent& force, JitterMovementComponent& noise) const
 {
     // Generate a random direction on the unit sphere.
     // noise.seed is updated in-place via reference, maintaining determinism.

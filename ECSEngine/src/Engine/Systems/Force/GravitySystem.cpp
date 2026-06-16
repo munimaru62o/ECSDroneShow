@@ -26,7 +26,7 @@ void GravitySystem::Update(Coordinator& coordinator, float dt, double simulation
 }
 
 
-void GravitySystem::ProcessEntity(const GravityComponent& gravity, ForceComponent& force)
+void GravitySystem::ProcessEntity(const GravityComponent& gravity, ForceComponent& force) const
 {
     // Accumulate the gravity force
     force.value += gravity.direction * gravity.strength;

@@ -28,7 +28,7 @@ void ColorBlinkSystem::Update(Coordinator& coordinator, float dt, double simulat
 }
 
 
-void ColorBlinkSystem::ProcessEntity(Entity entity, double simulationTime, MaterialComponent& material, const ColorBlinkComponent& blink)
+inline void ColorBlinkSystem::ProcessEntity(Entity entity, double simulationTime, MaterialComponent& material, const ColorBlinkComponent& blink) const
 {
     const float elapsedTime = static_cast<float>(simulationTime - blink.creationTime - blink.delayTime);
     if (elapsedTime <= 0.0f) {

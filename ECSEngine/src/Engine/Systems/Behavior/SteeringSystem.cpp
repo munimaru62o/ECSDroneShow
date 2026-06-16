@@ -26,7 +26,7 @@ void SteeringSystem::Update(Coordinator& coordinator, float dt, double simulatio
 }
 
 
-void SteeringSystem::ProcessEntity(const TargetComponent& target, const TransformComponent& transform, const SteeringComponent& steering, VelocityComponent& velocity, float dt)
+void SteeringSystem::ProcessEntity(const TargetComponent& target, const TransformComponent& transform, const SteeringComponent& steering, VelocityComponent& velocity, float dt) const
 {
     // 1. Calculate the distance (difference) vector to the target
     Vector3 diff = target.value - transform.position;

@@ -34,7 +34,7 @@ void SwirlSystem::Update(Coordinator& coordinator, float dt, double simulationTi
 }
 
 
-void SwirlSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const SwirlComponent& swirl, ForceComponent& force)
+void SwirlSystem::ProcessEntity(Entity entity, const TransformComponent& transform, const SwirlComponent& swirl, ForceComponent& force) const
 {
     Vector3 toCenter = swirl.center - transform.position;
     float distSq = toCenter.LengthSq();
