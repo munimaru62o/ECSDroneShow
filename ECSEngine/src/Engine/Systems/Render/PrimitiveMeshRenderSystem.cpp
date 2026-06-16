@@ -1,7 +1,5 @@
 // Copyright (c) 2026 munimaru62o. All rights reserved.
 
-#pragma once
-
 #include "Engine/Systems/Render/PrimitiveMeshRenderSystem.h"
 #include "Engine/ECS/Coordinator.h"
 #include "Engine/ECS/ComponentArray.h"
