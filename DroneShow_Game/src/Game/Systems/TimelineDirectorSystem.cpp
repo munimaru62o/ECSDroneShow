@@ -117,7 +117,7 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
         }
     }
 
-    auto ExecuteToSystemEntities = [&coordinator](const auto& operations, const auto& context, const auto& entities) {
+    auto ExecuteToSystemEntities = [&coordinator](const auto& operations, const auto& context, auto entities) {
         for (auto const& entity : entities) {
             for (const auto& op : operations) {
                 op.execute(coordinator, entity, context);
