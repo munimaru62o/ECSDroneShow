@@ -75,17 +75,16 @@ jobs:
           # 1. Convert Windows backslashes to Linux forward slashes
           sed -i 's/\\/\//g' coverage.xml
           
-          # 2. Prepend the missing "D:/" if the path starts with "a/"
-          # This converts "a/ECSDroneShow/..." to "D:/a/ECSDroneShow/..."
-          sed -i 's/filename="a\//filename="D:\/a\//g' coverage.xml
-          
-          # 3. Map the Windows workspace path to the current Linux workspace
-          WINDOWS_WORKSPACE="D:/a/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
+          # 2. Map the "a/ECSDroneShow/..." path prefix directly to the Linux workspace absolute path
+          # This ensures the filename attribute matches the absolute path used by SonarQube on Linux
           LINUX_WORKSPACE="${{ github.workspace }}"
-          sed -i "s|$WINDOWS_WORKSPACE|$LINUX_WORKSPACE|g" coverage.xml
+          sed -i "s|filename=\"a/ECSDroneShow/ECSDroneShow/|filename=\"$LINUX_WORKSPACE/|g" coverage.xml
+          
+          # 3. Clean up Windows-specific absolute paths from package names to avoid confusion
+          sed -i "s|D:/a/ECSDroneShow/ECSDroneShow/||g" coverage.xml
 
       - name: Upload Corrected Coverage Report for Debug
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: debug-coverage-xml
           path: coverage.xml
