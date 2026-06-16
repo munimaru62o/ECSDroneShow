@@ -29,7 +29,7 @@ public:
         int z;
     };
 
-    SpatialGrid(float inCellSize = 100.0f, int inGridSize = 20)
+    explicit SpatialGrid(float inCellSize = 100.0f, int inGridSize = 20)
         : m_cellSize(inCellSize)
         , m_gridSize(inGridSize)
     {
