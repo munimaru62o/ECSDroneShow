@@ -12,11 +12,9 @@ MeshSourceData PrimitiveMeshFactory::CreateMesh(PrimitiveMeshType type)
     switch (type) {
         case PrimitiveMeshType::Cube:
             return CreateCube();
-            break;
         case PrimitiveMeshType::Sphere:
             return CreateSphere();
-            break;
-        
+
         default:
             break;
     }
