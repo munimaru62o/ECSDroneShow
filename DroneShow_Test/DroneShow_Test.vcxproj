@@ -127,7 +127,7 @@
     <ClCompile Include="Engine\ECS\SystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\AttractionSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\BoidsSystemTest.cpp" />
-    <ClCompile Include="Engine\Systems\Force\BoundarySystem.cpp" />
+    <ClCompile Include="Engine\Systems\Force\BoundarySystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Spatial\SpatialBoidCacheSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Spatial\SpatialPartitionSystemTest.cpp" />
     <ClCompile Include="Engine\Utils\ThreadPoolTest.cpp" />
