@@ -80,6 +80,10 @@ jobs:
           
           # 3. Clean up Windows-specific absolute paths from package names
           sed -i "s|D:/a/ECSDroneShow/ECSDroneShow/||g" coverage.xml
+          
+          # 4. Fix the Cobertura <source> root path
+          LINUX_WORKSPACE="${{ github.workspace }}"
+          sed -i "s|<source>D:</source>|<source>$LINUX_WORKSPACE</source>|g" coverage.xml
 
       - name: Upload Corrected Coverage Report for Debug
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
