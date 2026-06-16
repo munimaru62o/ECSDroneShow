@@ -40,8 +40,19 @@ jobs:
     - name: Build the solution
       run: msbuild ECSDroneShow.sln /p:Configuration=Release /p:Platform=x64
 
-    - name: Run Unit Tests
-      run: .\x64\Release\DroneShow_Test.exe
+    - name: Install OpenCppCoverage
+      run: choco install opencppcoverage -y
+    
+    - name: Run Unit Tests with Coverage
+      run: |
+        & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --sources "${{ github.workspace }}" -- .\x64\Release\DroneShow_Test.exe
+      shell: powershell
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: coverage-report
+        path: coverage.xml
 
   code-analytics:
     needs: build-and-test
@@ -54,7 +65,31 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Download Coverage Report
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: coverage-report
+
+        # 1. Convert Windows backslashes to Linux forward slashes
+        # 2. Map the Windows runner workspace path to the current Linux workspace path
+        # This allows SonarQube (running on Linux) to correctly locate the source files
+      - name: Fix coverage paths for Linux
+        run: |
+          sed -i 's/\\/\//g' coverage.xml
+          WINDOWS_WORKSPACE="D:/a/${{ github.event.repository.name }}/${{ github.event.repository.name }}"
+          LINUX_WORKSPACE="${{ github.workspace }}"
+          sed -i "s|$WINDOWS_WORKSPACE|$LINUX_WORKSPACE|g" coverage.xml
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@713881670b6b3676cda39549040e2d88c70d582e # v8.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.cfamily.cobertura.reportPaths=coverage.xml
+
+      - name: SonarQube Quality Gate check
+        uses: SonarSource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
+        timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
