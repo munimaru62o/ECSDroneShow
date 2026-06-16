@@ -36,7 +36,7 @@ void BoidsSystem::Update(Coordinator& coordinator, float dt, double simulationTi
 
     const std::vector<SpatialBoidData>& cache = m_cacheSystem->GetCache();
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
-    auto& velocitieArray = coordinator.GetComponentArray<VelocityComponent>();
+    auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
     auto& boidsArray = coordinator.GetComponentArray<BoidsComponent>();
     auto& forceArray =  coordinator.GetComponentArray<ForceComponent>();
 
@@ -45,7 +45,7 @@ void BoidsSystem::Update(Coordinator& coordinator, float dt, double simulationTi
         &entities,
         &cache,
         &transformArray,
-        &velocitieArray,
+        &velocityArray,
         &boidsArray,
         &forceArray,
         simulationTime
@@ -53,7 +53,7 @@ void BoidsSystem::Update(Coordinator& coordinator, float dt, double simulationTi
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
             const auto& transform = transformArray.GetData(entity);
-            const auto& velocity = velocitieArray.GetData(entity);
+            const auto& velocity = velocityArray.GetData(entity);
             auto& boids = boidsArray.GetData(entity);
             auto& force = forceArray.GetData(entity);
             const Vector3& position = transform.position;
