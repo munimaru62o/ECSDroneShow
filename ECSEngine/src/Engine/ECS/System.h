@@ -31,8 +31,14 @@ public:
     virtual ~System() = default;
 
 public:
-    virtual void Init(Coordinator& coordinator) {}
-    virtual void Update(Coordinator& coordinator, float dt, double simulationTime) {}
+    virtual void Init(Coordinator& coordinator)
+    {
+        // Implementation is optional.
+    }
+    virtual void Update(Coordinator& coordinator, float dt, double simulationTime)
+    {
+        // Implementation is optional.
+    } 
 
     inline [[nodiscard]] const std::vector<Entity>& GetEntities() const
     {
