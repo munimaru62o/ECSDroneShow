@@ -66,8 +66,6 @@ void BoidsSystem::ProcessEntity(
         if (velocitySq < MathConstants::ZERO_TOLERANCE) {
             return;
         }
-        Vector3 forward = velocity.value / std::sqrt(velocitySq);
-
         Vector3 separation = {};
         Vector3 alignment = {};
         Vector3 cohesion = {};

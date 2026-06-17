@@ -22,13 +22,13 @@ void ColorBlinkSystem::Update(Coordinator& coordinator, float dt, double simulat
     ParallelFor(totalEntities, [this, simulationTime , &entities, &blinkArray, &materialArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            ProcessEntity(entity, simulationTime, materialArray.GetData(entity), blinkArray.GetData(entity));
+            ProcessEntity(simulationTime, materialArray.GetData(entity), blinkArray.GetData(entity));
         }
     });
 }
 
 
-inline void ColorBlinkSystem::ProcessEntity(Entity entity, double simulationTime, MaterialComponent& material, const ColorBlinkComponent& blink) const
+inline void ColorBlinkSystem::ProcessEntity(double simulationTime, MaterialComponent& material, const ColorBlinkComponent& blink) const
 {
     const float elapsedTime = static_cast<float>(simulationTime - blink.creationTime - blink.delayTime);
     if (elapsedTime <= 0.0f) {
