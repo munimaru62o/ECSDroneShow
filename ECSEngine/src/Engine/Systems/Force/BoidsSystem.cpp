@@ -70,10 +70,6 @@ void BoidsSystem::ProcessEntity( // NOSONAR (cpp:S107 - ECS architecture require
 ) const {
     // Optimization: Time-slicing. Only compute expensive neighbor searches at specified intervals.
     if (boids.nextUpdateTime <= simulationTime) {
-        float velocitySq = velocity.value.LengthSq();
-        if (velocitySq < MathConstants::ZERO_TOLERANCE) {
-            return;
-        }
 
         auto neighborhood = CollectNeighbors(entity, transform.position, boids.visionRadius, cache);
         if (neighborhood.count <= 0) {
