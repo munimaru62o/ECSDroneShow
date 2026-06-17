@@ -133,6 +133,13 @@
     <ClCompile Include="Engine\Systems\Force\AttractionSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\BoidsSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\BoundarySystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\DartSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\ForceClearSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\GravitySystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\JitterMovementSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\LiftSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\SwirlSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Force\WanderSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Spatial\SpatialBoidCacheSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Spatial\SpatialPartitionSystemTest.cpp" />
     <ClCompile Include="Engine\Utils\ThreadPoolTest.cpp" />
