@@ -31,6 +31,7 @@ public:
     [[nodiscard]] const FormationData* GetFormationData(const std::string& filePath) const;
 
     int LoadTimelinesFromDirectory(const std::string& directoryPath);
+    void RegisterFormationData(const std::string& key, FormationData data);
 
 private:
     bool LoadFormationJson(const std::string& filePath);
