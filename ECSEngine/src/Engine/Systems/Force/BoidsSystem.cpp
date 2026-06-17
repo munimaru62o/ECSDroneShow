@@ -141,6 +141,7 @@ BoidsSystem::BoidNeighborhood BoidsSystem::CollectNeighbors(Entity entity, const
     int minZ = (std::max)(0, minCell.z);
     int maxZ = (std::min)(gridSize - 1, maxCell.z);
 
+    // NOSONAR: local helper lambda keeps neighbor search logic close to its usage
     auto processCell = [&](int x, int y, int z) {
         int otherCellIndex = m_grid->GetFlatIndex(SpatialGrid::CellCoord{ x, y, z });
         int offset = m_grid->GetCellOffsets()[otherCellIndex];
