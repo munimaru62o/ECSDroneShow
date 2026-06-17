@@ -4,6 +4,7 @@
 #include "Engine/Math/Quaternion.h"
 
 #include <cmath>
+#include <algorithm>
 
 
 Quaternion Quaternion::Identity()
@@ -101,6 +102,8 @@ Quaternion Quaternion::LookRotation(const Vector3& forward, const Vector3& up)
 
 Quaternion Quaternion::Slerp(const Quaternion& a, const Quaternion& b, float t)
 {
+    t = std::clamp(t, 0.0f, 1.0f);
+
     Quaternion q1 = a;
     Quaternion q2 = b;
 
