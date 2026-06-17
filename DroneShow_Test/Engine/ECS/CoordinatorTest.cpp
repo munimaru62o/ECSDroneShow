@@ -33,9 +33,6 @@ struct ComponentTraits<TestCoreComponent>
 class TestHealthSystem : public System
 {
 public:
-    void Init(Coordinator& coordinator) override {}
-    void Update(Coordinator& coordinator, float dt, double simulationTime) override {}
-
     // Helper to return the number of entities currently managed by this system
     size_t GetEntityCount() const
     {
@@ -179,9 +176,8 @@ TEST(CoordinatorTest, DeferredCommandsAreAppliedAfterFlush)
     // Ensure it hasn't been applied yet
     EXPECT_FALSE(coordinator->HasComponent<TestHealthComponent>(entity));
 
-    // Simulate the completion of a system phase.
-    // The Coordinator should flush all thread command buffers at the end of the phase.
-    coordinator->UpdatePhase(static_cast<SystemPhase>(0), 0.0f, 0.0);
+    // The Coordinator should flush all thread command buffers at the end of the frame.
+    coordinator->EndFrame();
 
     // Now the deferred operation should be strictly resolved and applied
     ASSERT_TRUE(coordinator->HasComponent<TestHealthComponent>(entity));

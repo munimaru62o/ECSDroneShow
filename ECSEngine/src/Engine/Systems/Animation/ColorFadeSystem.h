@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct MaterialComponent;
+struct ColorFadeComponent;
 
 /**
  * @class ColorFadeSystem
@@ -23,4 +25,7 @@ class ColorFadeSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, Coordinator& coordinator, MaterialComponent& material, const ColorFadeComponent& fade, double simulationTime) const;
 };

@@ -17,18 +17,21 @@ void VelocityDirectionSystem::Update(Coordinator& coordinator, float dt, double 
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
     auto& directionArray = coordinator.GetComponentArray<DirectionComponent>();
 
-    ParallelFor(static_cast<int>(entities.size()), [&](int startIdx, int endIdx) {
+    ParallelFor(static_cast<int>(entities.size()), [this, &entities, &velocityArray, &directionArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& velocity = velocityArray.GetData(entity);
-            auto& direction = directionArray.GetData(entity);
-
-            // Ignore infinitesimally small velocities to prevent jitter and zero-division
-            if (velocity.value.LengthSq() < MathConstants::ZERO_TOLERANCE) {
-                continue;
-            }
-
-            direction.value = velocity.value.Normalized();
+            ProcessEntity(velocityArray.GetData(entity), directionArray.GetData(entity));
         }
     });
+}
+
+
+void VelocityDirectionSystem::ProcessEntity(const VelocityComponent& velocity, DirectionComponent& direction) const
+{
+    // Ignore infinitesimally small velocities to prevent jitter and zero-division
+    if (velocity.value.LengthSq() < MathConstants::ZERO_TOLERANCE) {
+        return;
+    }
+
+    direction.value = velocity.value.Normalized();
 }

@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct SpeedConstraintComponent;
+struct VelocityComponent;
 
 /**
  * @class SpeedConstraintSystem
@@ -22,5 +24,8 @@ class SpeedConstraintSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(const SpeedConstraintComponent& speedLimit, VelocityComponent& velocity) const;
 };
 

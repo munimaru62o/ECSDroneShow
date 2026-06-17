@@ -18,27 +18,29 @@ void PlaneConstraintSystem::Update(Coordinator& coordinator, float dt, double si
     auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &constraintArray, &transformArray, &velocityArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& constraint = constraintArray.GetData(entity);
-            const auto& transform = transformArray.GetData(entity);
-            auto& velocity = velocityArray.GetData(entity);
-
-            // Calculate the signed distance from the entity's position to the mathematical plane.
-            // A negative value indicates the entity has penetrated or is behind the plane.
-            float signedDistance = Vector3::Dot(transform.position, constraint.normal) - constraint.distance;
-            if (signedDistance < 0.0f) {
-
-                // Calculate the velocity component along the plane's normal vector
-                float vn = Vector3::Dot(velocity.value, constraint.normal);
-
-                // If the entity is moving INTO the plane (vn < 0), cancel out that inward velocity.
-                // Subtracting the normal velocity projects the movement onto the plane, allowing sliding.
-                if (vn < 0.0f) {
-                    velocity.value -= constraint.normal * vn;
-                }
-            }
+            ProcessEntity(constraintArray.GetData(entity), transformArray.GetData(entity), velocityArray.GetData(entity));
         }
     });
+}
+
+
+void PlaneConstraintSystem::ProcessEntity(const PlaneConstraintComponent& constraint, const TransformComponent& transform, VelocityComponent& velocity) const
+{
+    // Calculate the signed distance from the entity's position to the mathematical plane.
+    // A negative value indicates the entity has penetrated or is behind the plane.
+    float signedDistance = Vector3::Dot(transform.position, constraint.normal) - constraint.distance;
+    if (signedDistance < 0.0f) {
+
+        // Calculate the velocity component along the plane's normal vector
+        float vn = Vector3::Dot(velocity.value, constraint.normal);
+
+        // If the entity is moving INTO the plane (vn < 0), cancel out that inward velocity.
+        // Subtracting the normal velocity projects the movement onto the plane, allowing sliding.
+        if (vn < 0.0f) {
+            velocity.value -= constraint.normal * vn;
+        }
+    }
 }

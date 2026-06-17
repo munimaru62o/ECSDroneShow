@@ -54,6 +54,11 @@ const FormationData* TimelineManager::GetFormationData(const std::string& filePa
     return nullptr;
 }
 
+void TimelineManager::RegisterFormationData(const std::string& key, FormationData data)
+{
+    m_formationCache[key] = std::move(data);
+}
+
 bool TimelineManager::LoadFormationJson(const std::string& filePath)
 {
     auto it = m_formationCache.find(filePath);
@@ -66,7 +71,7 @@ bool TimelineManager::LoadFormationJson(const std::string& filePath)
     if (!JsonLoader::Load(filePath, data)) {
         return false;
     }
-    m_formationCache[filePath] = std::move(data);
+    RegisterFormationData(filePath, std::move(data));
     return true;
 }
 

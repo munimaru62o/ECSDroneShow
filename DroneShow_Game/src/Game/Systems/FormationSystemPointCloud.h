@@ -7,6 +7,11 @@
 class Coordinator;
 class TimelineManager;
 
+struct FormationComponentPointCloud;
+struct TargetComponent;
+struct MaterialComponent;
+struct FormationData;
+
 /**
  * @class FormationSystemPointCloud
  * @brief A system that directly distributes drones to specific coordinates defined by point cloud data.
@@ -23,6 +28,8 @@ class FormationSystemPointCloud : public System
 {
 private:
     TimelineManager* m_formationManager = nullptr;
+
+    void ProcessEntity(int i, const FormationComponentPointCloud& formation, TargetComponent& target, MaterialComponent& material, const FormationData* formationDataPtr, int numEntities, int numPoints) const;
 
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;

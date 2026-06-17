@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct TargetComponent;
+struct OrbitComponent;
 
 /**
  * @class OrbitSystem
@@ -24,5 +26,8 @@ class OrbitSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, Coordinator& coordinator, double simulationTime, TargetComponent& target, const OrbitComponent& orbit) const;
 };
 

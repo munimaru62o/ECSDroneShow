@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct MaterialComponent;
+struct ColorBlinkComponent;
 
 /**
  * @class ColorBlinkSystem
@@ -21,4 +23,7 @@ class ColorBlinkSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    inline void ProcessEntity(double simulationTime, MaterialComponent& material, const ColorBlinkComponent& blink) const;
 };

@@ -5,6 +5,9 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct PlaneConstraintComponent;
+struct TransformComponent;
+struct VelocityComponent;
 
 /**
  * @class PlaneConstraintSystem
@@ -25,5 +28,8 @@ class PlaneConstraintSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(const PlaneConstraintComponent& constraint, const TransformComponent& transform, VelocityComponent& velocity) const;
 };
 

@@ -5,6 +5,10 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct TargetComponent;
+struct TransformComponent;
+struct SteeringComponent;
+struct VelocityComponent;
 
 /**
  * @class SteeringSystem
@@ -22,5 +26,8 @@ class SteeringSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(const TargetComponent& target, const TransformComponent& transform, const SteeringComponent& steering, VelocityComponent& velocity, float dt) const;
 };
 

@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct ForceComponent;
+struct JitterMovementComponent;
 
 /**
  * @class JitterMovementSystem
@@ -23,5 +25,8 @@ class JitterMovementSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(ForceComponent& force, JitterMovementComponent& noise) const;
 };
 

@@ -6,7 +6,10 @@
 class BoidsTestFixture : public ECSTestFixture
 {
 protected:
-    BoidsSystem* boidsSystem;
+    // sonar-ignore-next-line
+    BoidsSystem* boidsSystem = nullptr;
+
+    // sonar-ignore-next-line
     SpatialBoidCacheSystem* cacheSystem;
 
     SpatialGrid grid{ 100.0f, 20 };

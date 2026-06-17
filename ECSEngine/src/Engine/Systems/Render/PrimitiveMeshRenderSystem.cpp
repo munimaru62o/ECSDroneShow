@@ -1,7 +1,5 @@
 // Copyright (c) 2026 munimaru62o. All rights reserved.
 
-#pragma once
-
 #include "Engine/Systems/Render/PrimitiveMeshRenderSystem.h"
 #include "Engine/ECS/Coordinator.h"
 #include "Engine/ECS/ComponentArray.h"
@@ -67,7 +65,7 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
     auto& materialArray = coordinator.GetComponentArray<MaterialComponent>();
 
     // 1. Parallel Collection Phase (Lock-free)
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &transformArray, &meshArray, &materialArray](int startIdx, int endIdx) {
         int workerIndex = ThreadPool::GetCurrentWorkerIndex();
         if (workerIndex < 0) {
             workerIndex = static_cast<int>(m_threadBuffers.size()) - 1;
@@ -76,20 +74,7 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
 
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            const auto& transform = transformArray.GetData(entity);
-            const auto& material = materialArray.GetData(entity);
-            const auto& mesh = meshArray.GetData(entity);
-
-            // Calculate the flat 1D index for this specific Shader and Mesh combination
-            size_t batchIdx = GetBatchIndex(material.shaderType, mesh.type);
-
-            auto& buffer = localBuffer.instanceBuffers[batchIdx];
-            buffer.emplace_back();
-            InstanceData& instance = buffer.back();
-
-            // Build the transformation matrix and copy the color
-            instance.worldMatrix = Matrix4::TRS(transform.position, transform.rotation, mesh.scale);
-            instance.color = material.color;
+            ProcessEntity(transformArray.GetData(entity), materialArray.GetData(entity), meshArray.GetData(entity), localBuffer);
         }
     });
 
@@ -138,4 +123,19 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
     for (auto& buffer : m_threadBuffers) {
         buffer.Clear();
     }
+}
+
+
+void PrimitiveMeshRenderSystem::ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer) const
+{
+    // Calculate the flat 1D index for this specific Shader and Mesh combination
+    size_t batchIdx = GetBatchIndex(material.shaderType, mesh.type);
+
+    auto& buffer = localBuffer.instanceBuffers[batchIdx];
+    buffer.emplace_back();
+    InstanceData& instance = buffer.back();
+
+    // Build the transformation matrix and copy the color
+    instance.worldMatrix = Matrix4::TRS(transform.position, transform.rotation, mesh.scale);
+    instance.color = material.color;
 }

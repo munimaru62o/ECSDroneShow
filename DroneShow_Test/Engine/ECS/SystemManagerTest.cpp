@@ -6,30 +6,25 @@
 // ---------------------------------------------------------
 // Dummy Systems and Globals for Testing
 // ---------------------------------------------------------
-
 // Global array to record the execution order of systems
+// sonar-ignore-next-line
 static std::vector<int> g_executionOrder;
 
 class DummySystemA : public System
 {
 public:
-    void Init(Coordinator& c) override {}
     void Update(Coordinator& c, float dt, double simulationTime) override { g_executionOrder.push_back(1); }
 };
 
 class DummySystemB : public System
 {
 public:
-    void Init(Coordinator& c) override {}
     void Update(Coordinator& c, float dt, double simulationTime) override { g_executionOrder.push_back(2); }
 };
 
 class DummyTrackingSystem : public System
 {
 public:
-    void Init(Coordinator& c) override {}
-    void Update(Coordinator& c, float dt, double simulationTime) override {}
-
     size_t GetEntityCount() const { return GetEntities().size(); }
     bool Contains(Entity e) const { return std::find(GetEntities().begin(), GetEntities().end(), e) != GetEntities().end(); }
 };

@@ -117,14 +117,14 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
         }
     }
 
-    auto ExecuteToSystemEntities = [&](const auto& operations, const auto& context) {
-        for (auto const& entity : GetEntities()) {
+    auto ExecuteToSystemEntities = [&coordinator](const auto& operations, const auto& context, auto entities) {
+        for (auto const& entity : entities) {
             for (const auto& op : operations) {
                 op.execute(coordinator, entity, context);
             }
         }
     };
-    auto ExecuteToSceneEntity = [&](const auto& operations, const auto& context) {
+    auto ExecuteToSceneEntity = [&coordinator](const auto& operations, const auto& context) {
         Entity sceneEntity = coordinator.GetSceneEntity();
 
         for (const auto& op : operations) {
@@ -135,11 +135,11 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
     // 1. Removal Phase: Strip obsolete components first
     ComponentOperationContext context{ .creationTime = m_currentSequenceStartTime };
     ExecuteToSceneEntity(removersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::Scene)], context);
-    ExecuteToSystemEntities(removersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context);
+    ExecuteToSystemEntities(removersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context, GetEntities());
 
     // 2. Addition/Update Phase: Attach or update components for the new sequence
     ExecuteToSceneEntity(appliersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::Scene)], context);
-    ExecuteToSystemEntities(appliersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context);
+    ExecuteToSystemEntities(appliersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context, GetEntities());
 
     m_lastComponents = newComponents;
 }

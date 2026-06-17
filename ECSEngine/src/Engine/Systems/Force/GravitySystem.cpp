@@ -17,14 +17,17 @@ void GravitySystem::Update(Coordinator& coordinator, float dt, double simulation
     auto& gravityArray = coordinator.GetComponentArray<GravityComponent>();
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &gravityArray, &forceArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& gravity = gravityArray.GetData(entity);
-            auto& force = forceArray.GetData(entity);
-
-            // Accumulate the gravity force
-            force.value += gravity.direction * gravity.strength;
+            ProcessEntity(gravityArray.GetData(entity), forceArray.GetData(entity));
         }
     });
+}
+
+
+void GravitySystem::ProcessEntity(const GravityComponent& gravity, ForceComponent& force) const
+{
+    // Accumulate the gravity force
+    force.value += gravity.direction * gravity.strength;
 }

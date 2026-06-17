@@ -7,6 +7,11 @@
 class Coordinator;
 class TimelineManager;
 
+struct FormationComponentWireframe;
+struct TargetComponent;
+struct DirectionComponent;
+struct FormationData;
+
 /**
  * @class FormationSystemWireframe
  * @brief A system that distributes drones along the edges (contours) of a specified geometric formation.
@@ -33,5 +38,7 @@ public:
     }
 
 private:
+    void ProcessEntity(int i, const FormationComponentWireframe& formation, TargetComponent& target, DirectionComponent& direction, const FormationData* formationDataPtr, int baseCount, int remainder, int numEntities) const;
+
     TimelineManager* m_timelineManager = nullptr;
 };

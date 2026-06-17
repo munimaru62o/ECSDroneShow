@@ -4,9 +4,17 @@
 
 #include "Engine/ECS/System.h"
 
+#include <vector>
+
 class Coordinator;
 class SpatialGrid;
 class SpatialBoidCacheSystem;
+struct SpatialBoidData;
+struct TransformComponent;
+struct VelocityComponent;
+struct BoidsComponent;
+struct ForceComponent;
+struct Vector3;
 
 /**
  * @class BoidsSystem
@@ -27,6 +35,7 @@ class SpatialBoidCacheSystem;
 class BoidsSystem : public System
 {
 private:
+    struct BoidNeighborhood;
     SpatialGrid* m_grid = nullptr;
     SpatialBoidCacheSystem* m_cacheSystem = nullptr;
 
@@ -42,5 +51,9 @@ public:
     }
 
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(Entity entity, const TransformComponent& transform, const VelocityComponent& velocity, BoidsComponent& boids, ForceComponent& force, const std::vector<SpatialBoidData>& cache, double simulationTime) const;
+    BoidNeighborhood CollectNeighbors(Entity entity, const Vector3& position, float visionRadius, const std::vector<SpatialBoidData>& cache) const;
 };
 

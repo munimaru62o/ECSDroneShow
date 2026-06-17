@@ -32,7 +32,7 @@ inline void RegisterAll(Coordinator& coordinator)
         (coordinator, SystemPhase::Physics, (int)PhysicsOrder::Rotation);
 
     SystemRegistry::RegisterSystemWithComponents<VelocityDirectionSystem,
-        VelocityRotationComponent, VelocityComponent, DirectionComponent>
+        VelocityComponent, DirectionComponent>
         (coordinator, SystemPhase::Physics, (int)PhysicsOrder::DirectionGenerator);
     
     SystemRegistry::RegisterSystemWithComponents<VelocityIntegrationSystem,

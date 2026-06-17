@@ -47,34 +47,43 @@ void FormationSystemPointCloud::Update(Coordinator& coordinator, float dt, doubl
         return;
     }
 
-    ParallelFor(numEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(numEntities, [this, &entities, &formationArray, &targetArray, &materialArray, formationDataPtr, numEntities, numPoints](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& formation = formationArray.GetData(entity);
-            auto& target = targetArray.GetData(entity);
-            auto& material = materialArray.GetData(entity);
-
-            int pointIndex = 0;
-            if (numEntities < numPoints) {
-                // Downsampling: evenly skip points to maintain the overall silhouette
-                float step = static_cast<float>(numPoints) / static_cast<float>(numEntities);
-                pointIndex = static_cast<int>(i * step);
-
-                if (pointIndex >= numPoints) {
-                    pointIndex = numPoints - 1;
-                }
-            } else {
-                // Modulo distribution: cycle through all points
-                pointIndex = i % numPoints;
-            }
-
-            const auto& pt = formationDataPtr->points[pointIndex];
-
-            // Set Target Position
-            target.value = pt.position * formation.scale;
-
-            // Set Material Color (Point clouds often retain color data from source images)
-            material.color = pt.color;
+            ProcessEntity(i, formationArray.GetData(entity), targetArray.GetData(entity), materialArray.GetData(entity), formationDataPtr, numEntities, numPoints);
         }
     });
+}
+
+
+void FormationSystemPointCloud::ProcessEntity(
+    int i,
+    const FormationComponentPointCloud& formation,
+    TargetComponent& target,
+    MaterialComponent& material,
+    const FormationData* formationDataPtr,
+    int numEntities,
+    int numPoints
+) const {
+    int pointIndex = 0;
+    if (numEntities < numPoints) {
+        // Downsampling: evenly skip points to maintain the overall silhouette
+        float step = static_cast<float>(numPoints) / static_cast<float>(numEntities);
+        pointIndex = static_cast<int>(i * step);
+
+        if (pointIndex >= numPoints) {
+            pointIndex = numPoints - 1;
+        }
+    } else {
+        // Modulo distribution: cycle through all points
+        pointIndex = i % numPoints;
+    }
+
+    const auto& pt = formationDataPtr->points[pointIndex];
+
+    // Set Target Position
+    target.value = pt.position * formation.scale;
+
+    // Set Material Color (Point clouds often retain color data from source images)
+    material.color = pt.color;
 }

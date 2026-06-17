@@ -43,20 +43,20 @@ public:
         auto& directionArray = coordinator.GetComponentArray<DirectionComponent>();
         auto& transformArray = coordinator.GetComponentArray<TransformComponent>();
 
-        ParallelFor(static_cast<int>(entities.size()), [&](int startIdx, int endIdx) {
+        ParallelFor(static_cast<int>(entities.size()), [this, dt, &entities, &rotationArray, &directionArray, &transformArray](int startIdx, int endIdx) {
             for (int i = startIdx; i < endIdx; ++i) {
-
                 Entity entity = entities[i];
-
-                const auto& rotation = rotationArray.GetData(entity);
-                const auto& direction = directionArray.GetData(entity);
-                auto& transform = transformArray.GetData(entity);
-
-                if (direction.value.LengthSq() > MathConstants::ZERO_TOLERANCE) {
-                    const Quaternion targetRot = Quaternion::LookRotation(direction.value, Vector3::Up());
-                    transform.rotation = Quaternion::Slerp(transform.rotation, targetRot, dt * rotation.rotateSpeed);
-                }
+                ProcessEntity(rotationArray.GetData(entity), directionArray.GetData(entity), transformArray.GetData(entity), dt);
             }
         });
+    }
+
+private:
+    void ProcessEntity(const TRotationComponent& rotation, const DirectionComponent& direction, TransformComponent& transform, float dt) const
+    {
+        if (direction.value.LengthSq() > MathConstants::ZERO_TOLERANCE) {
+            const Quaternion targetRot = Quaternion::LookRotation(direction.value, Vector3::Up());
+            transform.rotation = Quaternion::Slerp(transform.rotation, targetRot, dt * rotation.rotateSpeed);
+        }
     }
 };

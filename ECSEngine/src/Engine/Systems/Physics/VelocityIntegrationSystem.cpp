@@ -16,14 +16,17 @@ void VelocityIntegrationSystem::Update(Coordinator& coordinator, float dt, doubl
     auto& forceArray = coordinator.GetComponentArray<ForceComponent>();
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, dt, &entities, &forceArray, &velocityArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& force = forceArray.GetData(entity);
-            auto& velocity = velocityArray.GetData(entity);
-
-            // Apply acceleration (assuming mass = 1.0) to update velocity: v = v + (a * dt)
-            velocity.value += force.value * dt;
+            ProcessEntity(forceArray.GetData(entity), velocityArray.GetData(entity), dt);
         }
     });
+}
+
+
+void VelocityIntegrationSystem::ProcessEntity(const ForceComponent& force, VelocityComponent& velocity, float dt) const
+{
+    // Apply acceleration (assuming mass = 1.0) to update velocity: v = v + (a * dt)
+    velocity.value += force.value * dt;
 }

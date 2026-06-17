@@ -90,7 +90,7 @@ TEST(ThreadPoolTest, ParallelForSplitsWorkloadCorrectly)
     std::vector<int> data(numElements, 1); // Initialize 1000 elements with value 1
 
     // Use ParallelFor to multiply each element by 2
-    pool.ParallelFor(numElements, [&](int startIdx, int endIdx) {
+    pool.ParallelFor(numElements, [&data](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             data[i] *= 2;
         }
@@ -111,13 +111,13 @@ TEST(ThreadPoolTest, ParallelForEdgeCases)
     std::atomic<int> executionCount{ 0 };
 
     // Case A: 0 elements (Should return immediately without doing anything)
-    pool.ParallelFor(0, [&](int start, int end) {
+    pool.ParallelFor(0, [&executionCount](int start, int end) {
         executionCount++;
     });
     EXPECT_EQ(executionCount.load(), 0);
 
     // Case B: Less than 4 elements (Should execute synchronously on the calling thread)
-    pool.ParallelFor(3, [&](int start, int end) {
+    pool.ParallelFor(3, [&executionCount](int start, int end) {
         EXPECT_EQ(start, 0);
         EXPECT_EQ(end, 3);
         executionCount++;

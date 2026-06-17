@@ -5,6 +5,8 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct TransformComponent;
+struct VelocityComponent;
 
 /**
  * @class TransformIntegrationSystem
@@ -22,5 +24,8 @@ class TransformIntegrationSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(TransformComponent& transform, const VelocityComponent& velocity, float dt) const;
 };
 

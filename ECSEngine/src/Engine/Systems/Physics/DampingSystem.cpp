@@ -18,16 +18,19 @@ void DampingSystem::Update(Coordinator& coordinator, float dt, double simulation
     auto& velocityArray = coordinator.GetComponentArray<VelocityComponent>();
     auto& dampingArray = coordinator.GetComponentArray<DampingComponent>();
 
-    ParallelFor(totalEntities, [&](int startIdx, int endIdx) {
+    ParallelFor(totalEntities, [this, &entities, &velocityArray, &dampingArray](int startIdx, int endIdx) {
         for (int i = startIdx; i < endIdx; ++i) {
             Entity entity = entities[i];
-            auto& velocity = velocityArray.GetData(entity);
-            const auto& damping = dampingArray.GetData(entity);
-
-            assert(damping.factor >= 0.0f && "damping.factor is less than 0.0");
-            assert(damping.factor <= 1.0f && "damping.factor is larger than 1.0");
-
-            velocity.value *= damping.factor;
+            ProcessEntity(velocityArray.GetData(entity), dampingArray.GetData(entity));
         }
     });
+}
+
+
+void DampingSystem::ProcessEntity(VelocityComponent& velocity, const DampingComponent& damping) const
+{
+    assert(damping.factor >= 0.0f && "damping.factor is less than 0.0");
+    assert(damping.factor <= 1.0f && "damping.factor is larger than 1.0");
+
+    velocity.value *= damping.factor;
 }

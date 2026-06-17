@@ -5,6 +5,7 @@
 #include "Engine/ECS/System.h"
 
 class Coordinator;
+struct ForceComponent;
 
 /**
  * @class ForceClearSystem
@@ -21,5 +22,8 @@ class ForceClearSystem : public System
 {
 public:
     void Update(Coordinator& coordinator, float dt, double simulationTime) override;
+
+private:
+    void ProcessEntity(ForceComponent& force) const;
 };
 
