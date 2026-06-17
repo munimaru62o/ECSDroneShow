@@ -128,6 +128,8 @@
     <ClCompile Include="Engine\Systems\Animation\ColorBlinkSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Animation\ColorFadeSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Animation\SpinAnimationSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Behavior\OrbitSystemTest.cpp" />
+    <ClCompile Include="Engine\Systems\Behavior\SteeringSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\AttractionSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\BoidsSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Force\BoundarySystemTest.cpp" />
