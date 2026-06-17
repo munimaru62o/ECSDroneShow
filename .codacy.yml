@@ -2,6 +2,7 @@
 exclude_paths:
   - External/**
   - "**/*.config"
+  - 'DroneShow_Test/**'
 
 engines:
   cppcheck:
