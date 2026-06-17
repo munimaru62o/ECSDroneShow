@@ -14,6 +14,7 @@ struct TransformComponent;
 struct VelocityComponent;
 struct BoidsComponent;
 struct ForceComponent;
+struct Vector3;
 
 /**
  * @class BoidsSystem
@@ -34,6 +35,7 @@ struct ForceComponent;
 class BoidsSystem : public System
 {
 private:
+    struct BoidNeighborhood;
     SpatialGrid* m_grid = nullptr;
     SpatialBoidCacheSystem* m_cacheSystem = nullptr;
 
@@ -52,5 +54,6 @@ public:
 
 private:
     void ProcessEntity(Entity entity, const TransformComponent& transform, const VelocityComponent& velocity, BoidsComponent& boids, ForceComponent& force, const std::vector<SpatialBoidData>& cache, double simulationTime) const;
+    BoidNeighborhood CollectNeighbors(Entity entity, const Vector3& position, float visionRadius, const std::vector<SpatialBoidData>& cache) const;
 };
 
