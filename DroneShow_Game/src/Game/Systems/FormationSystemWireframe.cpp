@@ -73,7 +73,7 @@ void FormationSystemWireframe::Update(Coordinator& coordinator, float dt, double
 }
 
 
-void FormationSystemWireframe::ProcessEntity(
+void FormationSystemWireframe::ProcessEntity( // NOSONAR (cpp:S107 - ECS architecture requires passing multiple components for entity processing)
     int i,
     const FormationComponentWireframe& formation,
     TargetComponent& target,
