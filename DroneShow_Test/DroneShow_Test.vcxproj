@@ -150,6 +150,8 @@
     <ClCompile Include="Engine\Systems\Spatial\SpatialBoidCacheSystemTest.cpp" />
     <ClCompile Include="Engine\Systems\Spatial\SpatialPartitionSystemTest.cpp" />
     <ClCompile Include="Engine\Utils\ThreadPoolTest.cpp" />
+    <ClCompile Include="Game\Systems\FormationSystemPointCloudTest.cpp" />
+    <ClCompile Include="Game\Systems\FormationSystemWireframeTest.cpp" />
     <ClCompile Include="Game\Systems\TimelineDirectorSystemTest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
