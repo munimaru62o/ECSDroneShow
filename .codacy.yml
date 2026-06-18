@@ -1,10 +1,17 @@
 ---
 exclude_paths:
-  - External/**
-  - DroneShow_Test/**
+  - "External/**"
+  - "**/DroneShow_Test/**"
+  - "**/*Test.cpp"
   - "**/*.config"
 
 engines:
+  duplication:
+    exclude_paths:
+      - "External/**"
+      - "**/DroneShow_Test/**"
+      - "**/*Test.cpp"
+
   cppcheck:
     enabled: true
     params:
