@@ -3,6 +3,12 @@
 ![C++20](https://img.shields.io/badge/C++-20-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
+**Code Quality:**  
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=munimaru62o_ECSDroneShow&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=munimaru62o_ECSDroneShow)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=munimaru62o_ECSDroneShow&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=munimaru62o_ECSDroneShow)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=munimaru62o_ECSDroneShow&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=munimaru62o_ECSDroneShow)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=munimaru62o_ECSDroneShow&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=munimaru62o_ECSDroneShow)
+
 🌍 *他の言語で読む: [English](README.md) | [日本語 (Japanese)](README_ja.md)*
 
 C++ と DxLib を使用して開発された、**ドローンショーをモチーフにした大規模群衆シミュレーター**です。  
