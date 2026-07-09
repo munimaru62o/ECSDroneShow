@@ -181,17 +181,22 @@ DroneShow_Test
 
 ### 2.4 Build Instructions
 
-1. Clone (or download and extract) this repository to your preferred directory.
-2. Open `ECSEngine.sln` in Visual Studio 2022.
-3. **Verify Startup Project**
-   - Ensure `DroneShow_App` is set as the startup project (it should be bolded in the Solution Explorer).
-4. **Select Build Configuration**
-   - To see the maximum performance (simulating 10,000+ drones), it is highly recommended to select **`Release` / `x64`** from the build configuration dropdown.  
-   (*`Debug` builds disable optimizations and may cause significant FPS drops*)
+This project uses CMake as its build system. You can easily set up the environment using Visual Studio's native CMake support.
+
+1. **Clone the Repository**
+   - Clone (or download and extract) this repository to a directory of your choice.
+2. **Open the Folder in Visual Studio**
+   - Launch Visual Studio and select "Open a local folder". Choose the cloned directory (the root folder containing the main `CMakeLists.txt`).  
+   *Note: We no longer use legacy solution files (`.sln`).*
+3. **Wait for CMake Auto-Configuration**
+   - Once the folder is opened, Visual Studio will automatically start configuring CMake in the background (fetching required libraries and resolving paths). Please wait until "CMake generation finished." appears in the Output window.
+4. **Select the Build Configuration**
+   - To experience the maximum performance of this demo (simulating 10,000+ drones), we highly recommend selecting **`x64-Release`** from the build configuration drop-down menu at the top.  
+   *(The `x64-Debug` build lacks optimizations and may result in a significant drop in FPS.)* *Note: If `x64-Release` is not available in the drop-down, select "Manage Configurations", click the green add button (+), and add/save `x64-Release`.*
 5. **Run (F5)**
-   - Paths and C++20 settings are saved in the project files (`.vcxproj`), so you can simply click "Local Windows Debugger" (or press `F5`) to build and start.
+   - Select `DroneShow_App.exe` from the "Startup Item" drop-down menu (next to the green play button) at the top of the screen. Simply click the play button (or press `F5`) to build and run the application.
 6. **Run Unit Tests**
-   - Set `DroneShow_Test` as the startup project from the Solution Explorer and press F5 to verify automated tests for the ECS core and various systems.
+   - If you want to run and check the unit tests (Google Test), switch the Startup Item to `DroneShow_Test.exe` and run it (`F5`).
 
 ---
 
