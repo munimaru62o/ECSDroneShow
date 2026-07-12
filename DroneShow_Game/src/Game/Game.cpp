@@ -5,7 +5,6 @@
 #include "Engine/Render/RenderManager.h"
 #include "Engine/Utils/Time.h"
 #include "Engine/Math/Vector3.h"
-#include "Engine/Platform/DxLibConversion.h"
 
 #include "Engine/Systems/Spatial/SpatialPartitionSystem.h"
 #include "Engine/Systems/Spatial/SpatialBoidCacheSystem.h"
@@ -27,6 +26,9 @@
 
 #include "Engine/Debug/DebugDrawManager.h"
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 #include <chrono>
 #include <memory>
 
@@ -52,9 +54,7 @@ bool Game::Init()
         return false;
     }
 
-    ConfigureDxLib();
-
-    if (DxLib_Init() == -1) {
+    if (!InitializeWindow()) {
         return false;
     }
 
@@ -78,25 +78,42 @@ bool Game::Init()
 }
 
 
-void Game::ConfigureDxLib()
+bool Game::InitializeWindow()
 {
-    SetOutApplicationLogValidFlag(FALSE);
-    ChangeWindowMode(!m_config.window.isFullscreen);
-    SetGraphMode(m_config.window.width, m_config.window.height, 32);
-    SetMainWindowText(_TEXT("ECS DroneShow"));
-    SetAlwaysRunFlag(TRUE);
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return false;
+    }
+
+    GLFWmonitor* monitor = m_config.window.isFullscreen ? glfwGetPrimaryMonitor() : nullptr;
+    m_window = glfwCreateWindow(
+        m_config.window.width,
+        m_config.window.height,
+        "ECS DroneShow",
+        monitor,
+        nullptr
+    );
+
+    if (!m_window) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return false;
+    }
+
+    glfwMakeContextCurrent(m_window);
+    glfwSwapInterval(1);
+
+    return true;
 }
 
 
 void Game::InitializeGraphics()
 {
-    SetDrawScreen(DX_SCREEN_BACK);
-
-    SetCameraPositionAndTarget_UpVecY(ToDxVec(m_config.camera.position), VGet(0.0f, 0.0f, 0.0f));
-
-    RenderManager::GetInstance().Init();
+    HWND hwnd = glfwGetWin32Window(m_window);
+    RenderManager::GetInstance().Init(hwnd, m_config.window.width, m_config.window.height);
     InitRenderState();
 }
+
 
 void Game::InitializeManagers()
 {
@@ -135,6 +152,7 @@ void Game::Run()
         Time::UpdateFrame(dt);
         double simulationTime = Time::GetTotalTime();
 
+        glfwPollEvents();
         HandleInput();
 
         m_coordinator.UpdatePhase(SystemPhase::Input, dt, simulationTime);
@@ -148,7 +166,7 @@ void Game::Run()
             fixedAccumulator -= FIXED_DT;
         }
 
-        ClearDrawScreen();
+        RenderManager::GetInstance().BeginFrame();
 
         m_coordinator.UpdatePhase(SystemPhase::Render, dt, simulationTime);
         m_coordinator.EndFrame();
@@ -156,7 +174,7 @@ void Game::Run()
         DebugDrawManager::GetInstance().RenderAndClear();
         DrawDebugInfo(dt, m_currentFps);
 
-        ScreenFlip();
+        RenderManager::GetInstance().EndFrame();
     }
 }
 
@@ -164,7 +182,6 @@ void Game::Run()
 void Game::Shutdown()
 {
     RenderManager::GetInstance().Shutdown();
-    DxLib_End();
 }
 
 
@@ -174,7 +191,7 @@ bool Game::ShouldRun()
         return false;
     }
 
-    if (ProcessMessage() == -1) {
+    if (glfwWindowShouldClose(m_window)) {
         return false;
     }
 
@@ -278,12 +295,10 @@ void Game::DestroyEntity(int destroyNum)
 
 void Game::InitRenderState()
 {
-    MATRIX viewMat = GetCameraViewMatrix();
-    MATRIX projMat = GetCameraProjectionMatrix();
-    MATRIX viewProjMat = MMult(viewMat, projMat);
-    VECTOR camPos = GetCameraPosition();
+    Matrix4 viewMat = Matrix4::LookAt(m_config.camera.position, Vector3(0, 0, 0), Vector3(0, 1, 0));
+    Matrix4 projMat = Matrix4::Perspective(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
 
-    RenderManager::GetInstance().UpdateCamera(FromDxMatrix(viewProjMat), FromDxVec(camPos));
+    RenderManager::GetInstance().UpdateCamera(viewMat * projMat, m_config.camera.position);
     RenderManager::GetInstance().UpdateLight(
         Vector3(-1.0f, -1.0f, 1.0f),
         0.1f,
@@ -298,24 +313,24 @@ void Game::HandleInput()
     if (m_inputManager) {
         m_inputManager->Update();
 
-        if (m_inputManager->IsKeyDown(KEY_INPUT_ESCAPE)) {
+        if (m_inputManager->IsKeyDown(GLFW_KEY_ESCAPE)) {
             m_isRunning = false;
         }
 
         // Press [1] to spawn entities
-        if (m_inputManager->IsKeyDown(KEY_INPUT_1)) {
+        if (m_inputManager->IsKeyDown(GLFW_KEY_1)) {
             SpawnEntity(m_config.spawn.userSpawnNum, m_config.prefab.spawnName);
         }
         // Press [2] to destroy entities
-        else if (m_inputManager->IsKeyDown(KEY_INPUT_2)) {
+        else if (m_inputManager->IsKeyDown(GLFW_KEY_2)) {
             DestroyEntity(m_config.spawn.userDestroyNum);
         }
         // Press [3] to toggle debug overlay (2D Text)
-        else if (m_inputManager->IsKeyDown(KEY_INPUT_3)) {
+        else if (m_inputManager->IsKeyDown(GLFW_KEY_3)) {
             Debug::Overlay::IsVisible = !Debug::Overlay::IsVisible;
         }
         // Press [4] to toggle debug drawing (3D Primitives)
-        else if (m_inputManager->IsKeyDown(KEY_INPUT_4)) {
+        else if (m_inputManager->IsKeyDown(GLFW_KEY_4)) {
             Debug::Draw3D::IsVisible = !Debug::Draw3D::IsVisible;
         }
 
@@ -335,7 +350,7 @@ void Game::DrawDebugInfo(float dt, int currentFps)
         }
     }
 
-    DrawFormatString(10, 10, GetColor(0, 255, 0), _TEXT("FPS: %d"), currentFps);
+ /*   DrawFormatString(10, 10, GetColor(0, 255, 0), _TEXT("FPS: %d"), currentFps);
     DrawFormatString(10, 30, GetColor(0, 255, 0), _TEXT("Time: %.2f ms"), dt * 1000.0);
     DrawFormatString(10, 50, GetColor(0, 255, 0), _TEXT("State: %S"), sequenceName.c_str());
     DrawFormatString(10, 70, GetColor(0, 255, 0), _TEXT("Entities: %d"), (int)(m_coordinator.GetLivingEntityCount()));
@@ -344,5 +359,5 @@ void Game::DrawDebugInfo(float dt, int currentFps)
     DrawFormatString(10, 130, GetColor(0, 255, 0), _TEXT("Press [3]: Toggle Enable Debug Overlay"));
     if (Debug::Config::IsEnabled) {
         DrawFormatString(10, 150, GetColor(0, 255, 0), _TEXT("Press [4]: Toggle Enable Debug 3D Draw"));
-    }
+    }*/
 }

@@ -5,7 +5,6 @@
 
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Color.h"
-#include "Engine/Platform/DxLibConversion.h"
 
 
 DebugDrawManager::DebugDrawManager() = default;
@@ -34,9 +33,9 @@ void DebugDrawManager::RenderAndClear()
     }
 
     for (const auto& line : m_linesToDraw) {
-        VECTOR p1 = ToDxVec(line.start);
-        VECTOR p2 = ToDxVec(line.end);
-        DrawLine3D(p1, p2, ToDxColor(line.color));
+        //VECTOR p1 = ToDxVec(line.start);
+        //VECTOR p2 = ToDxVec(line.end);
+        //DrawLine3D(p1, p2, ToDxColor(line.color));
     }
 
     m_linesToDraw.clear();

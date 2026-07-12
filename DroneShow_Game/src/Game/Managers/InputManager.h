@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Engine/Utils/NonCopyable.h"
-#include <DxLib.h>
+//#include <DxLib.h>
 #include <cstring>
 
 /**
@@ -35,7 +35,7 @@ public:
         std::memcpy(m_previousKeys, m_currentKeys, sizeof(m_currentKeys));
 
         // 2. Fetch and overwrite with the latest keyboard state from DxLib
-        GetHitKeyStateAll(m_currentKeys);
+        //GetHitKeyStateAll(m_currentKeys);
     }
 
     /**

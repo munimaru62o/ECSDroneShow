@@ -3,7 +3,6 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.h")
 add_executable(DroneShow_App WIN32 ${SOURCES})
 
 target_link_libraries(DroneShow_App PRIVATE DroneShow_Game ECSEngine)
-target_link_directories(DroneShow_App PRIVATE ${PROJECT_SOURCE_DIR}/External/DxLib)
 
 add_custom_command(TARGET DroneShow_App POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -7,4 +7,4 @@ target_include_directories(DroneShow_Game PUBLIC
     ${PROJECT_SOURCE_DIR}/External/nlohmann
 )
 
-target_link_libraries(DroneShow_Game PUBLIC ECSEngine)
+target_link_libraries(DroneShow_Game PUBLIC ECSEngine glfw)

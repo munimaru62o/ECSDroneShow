@@ -7,6 +7,7 @@
 
 #include <memory>
 
+struct GLFWwindow;
 class InputManager;
 class PrefabManager;
 class TimelineManager;
@@ -37,7 +38,7 @@ public:
 private:
     [[nodiscard]] bool ShouldRun();
 
-    void ConfigureDxLib();
+    bool InitializeWindow();
     void InitializeGraphics();
     void InitializeManagers();
     void LoadGameData();
@@ -54,6 +55,8 @@ private:
     void DrawDebugInfo(float dt, int currentFps);
 
 private:
+    GLFWwindow* m_window = nullptr;
+
     Coordinator m_coordinator;
     GameConfig m_config;
 

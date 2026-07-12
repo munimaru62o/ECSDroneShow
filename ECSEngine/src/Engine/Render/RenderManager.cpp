@@ -1,12 +1,14 @@
 // Copyright (c) 2026 munimaru62o. All rights reserved.
 
 #include "RenderManager.h"
-#include "Engine/ECS/ECSTypes.h"
 #include "Engine/Platform/DirectXConversion.h"
 
-#include <DxLib.h>
-#include <cassert>
+#include <windows.h>
+#include <d3d11.h>
 #include <d3dcompiler.h>
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
 
@@ -32,14 +34,15 @@ RenderManager::~RenderManager()
 }
 
 
-bool RenderManager::Init()
+bool RenderManager::Init(HWND nativeWindowHandle, int width, int height)
 {
-    m_device = (ID3D11Device*)GetUseDirect3D11Device();
-    m_context = (ID3D11DeviceContext*)GetUseDirect3D11DeviceContext();
+    if (!nativeWindowHandle) return false;
+    if (!CreateDeviceAndSwapChain(nativeWindowHandle, width, height)) return false;
+    if (!CreateRenderTargetView()) return false;
+    if (!CreateDepthStencilView(width, height)) return false;
 
-    if (!m_device || !m_context) {
-        return false;
-    }
+    m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
+    SetupViewport(width, height);
 
     // Initialize all required GPU resources
     if (!CreateInstanceBuffer())      return false;
@@ -74,6 +77,21 @@ void RenderManager::Shutdown()
         mesh.second.indexBuffer.Reset();
     }
     m_meshes.clear();
+}
+
+
+void RenderManager::BeginFrame()
+{
+    const float clearColor[4] = { 0.01f, 0.01f, 0.05f, 1.0f };
+
+    m_context->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
+    m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+
+void RenderManager::EndFrame()
+{
+    m_swapChain->Present(0, 0);
 }
 
 
@@ -115,7 +133,6 @@ void RenderManager::UpdateCamera(const Matrix4& viewProjection, const Vector3& p
 
 MeshID RenderManager::CreateMesh(const MeshSourceData& data)
 {
-    
     if (data.vertices.empty() || data.indices.empty() || !m_device) {
         return INVALID_MESH_ID;
     }
@@ -192,9 +209,81 @@ void RenderManager::DrawInstanced(MeshID meshId, const std::vector<InstanceData>
 
     // 5. Issue the Hardware Instanced Draw Call
     m_context->DrawIndexedInstanced(mesh.indexCount, instanceCount, 0, 0, 0);
+}
 
-    // Refresh DxLib's internal state since we manually modified the D3D11 context
-    RefreshDxLibDirect3DSetting();
+
+bool RenderManager::CreateDeviceAndSwapChain(HWND hwnd, int width, int height)
+{
+    DXGI_SWAP_CHAIN_DESC sd = {};
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = width;
+    sd.BufferDesc.Height = height;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = hwnd;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+
+    UINT createDeviceFlags = 0;
+#if defined(_DEBUG) || defined(DEBUG)
+    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+    D3D_FEATURE_LEVEL featureLevel;
+    const D3D_FEATURE_LEVEL featureLevelArray[1] = { D3D_FEATURE_LEVEL_11_0 };
+
+    HRESULT hr = D3D11CreateDeviceAndSwapChain(
+        nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags,
+        featureLevelArray, 1, D3D11_SDK_VERSION, &sd,
+        &m_swapChain, &m_device, &featureLevel, &m_context);
+
+    return SUCCEEDED(hr);
+}
+
+bool RenderManager::CreateRenderTargetView()
+{
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+    HRESULT hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer);
+    if (FAILED(hr)) return false;
+
+    hr = m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_renderTargetView);
+    return SUCCEEDED(hr);
+}
+
+bool RenderManager::CreateDepthStencilView(int width, int height)
+{
+    D3D11_TEXTURE2D_DESC depthDesc = {};
+    depthDesc.Width = width;
+    depthDesc.Height = height;
+    depthDesc.MipLevels = 1;
+    depthDesc.ArraySize = 1;
+    depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthDesc.SampleDesc.Count = 1;
+    depthDesc.SampleDesc.Quality = 0;
+    depthDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+    HRESULT hr = m_device->CreateTexture2D(&depthDesc, nullptr, &m_depthStencilBuffer);
+    if (FAILED(hr)) return false;
+
+    hr = m_device->CreateDepthStencilView(m_depthStencilBuffer.Get(), nullptr, &m_depthStencilView);
+    return SUCCEEDED(hr);
+}
+
+void RenderManager::SetupViewport(int width, int height)
+{
+    D3D11_VIEWPORT vp = {};
+    vp.Width = static_cast<float>(width);
+    vp.Height = static_cast<float>(height);
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+
+    m_context->RSSetViewports(1, &vp);
 }
 
 
@@ -299,13 +388,11 @@ bool RenderManager::CreateBlendState()
 
 bool RenderManager::LoadShaders()
 {
-    HRESULT hr;
     Microsoft::WRL::ComPtr<ID3DBlob> vsBlob = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> psBlob = nullptr;
     Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 
     // Compile Vertex Shader
-    hr = D3DCompileFromFile(L"data/shader/Instancing.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", 0, 0, &vsBlob, &errorBlob);
+    HRESULT hr = D3DCompileFromFile(L"data/shader/Instancing.hlsl", nullptr, nullptr, "VSMain", "vs_5_0", 0, 0, &vsBlob, &errorBlob);
     if (FAILED(hr)) {
         if (errorBlob) {
             OutputDebugStringA((char*)errorBlob->GetBufferPointer());
@@ -315,16 +402,16 @@ bool RenderManager::LoadShaders()
     m_device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, m_vertexShader.GetAddressOf());
 
     // Compile Pixel Shaders
-    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSLit", PixelShaderType::Lit, psBlob, errorBlob)) {
+    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSLit", PixelShaderType::Lit)) {
         return false;
     }
-    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSUnlit", PixelShaderType::UnLit, psBlob, errorBlob)) {
+    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSUnlit", PixelShaderType::UnLit)) {
         return false;
     }
-    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSHologram", PixelShaderType::Hologram, psBlob, errorBlob)) {
+    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSHologram", PixelShaderType::Hologram)) {
         return false;
     }
-    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSToon", PixelShaderType::Toon, psBlob, errorBlob)) {
+    if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSToon", PixelShaderType::Toon)) {
         return false;
     }
 
@@ -363,15 +450,18 @@ bool RenderManager::LoadShaders()
 }
 
 
-bool RenderManager::LoadPixelShader(LPCWSTR filePath, LPCSTR entryPoint, PixelShaderType shaderType, Microsoft::WRL::ComPtr<ID3DBlob>& psBlob, Microsoft::WRL::ComPtr<ID3DBlob>& errorBlob)
+bool RenderManager::LoadPixelShader(LPCWSTR filePath, LPCSTR entryPoint, PixelShaderType shaderType)
 {
-    HRESULT hr = D3DCompileFromFile(filePath, nullptr, nullptr, entryPoint, "ps_5_0", 0, 0, &psBlob, &errorBlob);
+    Microsoft::WRL::ComPtr<ID3DBlob> blob = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+
+    HRESULT hr = D3DCompileFromFile(filePath, nullptr, nullptr, entryPoint, "ps_5_0", 0, 0, &blob, &errorBlob);
     if (FAILED(hr)) {
         if (errorBlob) {
             OutputDebugStringA((char*)errorBlob->GetBufferPointer());
         }
         return false;
     }
-    m_device->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, m_pixelShader[shaderType].GetAddressOf());
+    m_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pixelShader[shaderType].GetAddressOf());
     return true;
 }
