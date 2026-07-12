@@ -18,12 +18,11 @@ class TimelineDirectorSystem;
  * @class Game
  * @brief The core application class that orchestrates the entire game engine, managing initialization, the main loop, and shutdown processes.
  *
- * It handles everything from DxLib window configuration to setting up the ECS (Coordinator),
- * instantiating managers, and registering components and systems (building the pipeline).
- * The main loop (Run) employs a hybrid architecture: it processes input and rendering phases
- * on a variable timestep, while strictly executing the physics simulation phase on a fixed timestep.
- * This creates a highly robust loop that ensures physics calculations remain stable and deterministic,
- * even during sudden frame drops.
+ * It manages the lifecycle of the application by initializing the GLFW window, setting up the custom
+ * DirectX 11 rendering pipeline, and building the entity component system (ECS) via the Coordinator.
+ * The main loop (Run) employs a hybrid architecture: it processes input and rendering phases on a variable
+ * timestep, while strictly executing the physics simulation phase on a fixed timestep. This design ensures
+ * that physics calculations remain stable, uniform, and deterministic, even under volatile frame rate conditions.
  */
 class Game
 {

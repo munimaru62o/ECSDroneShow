@@ -118,7 +118,7 @@ void Game::InitializeGraphics()
 void Game::InitializeManagers()
 {
     m_registry = std::make_unique<ComponentRegistry>();
-    m_inputManager = std::make_unique<InputManager>();
+    m_inputManager = std::make_unique<InputManager>(m_window);
     m_prefabManager = std::make_unique<PrefabManager>(m_coordinator, *m_registry);
     m_timelineManager = std::make_unique<TimelineManager>();
 }
