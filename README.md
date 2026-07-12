@@ -97,7 +97,7 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 | Item | Description |
 |---|---|
 | Language | C++20 |
-| External Libraries | DxLib 3.24f, nlohmann/json 3.12.0, OpenSimplex Noise |
+| External Libraries | GLFW 3.4, nlohmann/json 3.12.0, OpenSimplex Noise |
 | Test Framework | Google Test |
 | Initial Entities | 50,000 |
 | Max Entities | 100,000 (Can be dynamically added/removed via key input) |

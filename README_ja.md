@@ -98,7 +98,7 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 | 項目 | 内容 |
 |---|---|
 | 言語 | C++20 |
-| 外部ライブラリ | DxLib 3.24f, nlohmann/json 3.12.0, OpenSimplex Noise |
+| 外部ライブラリ | GLFW 3.4, nlohmann/json 3.12.0, OpenSimplex Noise |
 | テストフレームワーク | Google Test |
 | 初期Entity数 | 50,000 |
 | 最大Entity数 | 100,000（キー入力で動的に追加・削除可能） |
