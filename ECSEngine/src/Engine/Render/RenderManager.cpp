@@ -2,6 +2,7 @@
 
 #include "RenderManager.h"
 #include "Engine/Platform/DirectXConversion.h"
+#include "Engine/Scene/Camera.h"
 
 #include <windows.h>
 #include <d3d11.h>
@@ -150,7 +151,7 @@ void RenderManager::UpdateLight(const Vector3& direction, float ambient, const C
 }
 
 
-void RenderManager::UpdateCamera(const Matrix4& viewProjection, const Vector3& position)
+void RenderManager::UpdateCamera(const Camera& camera)
 {
     if (!m_cameraBuffer) {
         return;
@@ -160,8 +161,8 @@ void RenderManager::UpdateCamera(const Matrix4& viewProjection, const Vector3& p
     HRESULT hr = m_context->Map(m_cameraBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
     if (SUCCEEDED(hr)) {
         CameraBuffer* cb = (CameraBuffer*)mapped.pData;
-        cb->viewProjection = ToDXFloat4(viewProjection);
-        cb->position = ToXMFloat3(position);
+        cb->viewProjection = ToDXFloat4(camera.GetViewProjectionMatrix());
+        cb->position = ToXMFloat3(camera.GetPosition());
         m_context->Unmap(m_cameraBuffer.Get(), 0);
     }
 }

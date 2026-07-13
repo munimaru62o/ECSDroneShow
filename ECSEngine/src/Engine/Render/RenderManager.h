@@ -13,6 +13,8 @@
 #include <vector>
 #include <unordered_map>
 
+class Camera;
+
 struct HWND__;
 typedef HWND__* HWND;
 
@@ -71,7 +73,7 @@ public:
     void ShutdownImGui();
 
     void UpdateLight(const Vector3& direction, float ambient, const Color& lightColor = Color::White(), const Color& fillColor = Color::Black());
-    void UpdateCamera(const Matrix4& viewProjection, const Vector3& position);
+    void UpdateCamera(const Camera& camera);
 
     [[nodiscard]] MeshID CreateMesh(const MeshSourceData& data);
     void DrawInstanced(MeshID meshId, const std::vector<InstanceData>& instanceData, PixelShaderType shaderType = PixelShaderType::Lit);
