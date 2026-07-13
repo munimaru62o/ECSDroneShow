@@ -61,7 +61,10 @@ bool Game::Init()
         return false;
     }
 
-    InitializeGraphics();
+    if (!InitializeGraphics()) {
+        return false;
+    }
+
     InitializeManagers();
 
     m_coordinator.Init();
@@ -115,15 +118,19 @@ bool Game::InitializeWindow()
 }
 
 
-void Game::InitializeGraphics()
+bool Game::InitializeGraphics()
 {
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
     HWND hwnd = glfwGetWin32Window(m_window);
 
-    RenderManager::GetInstance().Init(hwnd, width, height);
+    if (!RenderManager::GetInstance().Init(hwnd, width, height)) {
+        std::cerr << "Failed to initialize RenderManager" << std::endl;
+        return false;
+    }
     RenderManager::GetInstance().InitImGui();
     InitRenderState();
+    return true;
 }
 
 

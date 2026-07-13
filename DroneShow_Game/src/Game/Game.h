@@ -38,7 +38,7 @@ private:
     [[nodiscard]] bool ShouldRun();
 
     bool InitializeWindow();
-    void InitializeGraphics();
+    bool InitializeGraphics();
     void InitializeManagers();
     void LoadGameData();
 
