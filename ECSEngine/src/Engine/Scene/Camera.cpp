@@ -8,10 +8,7 @@
 #include <cmath>
 
 
-Camera::Camera()
-{
-    UpdateMatrices();
-}
+Camera::Camera() = default;
 
 void Camera::SetPosition(const Vector3& position)
 {

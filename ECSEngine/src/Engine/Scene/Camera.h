@@ -8,6 +8,18 @@
 
 struct Vector2;
 
+/**
+ * @class Camera
+ * @brief Represents a render camera that defines the view and projection of a 3D scene.
+ *
+ * The Camera stores its transform, projection parameters, and viewport size,
+ * and provides access to the corresponding view, projection, and
+ * view-projection matrices. It also supports common camera operations such
+ * as LookAt and converting world-space positions into screen-space coordinates.
+ *
+ * Matrix calculations are performed lazily and cached until the camera state
+ * changes.
+ */
 class Camera
 {
 public:
