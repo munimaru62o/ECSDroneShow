@@ -5,6 +5,7 @@
 #include "Engine/Render/RenderManager.h"
 #include "Engine/Utils/Time.h"
 #include "Engine/Math/Vector3.h"
+#include "Engine/Platform/ImGuiConversion.h"
 
 #include "Engine/Systems/Spatial/SpatialPartitionSystem.h"
 #include "Engine/Systems/Spatial/SpatialBoidCacheSystem.h"
@@ -31,6 +32,8 @@
 #include <GLFW/glfw3native.h>
 #include <chrono>
 #include <memory>
+#include <imgui.h>
+#include "backends/imgui_impl_glfw.h"
 
 namespace
 {
@@ -103,14 +106,23 @@ bool Game::InitializeWindow()
     glfwMakeContextCurrent(m_window);
     glfwSwapInterval(1);
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOther(m_window, true);
+
     return true;
 }
 
 
 void Game::InitializeGraphics()
 {
+    int width, height;
+    glfwGetWindowSize(m_window, &width, &height);
     HWND hwnd = glfwGetWin32Window(m_window);
-    RenderManager::GetInstance().Init(hwnd, m_config.window.width, m_config.window.height);
+
+    RenderManager::GetInstance().Init(hwnd, width, height);
+    RenderManager::GetInstance().InitImGui();
     InitRenderState();
 }
 
@@ -142,8 +154,6 @@ void Game::Run()
         float dt = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastTime).count();
         lastTime = currentTime;
 
-        UpdateFps(dt);
-
         // Cap the delta time at a maximum of 0.1 seconds to prevent physics spikes
         if (dt > 0.1f) {
             dt = 0.1f;
@@ -154,6 +164,10 @@ void Game::Run()
 
         glfwPollEvents();
         HandleInput();
+
+        RenderManager::GetInstance().BeginImGui();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         m_coordinator.UpdatePhase(SystemPhase::Input, dt, simulationTime);
         m_coordinator.UpdatePhase(SystemPhase::Logic, dt, simulationTime);
@@ -171,9 +185,10 @@ void Game::Run()
         m_coordinator.UpdatePhase(SystemPhase::Render, dt, simulationTime);
         m_coordinator.EndFrame();
 
-        DebugDrawManager::GetInstance().RenderAndClear();
-        DrawDebugInfo(dt, m_currentFps);
+        DrawDebugInfo();
 
+        ImGui::Render();
+        RenderManager::GetInstance().RenderImGui();
         RenderManager::GetInstance().EndFrame();
     }
 }
@@ -181,7 +196,14 @@ void Game::Run()
 
 void Game::Shutdown()
 {
+    RenderManager::GetInstance().ShutdownImGui();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
     RenderManager::GetInstance().Shutdown();
+
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
 }
 
 
@@ -196,20 +218,6 @@ bool Game::ShouldRun()
     }
 
     return true;
-}
-
-
-void Game::UpdateFps(float dt)
-{
-    ++m_frameCount;
-    m_fpsAccumulator += dt;
-
-    if (m_fpsAccumulator >= FPS_INTERVAL) {
-        m_currentFps = static_cast<int>(m_frameCount / m_fpsAccumulator);
-
-        m_fpsAccumulator = 0.0f;
-        m_frameCount = 0;
-    }
 }
 
 
@@ -337,8 +345,16 @@ void Game::HandleInput()
     }
 }
 
-void Game::DrawDebugInfo(float dt, int currentFps)
+void Game::DrawDebugInfo()
 {
+    int width, height;
+    glfwGetWindowSize(m_window, &width, &height);
+
+    Matrix4 viewMat = Matrix4::LookAt(m_config.camera.position, Vector3(0, 0, 0), Vector3(0, 1, 0));
+    Matrix4 projMat = Matrix4::Perspective(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
+    Matrix4 viewProj = viewMat * projMat;
+    DebugDrawManager::GetInstance().RenderAndClear(viewProj, width, height);
+
     if (!Debug::Overlay::IsVisible) {
         return;
     }
@@ -350,14 +366,33 @@ void Game::DrawDebugInfo(float dt, int currentFps)
         }
     }
 
- /*   DrawFormatString(10, 10, GetColor(0, 255, 0), _TEXT("FPS: %d"), currentFps);
-    DrawFormatString(10, 30, GetColor(0, 255, 0), _TEXT("Time: %.2f ms"), dt * 1000.0);
-    DrawFormatString(10, 50, GetColor(0, 255, 0), _TEXT("State: %S"), sequenceName.c_str());
-    DrawFormatString(10, 70, GetColor(0, 255, 0), _TEXT("Entities: %d"), (int)(m_coordinator.GetLivingEntityCount()));
-    DrawFormatString(10, 90, GetColor(0, 255, 0), _TEXT("Press [1]: Spawn Entity %d"), m_config.spawn.userSpawnNum);
-    DrawFormatString(10, 110, GetColor(0, 255, 0), _TEXT("Press [2]: Destroy Entity %d"), m_config.spawn.userDestroyNum);
-    DrawFormatString(10, 130, GetColor(0, 255, 0), _TEXT("Press [3]: Toggle Enable Debug Overlay"));
-    if (Debug::Config::IsEnabled) {
-        DrawFormatString(10, 150, GetColor(0, 255, 0), _TEXT("Press [4]: Toggle Enable Debug 3D Draw"));
-    }*/
+    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowBgAlpha(0.35f);
+
+    ImGuiWindowFlags windowFlags =
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_NoFocusOnAppearing |
+        ImGuiWindowFlags_NoNav;
+
+    if (ImGui::Begin("Debug Overlay", nullptr, windowFlags)) {
+        ImVec4 color = ToImVec4(Color::Green());
+
+        ImGui::TextColored(color, "FPS: %.1f", ImGui::GetIO().Framerate);
+        ImGui::TextColored(color, "Time: %.3f ms/frame", 1000.0f / ImGui::GetIO().Framerate);
+        ImGui::TextColored(color, "State: %s", sequenceName.c_str());
+        ImGui::TextColored(color, "Entities: %d", static_cast<int>(m_coordinator.GetLivingEntityCount()));
+
+        ImGui::Separator();
+
+        ImGui::TextColored(color, "Press [1]: Spawn Entity %d", m_config.spawn.userSpawnNum);
+        ImGui::TextColored(color, "Press [2]: Destroy Entity %d", m_config.spawn.userDestroyNum);
+        ImGui::TextColored(color, "Press [3]: Toggle Enable Debug Overlay");
+
+        if (Debug::Config::IsEnabled) {
+            ImGui::TextColored(color, "Press [4]: Toggle Enable Debug 3D Draw");
+        }
+    }
+    ImGui::End();
 }

@@ -42,8 +42,6 @@ private:
     void InitializeManagers();
     void LoadGameData();
 
-    void UpdateFps(float dt);
-
     void InitRenderState();
     void SetupSystems();
 
@@ -51,7 +49,7 @@ private:
     void DestroyEntity(int destroyNum);
 
     void HandleInput();
-    void DrawDebugInfo(float dt, int currentFps);
+    void DrawDebugInfo();
 
 private:
     GLFWwindow* m_window = nullptr;
@@ -67,7 +65,4 @@ private:
     TimelineDirectorSystem* m_directorSystem = nullptr;
 
     bool m_isRunning = false;
-    float m_fpsAccumulator = 0.0f;
-    int m_currentFps = 0;
-    int m_frameCount = 0;
 };

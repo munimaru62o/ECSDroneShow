@@ -6,6 +6,8 @@
 #include <windows.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include <imgui.h>
+#include "backends/imgui_impl_dx11.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -40,8 +42,6 @@ bool RenderManager::Init(HWND nativeWindowHandle, int width, int height)
     if (!CreateDeviceAndSwapChain(nativeWindowHandle, width, height)) return false;
     if (!CreateRenderTargetView()) return false;
     if (!CreateDepthStencilView(width, height)) return false;
-
-    m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
     SetupViewport(width, height);
 
     // Initialize all required GPU resources
@@ -59,6 +59,12 @@ bool RenderManager::Init(HWND nativeWindowHandle, int width, int height)
 void RenderManager::Shutdown()
 {
     // Safely release all COM objects
+    m_device.Reset();
+    m_context.Reset();
+    m_swapChain.Reset();
+    m_renderTargetView.Reset();
+    m_depthStencilBuffer.Reset();
+    m_depthStencilView.Reset();
     m_instanceBuffer.Reset();
     m_cameraBuffer.Reset();
     m_lightBuffer.Reset();
@@ -82,8 +88,9 @@ void RenderManager::Shutdown()
 
 void RenderManager::BeginFrame()
 {
-    const float clearColor[4] = { 0.01f, 0.01f, 0.05f, 1.0f };
+    m_context->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 
+    const float clearColor[4] = { 0.01f, 0.01f, 0.05f, 1.0f };
     m_context->ClearRenderTargetView(m_renderTargetView.Get(), clearColor);
     m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
@@ -91,7 +98,31 @@ void RenderManager::BeginFrame()
 
 void RenderManager::EndFrame()
 {
-    m_swapChain->Present(0, 0);
+    m_swapChain->Present(1, 0);
+}
+
+
+void RenderManager::InitImGui()
+{
+    ImGui_ImplDX11_Init(m_device.Get(), m_context.Get());
+}
+
+
+void RenderManager::BeginImGui()
+{
+    ImGui_ImplDX11_NewFrame();
+}
+
+
+void RenderManager::RenderImGui()
+{
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+
+void RenderManager::ShutdownImGui()
+{
+    ImGui_ImplDX11_Shutdown();
 }
 
 

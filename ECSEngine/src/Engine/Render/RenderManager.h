@@ -62,9 +62,13 @@ public:
 
     bool Init(HWND nativeWindowHandle, int width, int height);
     void Shutdown();
-
     void BeginFrame();
     void EndFrame();
+
+    void InitImGui();
+    void BeginImGui();
+    void RenderImGui();
+    void ShutdownImGui();
 
     void UpdateLight(const Vector3& direction, float ambient, const Color& lightColor = Color::White(), const Color& fillColor = Color::Black());
     void UpdateCamera(const Matrix4& viewProjection, const Vector3& position);
