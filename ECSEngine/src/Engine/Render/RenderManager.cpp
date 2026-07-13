@@ -58,6 +58,11 @@ bool RenderManager::Init(HWND nativeWindowHandle, int width, int height)
 
 void RenderManager::Shutdown()
 {
+    if (m_context) {
+        m_context->ClearState();
+        m_context->Flush();
+    }
+
     // Safely release all COM objects
     m_device.Reset();
     m_context.Reset();
@@ -430,7 +435,10 @@ bool RenderManager::LoadShaders()
         }
         return false;
     }
-    m_device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, m_vertexShader.GetAddressOf());
+    hr = m_device->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, m_vertexShader.GetAddressOf());
+    if (FAILED(hr)) {
+        return false;
+    }
 
     // Compile Pixel Shaders
     if (!LoadPixelShader(L"data/shader/Instancing.hlsl", "PSLit", PixelShaderType::Lit)) {
@@ -493,6 +501,9 @@ bool RenderManager::LoadPixelShader(LPCWSTR filePath, LPCSTR entryPoint, PixelSh
         }
         return false;
     }
-    m_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pixelShader[shaderType].GetAddressOf());
+    hr = m_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, m_pixelShader[shaderType].GetAddressOf());
+    if (FAILED(hr)) {
+        return false;
+    }
     return true;
 }
