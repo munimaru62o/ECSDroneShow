@@ -4,16 +4,30 @@
 
 #include "Engine/Utils/NonCopyable.h"
 #include "Engine/Render/RenderTypes.h"
+#include "Engine/ECS/ECSTypes.h"
 #include "Engine/Math/Color.h"
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Matrix4.h"
 
-#include <d3d11.h>
-#include <DirectXMath.h>
 #include <wrl/client.h>
 #include <vector>
 #include <unordered_map>
 
+struct HWND__;
+typedef HWND__* HWND;
+
+struct ID3D11Device;
+struct ID3D11DeviceContext;
+struct IDXGISwapChain;
+struct ID3D11RenderTargetView;
+struct ID3D11Texture2D;
+struct ID3D11DepthStencilView;
+struct ID3D11Buffer;
+struct ID3D11VertexShader;
+struct ID3D11PixelShader;
+struct ID3D11InputLayout;
+struct ID3D11DepthStencilState;
+struct ID3D11BlendState;
 
 /**
  * @class RenderManager
@@ -46,8 +60,15 @@ public:
         return instance;
     }
 
-    bool Init();
+    bool Init(HWND nativeWindowHandle, int width, int height);
     void Shutdown();
+    void BeginFrame();
+    void EndFrame();
+
+    void InitImGui();
+    void BeginImGui();
+    void RenderImGui();
+    void ShutdownImGui();
 
     void UpdateLight(const Vector3& direction, float ambient, const Color& lightColor = Color::White(), const Color& fillColor = Color::Black());
     void UpdateCamera(const Matrix4& viewProjection, const Vector3& position);
@@ -56,6 +77,11 @@ public:
     void DrawInstanced(MeshID meshId, const std::vector<InstanceData>& instanceData, PixelShaderType shaderType = PixelShaderType::Lit);
 
 private:
+    bool CreateDeviceAndSwapChain(HWND hwnd, int width, int height);
+    bool CreateRenderTargetView();
+    bool CreateDepthStencilView(int width, int height);
+    void SetupViewport(int width, int height);
+
     bool CreateVertexBuffer(GPUMeshData& mesh, const std::vector<Vertex3D>& vertices);
     bool CreateIndexBuffer(GPUMeshData& mesh, const std::vector<uint32_t>& indices);
     bool CreateInstanceBuffer();
@@ -65,11 +91,15 @@ private:
     bool CreateBlendState();
 
     bool LoadShaders();
-    bool LoadPixelShader(LPCWSTR filePath, LPCSTR entryPoint, PixelShaderType shaderType, Microsoft::WRL::ComPtr<ID3DBlob>& psBlob, Microsoft::WRL::ComPtr<ID3DBlob>& errorBlob);
+    bool LoadPixelShader(LPCWSTR filePath, LPCSTR entryPoint, PixelShaderType shaderType);
 
 private:
-    ID3D11Device* m_device         = nullptr;
-    ID3D11DeviceContext* m_context = nullptr;
+    Microsoft::WRL::ComPtr<ID3D11Device> m_device;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context;
+    Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> m_depthStencilBuffer;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;
 
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_instanceBuffer;
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_cameraBuffer;

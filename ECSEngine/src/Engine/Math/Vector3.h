@@ -96,13 +96,24 @@ struct Vector3
         return std::sqrt(DistanceSq(a, b));
     }
 
-    [[nodiscard]] Vector3 Normalized() const
+    void Normalize() 
     {
         float len = Length();
         if (len > 0.0001f) {
-            return { x / len, y / len, z / len };
+            float invLen = 1.0f / len;
+            x *= invLen;
+            y *= invLen;
+            z *= invLen;
+        } else {
+            x = y = z = 0.0f;
         }
-        return { 0.0f, 0.0f, 0.0f };
+    }
+
+    [[nodiscard]] Vector3 Normalized() const
+    {
+        Vector3 result = *this;
+        result.Normalize();
+        return result;
     }
 
     [[nodiscard]] bool IsNormalized(float epsilon = 0.0001f) const

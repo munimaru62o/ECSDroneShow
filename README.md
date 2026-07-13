@@ -11,7 +11,7 @@
 
 🌍 *Read this in other languages: [English](README.md) | [日本語 (Japanese)](README_ja.md)* *(Note: The English documentation is AI-translated from the original Japanese).*
 
-A **large-scale crowd simulator themed after a drone show**, developed using C++ and DxLib.  
+A **large-scale crowd simulator themed after a drone show**, developed using C++ and DirectX 11.  
 While the graphics are kept simple, the project focuses on real-time control and performance optimization for 100,000 entities, driven by a custom Entity Component System (ECS) core architecture.  
 Following a JSON-defined timeline, massive numbers of entities autonomously transition between various formations and Boids crowd simulations.
 
@@ -97,12 +97,19 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 | Item | Description |
 |---|---|
 | Language | C++20 |
-| External Libraries | DxLib 3.24f, nlohmann/json 3.12.0, OpenSimplex Noise |
+| Rendering | DirectX 11 (GPU Instancing) |
+| Window Management | GLFW 3.4 |
+| Debug UI | Dear ImGui 1.92.8 |
+| Data Parsing | nlohmann/json 3.12.0 |
+| Noise Generation | OpenSimplex Noise |
 | Test Framework | Google Test |
-| Initial Entities | 50,000 |
-| Max Entities | 100,000 (Can be dynamically added/removed via key input) |
 
 ### 1.1 About the Demo
+
+| Item | Description |
+|---|---|
+| Initial Entities | 50,000 |
+| Max Entities | 100,000 (Can be dynamically added/removed via key input) |
 
 In this demo, massive drone entities transition their behavior in real-time according to a timeline defined in JSON.
 
@@ -148,7 +155,8 @@ You can switch the timeline that plays just by changing `timeline.playName` in `
 
 ### 2.2 Dependencies
 This project uses the following external libraries:
-- **DxLib (ver 3.24f)**: Graphics rendering and window management
+- **GLFW (ver 3.4)**: Window management and input handling
+- **Dear ImGui (ver 1.92.8)**: Debug UI overlay
 - **nlohmann/json (ver 3.12.0)**: Parsing external data (Prefabs / Timelines)
 - **OpenSimplex Noise**: Noise generation (Wander / Fluctuations)
 - **Google Test**: Unit Testing
@@ -289,7 +297,7 @@ The rough setup flow in `Game::Init()` is as follows:
 1. **Load Config**:  
    Parses `game_config.json` using the generic `JsonLoader` to retrieve base settings like window size, directory paths, and initial spawn counts.
 2. **Initialize Base and Managers**:  
-   Initializes DxLib (`ConfigureDxLib`), sets up the graphics rendering base, and then creates managers like `PrefabManager` and `TimelineManager`.
+   Initializes the window and DirectX 11 rendering context (GLFW / D3D11), sets up the graphics rendering base, and then creates managers like `PrefabManager` and `TimelineManager`.
 3. **ECS Registration**:  
    Registers all components and systems via `GameRegistrations::RegisterAllComponents()` and `RegisterAllSystems()` (Components with `SequenceTraits<T>::DataDriven` enabled are automatically added to `ComponentFactoryRegistry`).
 4. **Load External Data**:  
@@ -784,7 +792,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 This project uses the following external libraries. For detailed license information for each library, please refer to the [THIRD_PARTY_LICENSES](THIRD_PARTY_LICENSES) file.
 
-- **[DxLib](https://dxlib.xsrv.jp/)**: Freeware License (Internally uses zlib, libpng, Ogg Vorbis/Theora, etc.)
+- **[GLFW](https://www.glfw.org/)**: zlib/libpng License
+- **[Dear ImGui](https://github.com/ocornut/imgui)**: MIT License
 - **[nlohmann/json](https://github.com/nlohmann/json)**: MIT License
 - **[OpenSimplex Noise](https://github.com/KdotJPG/OpenSimplex2)**: The Unlicense / CC0 1.0 Universal (Public Domain)
 - **[Google Test](https://github.com/google/googletest)**: BSD-3-Clause License

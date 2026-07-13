@@ -7,6 +7,7 @@
 
 #include <memory>
 
+struct GLFWwindow;
 class InputManager;
 class PrefabManager;
 class TimelineManager;
@@ -17,12 +18,11 @@ class TimelineDirectorSystem;
  * @class Game
  * @brief The core application class that orchestrates the entire game engine, managing initialization, the main loop, and shutdown processes.
  *
- * It handles everything from DxLib window configuration to setting up the ECS (Coordinator),
- * instantiating managers, and registering components and systems (building the pipeline).
- * The main loop (Run) employs a hybrid architecture: it processes input and rendering phases
- * on a variable timestep, while strictly executing the physics simulation phase on a fixed timestep.
- * This creates a highly robust loop that ensures physics calculations remain stable and deterministic,
- * even during sudden frame drops.
+ * It manages the lifecycle of the application by initializing the GLFW window, setting up the custom
+ * DirectX 11 rendering pipeline, and building the entity component system (ECS) via the Coordinator.
+ * The main loop (Run) employs a hybrid architecture: it processes input and rendering phases on a variable
+ * timestep, while strictly executing the physics simulation phase on a fixed timestep. This design ensures
+ * that physics calculations remain stable, uniform, and deterministic, even under volatile frame rate conditions.
  */
 class Game
 {
@@ -37,12 +37,10 @@ public:
 private:
     [[nodiscard]] bool ShouldRun();
 
-    void ConfigureDxLib();
-    void InitializeGraphics();
+    bool InitializeWindow();
+    bool InitializeGraphics();
     void InitializeManagers();
     void LoadGameData();
-
-    void UpdateFps(float dt);
 
     void InitRenderState();
     void SetupSystems();
@@ -51,9 +49,11 @@ private:
     void DestroyEntity(int destroyNum);
 
     void HandleInput();
-    void DrawDebugInfo(float dt, int currentFps);
+    void DrawDebugInfo();
 
 private:
+    GLFWwindow* m_window = nullptr;
+
     Coordinator m_coordinator;
     GameConfig m_config;
 
@@ -65,7 +65,4 @@ private:
     TimelineDirectorSystem* m_directorSystem = nullptr;
 
     bool m_isRunning = false;
-    float m_fpsAccumulator = 0.0f;
-    int m_currentFps = 0;
-    int m_frameCount = 0;
 };

@@ -5,6 +5,7 @@ add_library(ECSEngine STATIC ${SOURCES})
 
 target_include_directories(ECSEngine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${PROJECT_SOURCE_DIR}/External/DxLib
     ${PROJECT_SOURCE_DIR}/External/OpenSimplex2
 )
+
+target_link_libraries(ECSEngine PRIVATE imgui)

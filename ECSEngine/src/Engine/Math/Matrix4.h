@@ -18,10 +18,15 @@ struct Matrix4
 {
     float m[4][4];
 
+    [[nodiscard]] Matrix4 operator*(const Matrix4& rhs) const;
+    Matrix4& operator*=(const Matrix4& rhs);
+
     [[nodiscard]] static Matrix4 Identity();
     [[nodiscard]] static Matrix4 Translation(const Vector3& position);
     [[nodiscard]] static Matrix4 Rotation(const Quaternion& rotation);
     [[nodiscard]] static Matrix4 Scale(const Vector3& scale);
 
     [[nodiscard]] static Matrix4 TRS(const Vector3& position, const Quaternion& rotation, const Vector3& scale);
+    [[nodiscard]] static Matrix4 LookAt(const Vector3& eye, const Vector3& target, const Vector3& up);
+    [[nodiscard]] static Matrix4 Perspective(float fovY, float aspect, float zNear, float zFar);
 };

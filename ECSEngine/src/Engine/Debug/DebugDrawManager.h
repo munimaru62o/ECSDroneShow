@@ -9,6 +9,7 @@
 #include <mutex>
 
 struct Vector3;
+struct Matrix4;
 struct Color;
 
 /**
@@ -33,7 +34,7 @@ public:
     }
 
     void AddLine(const Vector3& start, const Vector3& end, Color color);
-    void RenderAndClear();
+    void RenderAndClear(const Matrix4& viewProj, int screenWidth, int screenHeight);
 
 private:
     std::vector<Debug::Line> m_lines;
