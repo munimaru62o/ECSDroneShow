@@ -35,7 +35,7 @@ public:
         std::memcpy(m_previousKeys, m_currentKeys, sizeof(m_currentKeys));
 
         // 2. Fetch and overwrite with the latest keyboard state
-        for (int i = 0; i < GLFW_KEY_LAST; ++i) {
+        for (int i = 0; i <= GLFW_KEY_LAST; ++i) {
             m_currentKeys[i] = (glfwGetKey(m_window, i) == GLFW_PRESS) ? 1 : 0;
         }
 
@@ -48,7 +48,7 @@ public:
      */
     [[nodiscard]] bool IsKeyDown(int keyCode) const
     {
-        if (keyCode < 0 || keyCode >= GLFW_KEY_LAST) return false;
+        if (keyCode < 0 || keyCode > GLFW_KEY_LAST) return false;
         return m_currentKeys[keyCode] == 1 && m_previousKeys[keyCode] == 0;
     }
 
@@ -59,7 +59,7 @@ public:
      */
     [[nodiscard]] bool IsKey(int keyCode) const
     {
-        if (keyCode < 0 || keyCode >= GLFW_KEY_LAST) return false;
+        if (keyCode < 0 || keyCode > GLFW_KEY_LAST) return false;
         return m_currentKeys[keyCode] == 1;
     }
 
@@ -70,12 +70,12 @@ public:
      */
     [[nodiscard]] bool IsKeyUp(int keyCode) const
     {
-        if (keyCode < 0 || keyCode >= GLFW_KEY_LAST) return false;
+        if (keyCode < 0 || keyCode > GLFW_KEY_LAST) return false;
         return m_currentKeys[keyCode] == 0 && m_previousKeys[keyCode] == 1;
     }
 
 private:
     GLFWwindow* m_window = nullptr;
-    char m_currentKeys[GLFW_KEY_LAST];
-    char m_previousKeys[GLFW_KEY_LAST];
+    char m_currentKeys[GLFW_KEY_LAST + 1];
+    char m_previousKeys[GLFW_KEY_LAST + 1];
 };
