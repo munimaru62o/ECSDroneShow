@@ -41,12 +41,11 @@ void Camera::LookAt(const Vector3& eye, const Vector3& target, const Vector3& up
 {
     m_position = eye;
     m_rotation = Quaternion::LookRotation(target - eye, up);
-    UpdateMatrices();
+    m_dirty = true;
 }
 
 bool Camera::WorldToScreen(const Vector3& world, Vector2& screen) const
 {
-    EnsureMatricesUpdated();
     const Matrix4& vp = GetViewProjectionMatrix();
 
     float clipX = world.x * vp.m[0][0] + world.y * vp.m[1][0] + world.z * vp.m[2][0] + vp.m[3][0];
@@ -99,7 +98,7 @@ void Camera::UpdateMatrices() const
     m_view = Matrix4::LookAt(
         m_position,
         m_position + m_rotation.Forward(),
-        Vector3::Up());
+        m_rotation.Up());
 
     m_projection = Matrix4::Perspective(
         m_fov,
