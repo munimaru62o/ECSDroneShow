@@ -5,6 +5,7 @@
 #include "Engine/Math/Matrix4.h"
 #include "Engine/Math/Vector3.h"
 #include "Engine/Math/Quaternion.h"
+#include "Engine/Math/Constants.h"
 
 #include <cmath>
 
@@ -180,7 +181,8 @@ Matrix4 Matrix4::Perspective(float fovY, float aspect, float zNear, float zFar)
 {
     Matrix4 result{};
 
-    const float tanHalfFov = std::tan(fovY * 0.5f);
+    const float fovYRadians = fovY * (MathConstants::PI / 180.0f);
+    const float tanHalfFov = std::tan(fovYRadians * 0.5f);
 
     result.m[0][0] = 1.0f / (aspect * tanHalfFov);
     result.m[1][1] = 1.0f / tanHalfFov;
