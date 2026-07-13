@@ -20,7 +20,7 @@ bool ProjectToScreen(const Vector3& pos, const Matrix4& viewProj, int width, int
     float clipY = pos.x * viewProj.m[0][1] + pos.y * viewProj.m[1][1] + pos.z * viewProj.m[2][1] + viewProj.m[3][1];
     float clipW = pos.x * viewProj.m[0][3] + pos.y * viewProj.m[1][3] + pos.z * viewProj.m[2][3] + viewProj.m[3][3];
 
-    if (clipW < 0.0f) return false;
+    if (clipW <= 0.0001f) return false;
 
     // NDC (Normalized Device Coordinates) 
     float ndcX = clipX / clipW;
