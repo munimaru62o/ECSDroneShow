@@ -90,6 +90,7 @@ bool Game::InitializeWindow()
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return false;
     }
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     GLFWmonitor* monitor = m_config.window.isFullscreen ? glfwGetPrimaryMonitor() : nullptr;
     m_window = glfwCreateWindow(
@@ -105,9 +106,6 @@ bool Game::InitializeWindow()
         glfwTerminate();
         return false;
     }
-
-    glfwMakeContextCurrent(m_window);
-    glfwSwapInterval(1);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
