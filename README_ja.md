@@ -11,7 +11,7 @@
 
 🌍 *他の言語で読む: [English](README.md) | [日本語 (Japanese)](README_ja.md)*
 
-C++ と DxLib を使用して開発された、**ドローンショーをモチーフにした大規模群衆シミュレーター**です。  
+C++ と DirectX 11 を使用して開発された、**ドローンショーをモチーフにした大規模群衆シミュレーター**です。  
 グラフィックスはシンプルな描画に留め、裏側で動く独自のECS（Entity Component System）コアアーキテクチャによる10万Entity規模のリアルタイム制御・パフォーマンス最適化に焦点を当てています。  
 JSON で定義したタイムラインに従い、大量の Entity が様々なフォーメーションやBoids群衆シミュレーションへ自律的に移行します。  
 
@@ -98,12 +98,19 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 | 項目 | 内容 |
 |---|---|
 | 言語 | C++20 |
-| 外部ライブラリ | GLFW 3.4, nlohmann/json 3.12.0, OpenSimplex Noise |
+| 描画 | DirectX 11（GPU Instancing） |
+| ウィンドウ管理 | GLFW 3.4 |
+| デバッグ UI | Dear ImGui 1.92.8 |
+| データパース | nlohmann/json 3.12.0 |
+| ノイズ生成 | OpenSimplex Noise |
 | テストフレームワーク | Google Test |
-| 初期Entity数 | 50,000 |
-| 最大Entity数 | 100,000（キー入力で動的に追加・削除可能） |
 
 ### 1.1 デモについて
+
+| 項目 | 内容 |
+|---|---|
+| 初期Entity数 | 50,000 |
+| 最大Entity数 | 100,000（キー入力で動的に追加・削除可能） |
 
 このデモでは、JSON で定義されたタイムラインに従い、
 大量のドローン Entity がリアルタイムに挙動を切り替えます。
@@ -152,7 +159,8 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 
 ### 2.2 依存ライブラリ
 本プロジェクトは以下の外部ライブラリを使用しています。
-- **DxLib (ver 3.24f)**: 描画・ウィンドウ管理
+- **GLFW (ver 3.4)**: ウィンドウ管理・入力処理
+- **Dear ImGui (ver 1.92.8)**: デバッグUIオーバーレイ
 - **nlohmann/json (ver 3.12.0)**: 外部データ（Prefab / Timeline）のパース
 - **OpenSimplex Noise**: ノイズ生成（Wander / 揺らぎ表現）
 - **Google Test**: ユニットテスト
@@ -300,7 +308,7 @@ struct SequenceTraits<MyComponent> : DefaultSequenceTraits {
 1. **Configの読み込み**:  
    汎用的な `JsonLoader` を使用して `game_config.json` をパースし、ウィンドウサイズ、各種ディレクトリパス、初期スポーン数などの基本設定を取得します。
 2. **基盤とマネージャの初期化**:  
-   DxLibの初期化（`ConfigureDxLib`）、グラフィックス描画基盤のセットアップを行った後、`PrefabManager` や `TimelineManager` などを生成します。
+   ウィンドウおよび DirectX 11 描画コンテキストの初期化（GLFW / D3D11）、グラフィックス描画基盤のセットアップを行った後、`PrefabManager` や `TimelineManager` などを生成します。
 3. **ECSの登録（Registration）**:  
    `GameRegistrations::RegisterAllComponents()` と `RegisterAllSystems()` により、全コンポーネントとシステムを登録します（ここで `SequenceTraits<T>::DataDriven` が有効なものは `ComponentFactoryRegistry` へ自動登録されます）。
 4. **外部データのロード**:  
@@ -706,7 +714,7 @@ GPU Instancing 導入後、Visual Studio Profiler で Boids 実行中（高負�
 これは、前段の最適化（GPU Instancing・ParallelFor・Boids タイムスライス分散・`sqrt` 回避など）が各所でバランスよく効いている結果です。
 
 `BoidsSystem` が最大ホットスポットとなっているのは、近傍探索・3体ルール演算・クォータニオン演算（Slerp / LookRotation）のコストが組み合わさるためです。`Quaternion::Slerp` や `acosf` の処理コストはその内訳の一部として現れています。  
-`PrimitiveMeshRenderSystem` の並列収集処理（9.17 %）は描画系の負荷を示しますが、GPU Instancing 導入によって旧来の Dynamic Batching 時代（DxLib 内部の `memcpy` が支配的だった）に比べ描画コストは大幅に抑制されており、ボトルネックはほぼ完全にシミュレーション側に移っています。
+`PrimitiveMeshRenderSystem` の並列収集処理（9.17 %）は描画系の負荷を示しますが、GPU Instancing 導入によって旧来の Dynamic Batching 時代（`memcpy` が支配的だった）に比べ描画コストは大幅に抑制されており、ボトルネックはほぼ完全にシミュレーション側に移っています。
 
 ---
 
@@ -832,7 +840,8 @@ ECSEngine/                                    ... リポジトリルート
 
 本プロジェクトでは以下の外部ライブラリを使用しています。各ライブラリの詳細なライセンス情報については、[THIRD_PARTY_LICENSES](THIRD_PARTY_LICENSES) ファイルをご参照ください。
 
-- **[DxLib](https://dxlib.xsrv.jp/)**: フリーソフトライセンス（内部で zlib, libpng, Ogg Vorbis/Theora 等を使用）
+- **[GLFW](https://www.glfw.org/)**: zlib/libpng License
+- **[Dear ImGui](https://github.com/ocornut/imgui)**: MIT License
 - **[nlohmann/json](https://github.com/nlohmann/json)**: MIT License
 - **[OpenSimplex Noise](https://github.com/KdotJPG/OpenSimplex2)**: The Unlicense / CC0 1.0 Universal（パブリックドメイン）
 - **[Google Test](https://github.com/google/googletest)**: BSD-3-Clause License
