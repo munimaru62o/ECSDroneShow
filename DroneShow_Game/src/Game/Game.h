@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Engine/ECS/Coordinator.h"
+#include "Engine/Scene/Camera.h"
 #include "Game/Data/Config/GameConfig.h"
 
 #include <memory>
@@ -54,6 +55,7 @@ private:
 private:
     GLFWwindow* m_window = nullptr;
 
+    Camera m_camera;
     Coordinator m_coordinator;
     GameConfig m_config;
 

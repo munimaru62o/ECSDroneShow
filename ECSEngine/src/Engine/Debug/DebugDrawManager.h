@@ -11,6 +11,7 @@
 struct Vector3;
 struct Matrix4;
 struct Color;
+class Camera;
 
 /**
  * @class DebugDrawManager
@@ -34,7 +35,7 @@ public:
     }
 
     void AddLine(const Vector3& start, const Vector3& end, Color color);
-    void RenderAndClear(const Matrix4& viewProj, int screenWidth, int screenHeight);
+    void RenderAndClear(const Camera& camera);
 
 private:
     std::vector<Debug::Line> m_lines;

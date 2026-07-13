@@ -58,6 +58,10 @@ struct Quaternion
 
     [[nodiscard]] static Quaternion Identity();
 
+    [[nodiscard]] Vector3  Forward() const;
+    [[nodiscard]] Vector3  Right() const;
+    [[nodiscard]] Vector3  Up() const;
+
     void Normalize();
     [[nodiscard]] Vector3 Rotate(const Vector3& v) const;
 

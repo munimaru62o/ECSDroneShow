@@ -120,8 +120,9 @@ bool Game::InitializeGraphics()
 {
     int width, height;
     glfwGetWindowSize(m_window, &width, &height);
-    HWND hwnd = glfwGetWin32Window(m_window);
+    m_camera.SetViewport(width, height);
 
+    HWND hwnd = glfwGetWin32Window(m_window);
     if (!RenderManager::GetInstance().Init(hwnd, width, height)) {
         std::cerr << "Failed to initialize RenderManager" << std::endl;
         return false;
@@ -185,6 +186,7 @@ void Game::Run()
             fixedAccumulator -= FIXED_DT;
         }
 
+        RenderManager::GetInstance().UpdateCamera(m_camera);
         RenderManager::GetInstance().BeginFrame();
 
         m_coordinator.UpdatePhase(SystemPhase::Render, dt, simulationTime);
@@ -308,10 +310,9 @@ void Game::DestroyEntity(int destroyNum)
 
 void Game::InitRenderState()
 {
-    Matrix4 viewMat = Matrix4::LookAt(m_config.camera.position, Vector3(0, 0, 0), Vector3(0, 1, 0));
-    Matrix4 projMat = Matrix4::Perspective(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
+    m_camera.LookAt(m_config.camera.position, Vector3(0, 0, 0));
+    m_camera.SetPerspective(45.0f, 0.1f, 10000.0f);
 
-    RenderManager::GetInstance().UpdateCamera(viewMat * projMat, m_config.camera.position);
     RenderManager::GetInstance().UpdateLight(
         Vector3(-1.0f, -1.0f, 1.0f),
         0.1f,
@@ -352,13 +353,7 @@ void Game::HandleInput()
 
 void Game::DrawDebugInfo()
 {
-    int width, height;
-    glfwGetWindowSize(m_window, &width, &height);
-
-    Matrix4 viewMat = Matrix4::LookAt(m_config.camera.position, Vector3(0, 0, 0), Vector3(0, 1, 0));
-    Matrix4 projMat = Matrix4::Perspective(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
-    Matrix4 viewProj = viewMat * projMat;
-    DebugDrawManager::GetInstance().RenderAndClear(viewProj, width, height);
+    DebugDrawManager::GetInstance().RenderAndClear(m_camera);
 
     if (!Debug::Overlay::IsVisible) {
         return;

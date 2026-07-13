@@ -13,6 +13,39 @@ Quaternion Quaternion::Identity()
 }
 
 
+[[nodiscard]] Vector3 Quaternion::Forward() const
+{
+    return
+    {
+        2.0f * (x * z + w * y),
+        2.0f * (y * z - w * x),
+        1.0f - 2.0f * (x * x + y * y)
+    };
+}
+
+
+[[nodiscard]] Vector3 Quaternion::Right() const
+{
+    return
+    {
+        1.0f - 2.0f * (y * y + z * z),
+        2.0f * (x * y + w * z),
+        2.0f * (x * z - w * y)
+    };
+}
+
+
+[[nodiscard]] Vector3 Quaternion::Up() const
+{
+    return
+    {
+        2.0f * (x * y - w * z),
+        1.0f - 2.0f * (x * x + z * z),
+        2.0f * (y * z + w * x)
+    };
+}
+
+
 void Quaternion::Normalize()
 {
     float mag2 = w * w + x * x + y * y + z * z;
