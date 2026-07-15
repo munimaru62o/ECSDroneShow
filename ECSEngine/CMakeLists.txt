@@ -9,3 +9,11 @@ target_include_directories(ECSEngine PUBLIC
 )
 
 target_link_libraries(ECSEngine PRIVATE imgui)
+
+if (ENABLE_DEBUG_DRAW)
+    target_compile_definitions(
+        ECSEngine
+        PUBLIC
+            ENABLE_DEBUG_DRAW
+    )
+endif()
