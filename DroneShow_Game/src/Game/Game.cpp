@@ -188,15 +188,20 @@ void Game::Run()
 
         RenderManager::GetInstance().UpdateCamera(m_camera);
         RenderManager::GetInstance().BeginFrame();
+        DebugDrawManager::GetInstance().BeginFrame();
 
         m_coordinator.UpdatePhase(SystemPhase::Render, dt, simulationTime);
         m_coordinator.EndFrame();
 
+        if (m_debugSettings.draw3DVisible) {
+            DebugDrawManager::GetInstance().Render(m_camera);
+        }
         DrawDebugInfo();
-
         ImGui::Render();
+
         RenderManager::GetInstance().RenderImGui();
         RenderManager::GetInstance().EndFrame();
+        DebugDrawManager::GetInstance().EndFrame();
     }
 }
 
@@ -341,11 +346,11 @@ void Game::HandleInput()
         }
         // Press [3] to toggle debug overlay (2D Text)
         else if (m_inputManager->IsKeyDown(GLFW_KEY_3)) {
-            Debug::Overlay::IsVisible = !Debug::Overlay::IsVisible;
+            m_debugSettings.overlayVisible = !m_debugSettings.overlayVisible;
         }
         // Press [4] to toggle debug drawing (3D Primitives)
         else if (m_inputManager->IsKeyDown(GLFW_KEY_4)) {
-            Debug::Draw3D::IsVisible = !Debug::Draw3D::IsVisible;
+            m_debugSettings.draw3DVisible = !m_debugSettings.draw3DVisible;
         }
 
     }
@@ -353,9 +358,7 @@ void Game::HandleInput()
 
 void Game::DrawDebugInfo()
 {
-    DebugDrawManager::GetInstance().RenderAndClear(m_camera);
-
-    if (!Debug::Overlay::IsVisible) {
+    if (!m_debugSettings.overlayVisible) {
         return;
     }
 
@@ -390,9 +393,9 @@ void Game::DrawDebugInfo()
         ImGui::TextColored(color, "Press [2]: Destroy Entity %d", m_config.spawn.userDestroyNum);
         ImGui::TextColored(color, "Press [3]: Toggle Enable Debug Overlay");
 
-        if (Debug::Config::IsEnabled) {
-            ImGui::TextColored(color, "Press [4]: Toggle Enable Debug 3D Draw");
-        }
+#ifdef ENABLE_DEBUG_DRAW
+        ImGui::TextColored(color, "Press [4]: Toggle Enable Debug 3D Draw");
+#endif
     }
     ImGui::End();
 }

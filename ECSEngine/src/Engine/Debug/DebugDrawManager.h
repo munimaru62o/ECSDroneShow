@@ -34,8 +34,11 @@ public:
         return instance;
     }
 
+    void BeginFrame();
+    void EndFrame();
+
+    void Render(const Camera& camera);
     void AddLine(const Vector3& start, const Vector3& end, Color color);
-    void RenderAndClear(const Camera& camera);
 
 private:
     std::vector<Debug::Line> m_lines;

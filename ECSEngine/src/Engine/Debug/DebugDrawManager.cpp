@@ -18,25 +18,22 @@ DebugDrawManager::~DebugDrawManager() = default;
 
 void DebugDrawManager::AddLine(const Vector3& start, const Vector3& end, Color color)
 {
-    if (!Debug::Config::IsEnabled || !Debug::Draw3D::IsVisible) {
-        return;
-    }
-
     std::lock_guard<std::mutex> lock(m_mutex);
     m_lines.push_back({ start, end, color });
 }
 
-void DebugDrawManager::RenderAndClear(const Camera& camera)
+void DebugDrawManager::BeginFrame()
 {
-    if (!Debug::Config::IsEnabled) {
-        return;
-    }
+    m_linesToDraw.swap(m_lines);
+}
 
-    {
-        std::lock_guard<std::mutex> lock(m_mutex);
-        m_linesToDraw.swap(m_lines);
-    }
+void DebugDrawManager::EndFrame()
+{
+    m_linesToDraw.clear();
+}
 
+void DebugDrawManager::Render(const Camera& camera)
+{
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
     for (const auto& line : m_linesToDraw) {
         Vector2 screenStart, screenEnd;
@@ -46,6 +43,4 @@ void DebugDrawManager::RenderAndClear(const Camera& camera)
             drawList->AddLine(ToImVec2(screenStart), ToImVec2(screenEnd), color, 1.0f);
         }
     }
-
-    m_linesToDraw.clear();
 }
