@@ -24,6 +24,8 @@ void DebugDrawManager::AddLine(const Vector3& start, const Vector3& end, Color c
 
 void DebugDrawManager::BeginFrame()
 {
+    // Safe without locking.
+    // All worker threads have completed before BeginFrame() is called.
     m_linesToDraw.swap(m_lines);
 }
 
