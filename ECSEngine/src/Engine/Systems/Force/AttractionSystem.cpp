@@ -7,7 +7,7 @@
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Physics/ForceProfile.h"
 #include "Engine/Physics/ForcePlane.h"
-#include "Engine/Debug/DebugDrawMacros.h"
+#include "Engine/Debug/DebugDrawHelpers.h"
 
 #include <cmath>
 
@@ -57,6 +57,6 @@ void AttractionSystem::ProcessEntity(Entity entity, const TransformComponent& tr
         force.value += forceDir;
 
         // 6. Optional: Debug visualization for sampling entities
-        DEBUG_DRAW_FORCE(entity, transform.position, forceDir, Debug::DrawColor::Force::Attraction);
+        DebugDraw::Force(entity, transform.position, forceDir, Debug::DrawColor::Force::Attraction);
     }
 }

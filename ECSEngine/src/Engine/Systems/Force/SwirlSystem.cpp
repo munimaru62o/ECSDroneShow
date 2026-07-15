@@ -7,7 +7,7 @@
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Physics/ForceProfile.h"
 #include "Engine/Math/Constants.h"
-#include "Engine/Debug/DebugDrawMacros.h"
+#include "Engine/Debug/DebugDrawHelpers.h"
 
 #include <cmath>
 #include <cassert>
@@ -58,6 +58,6 @@ void SwirlSystem::ProcessEntity(Entity entity, const TransformComponent& transfo
         Vector3 forceDir = dirToCenter.Cross(swirl.axis) * magnitude;
         force.value += forceDir;
 
-        DEBUG_DRAW_FORCE(entity, transform.position, forceDir, Debug::DrawColor::Force::Swirl);
+        DebugDraw::Force(entity, transform.position, forceDir, Debug::DrawColor::Force::Swirl);
     }
 }

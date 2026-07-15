@@ -6,7 +6,7 @@
 #include "Engine/Components/CoreComponents.h"
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Physics/ForceProfile.h"
-#include "Engine/Debug/DebugDrawMacros.h"
+#include "Engine/Debug/DebugDrawHelpers.h"
 
 #include <cmath>
 #include <cassert>
@@ -47,5 +47,5 @@ void LiftSystem::ProcessEntity(Entity entity, const TransformComponent& transfor
     Vector3 forceDir = lift.axis * magnitude;
     force.value += forceDir;
 
-    DEBUG_DRAW_FORCE(entity, transform.position, forceDir, Debug::DrawColor::Force::Lift);
+    DebugDraw::Force(entity, transform.position, forceDir, Debug::DrawColor::Force::Lift);
 }
