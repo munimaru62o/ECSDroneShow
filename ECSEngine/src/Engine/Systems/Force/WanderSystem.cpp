@@ -6,8 +6,7 @@
 #include "Engine/Components/CoreComponents.h"
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Math/StatelessRandom.h"
-#include "Engine/Debug/DebugTypes.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugDrawMacros.h"
 
 #include <cmath>
 
@@ -58,12 +57,8 @@ void WanderSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double
     // Apply the cached force continuously every frame
     force.value += wander.cachedDirection * wander.strength;
 
-    if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-        const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
-        DebugDrawManager::GetInstance().AddLine(
-            transform.position,
-            transform.position + wander.cachedDirection * wander.strength * Debug::Scale::Force,
-            Debug::DrawColor::Force::Wander
-        );
-    }
+#if ENABLE_DEBUG_DRAW
+    const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
+    DEBUG_DRAW_FORCE(entity, transform.position, wander.cachedDirection * wander.strength, Debug::DrawColor::Force::Wander);
+#endif
 }

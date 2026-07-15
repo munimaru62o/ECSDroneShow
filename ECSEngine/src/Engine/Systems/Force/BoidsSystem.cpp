@@ -8,8 +8,7 @@
 #include "Engine/Math/Vector3.h"
 #include "Engine/Spatial/SpatialGrid.h"
 #include "Engine/Systems/Spatial/SpatialBoidCacheSystem.h"
-#include "Engine/Debug/DebugTypes.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugDrawMacros.h"
 
 #include <vector>
 #include <algorithm>
@@ -103,13 +102,7 @@ void BoidsSystem::ProcessEntity( // NOSONAR (cpp:S107 - ECS architecture require
     force.value += boids.cachedDirection;
 
     // Debug drawing
-    if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-        DebugDrawManager::GetInstance().AddLine(
-            transform.position,
-            transform.position + boids.cachedDirection * Debug::Scale::Force,
-            Debug::DrawColor::Force::Boids
-        );
-    }
+    DEBUG_DRAW_FORCE(entity, transform.position, boids.cachedDirection, Debug::DrawColor::Force::Boids);
 }
 
 
