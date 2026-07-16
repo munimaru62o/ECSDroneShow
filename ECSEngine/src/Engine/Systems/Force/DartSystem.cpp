@@ -42,9 +42,7 @@ void DartSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double s
 #if ENABLE_DEBUG
     if (coordinator.HasComponent<TransformComponent>(entity)) {
         const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
-        if (m_debugManager) {
-            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Dart);
-        }
+        GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Dart);
     }
 #endif
 }

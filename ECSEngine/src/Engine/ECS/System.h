@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <functional>
+#include <cassert>
 
 class Coordinator;
 class DebugManager;
@@ -64,6 +65,12 @@ protected:
         m_threadPool->ParallelFor(totalElements, std::forward<Func>(task));
     }
 
+    DebugManager& GetDebugManager() const
+    {
+        assert(m_debugManager);
+        return *m_debugManager;
+    }
+
 private:
     void SetThreadPool(ThreadPool* pool)
     {
@@ -80,13 +87,12 @@ private:
         m_entitySet.Remove(entity);
     }
 
-protected:
-    DebugManager* m_debugManager = nullptr;
-
 private:
     friend class SystemManager;
     friend class Coordinator;
 
     ThreadPool* m_threadPool = nullptr;
     EntitySparseSet m_entitySet;
+
+    DebugManager* m_debugManager = nullptr;
 };

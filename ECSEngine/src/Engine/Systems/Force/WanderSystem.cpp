@@ -60,9 +60,7 @@ void WanderSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double
 #if ENABLE_DEBUG
     if (coordinator.HasComponent<TransformComponent>(entity)) {
         const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
-        if (m_debugManager) {
-            m_debugManager->DrawForce(entity, transform.position, wander.cachedDirection * wander.strength, Debug::DrawColor::Force::Wander);
-        }
+        GetDebugManager().DrawForce(entity, transform.position, wander.cachedDirection * wander.strength, Debug::DrawColor::Force::Wander);
     }
 #endif
 }

@@ -47,7 +47,5 @@ void LiftSystem::ProcessEntity(Entity entity, const TransformComponent& transfor
     Vector3 forceDir = lift.axis * magnitude;
     force.value += forceDir;
 
-    if (m_debugManager) {
-        m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Lift);
-    }
+    GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Lift);
 }

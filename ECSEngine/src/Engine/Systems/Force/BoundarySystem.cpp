@@ -53,8 +53,6 @@ void BoundarySystem::ProcessEntity(Entity entity, const TransformComponent& tran
         force.value -= forceDir;
 
         // Debug visualization
-        if (m_debugManager) {
-            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Boundary);
-        }
+        GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Boundary);
     }
 }

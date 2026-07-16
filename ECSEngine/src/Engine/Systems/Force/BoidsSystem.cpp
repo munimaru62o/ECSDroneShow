@@ -102,9 +102,7 @@ void BoidsSystem::ProcessEntity( // NOSONAR (cpp:S107 - ECS architecture require
     force.value += boids.cachedDirection;
 
     // Debug drawing
-    if (m_debugManager) {
-        m_debugManager->DrawForce(entity, transform.position, boids.cachedDirection, Debug::DrawColor::Force::Boids);
-    }
+    GetDebugManager().DrawForce(entity, transform.position, boids.cachedDirection, Debug::DrawColor::Force::Boids);
 }
 
 

@@ -57,8 +57,6 @@ void AttractionSystem::ProcessEntity(Entity entity, const TransformComponent& tr
         force.value += forceDir;
 
         // 6. Optional: Debug visualization for sampling entities
-        if (m_debugManager) {
-            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Attraction);
-        }
+        GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Attraction);
     }
 }

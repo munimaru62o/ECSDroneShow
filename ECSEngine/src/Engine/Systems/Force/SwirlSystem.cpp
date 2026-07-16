@@ -58,8 +58,6 @@ void SwirlSystem::ProcessEntity(Entity entity, const TransformComponent& transfo
         Vector3 forceDir = dirToCenter.Cross(swirl.axis) * magnitude;
         force.value += forceDir;
 
-        if (m_debugManager) {
-            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Swirl);
-        }
+        GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Swirl);
     }
 }
