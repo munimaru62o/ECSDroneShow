@@ -6,7 +6,7 @@
 #include "Engine/Components/CoreComponents.h"
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Math/Constants.h"
-#include "Engine/Debug/DebugDrawHelpers.h"
+#include "Engine/Debug/DebugManager.h"
 
 #include <cmath>
 
@@ -53,6 +53,8 @@ void BoundarySystem::ProcessEntity(Entity entity, const TransformComponent& tran
         force.value -= forceDir;
 
         // Debug visualization
-        DebugDraw::Force(entity, transform.position, forceDir, Debug::DrawColor::Force::Boundary);
+        if (m_debugManager) {
+            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Boundary);
+        }
     }
 }

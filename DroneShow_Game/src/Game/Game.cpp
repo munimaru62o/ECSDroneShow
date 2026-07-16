@@ -25,8 +25,6 @@
 #include "Game/Data/Timeline/TimelineData.h"
 #include "Game/Parsers/Json/DataJsonParsers.h"
 
-#include "Engine/Debug/DebugDrawManager.h"
-
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
@@ -188,20 +186,19 @@ void Game::Run()
 
         RenderManager::GetInstance().UpdateCamera(m_camera);
         RenderManager::GetInstance().BeginFrame();
-        DebugDrawManager::GetInstance().BeginFrame();
+        m_debugManager.BeginFrame();
 
         m_coordinator.UpdatePhase(SystemPhase::Render, dt, simulationTime);
         m_coordinator.EndFrame();
 
-        if (m_debugSettings.draw3DVisible) {
-            DebugDrawManager::GetInstance().Render(m_camera);
-        }
+        m_debugManager.Render(m_camera);
+
         DrawDebugInfo();
         ImGui::Render();
 
         RenderManager::GetInstance().RenderImGui();
         RenderManager::GetInstance().EndFrame();
-        DebugDrawManager::GetInstance().EndFrame();
+        m_debugManager.EndFrame();
     }
 }
 
@@ -235,6 +232,12 @@ bool Game::ShouldRun()
 
 void Game::SetupSystems()
 {
+    m_coordinator.ForEachSystem([this](System* system) {
+        if (system) {
+            system->SetDebugManager(&m_debugManager);
+        }
+    });
+
     auto* partition = m_coordinator.GetSystem<SpatialPartitionSystem>();
     auto* cache = m_coordinator.GetSystem<SpatialBoidCacheSystem>();
     auto* boids = m_coordinator.GetSystem<BoidsSystem>();
@@ -346,11 +349,11 @@ void Game::HandleInput()
         }
         // Press [3] to toggle debug overlay (2D Text)
         else if (m_inputManager->IsKeyDown(GLFW_KEY_3)) {
-            m_debugSettings.overlayVisible = !m_debugSettings.overlayVisible;
+            m_debugManager.SetOverlayEnabled(!m_debugManager.IsOverlayEnabled());
         }
         // Press [4] to toggle debug drawing (3D Primitives)
         else if (m_inputManager->IsKeyDown(GLFW_KEY_4)) {
-            m_debugSettings.draw3DVisible = !m_debugSettings.draw3DVisible;
+            m_debugManager.SetDraw3DEnabled(!m_debugManager.IsDraw3DEnabled());
         }
 
     }
@@ -358,7 +361,7 @@ void Game::HandleInput()
 
 void Game::DrawDebugInfo()
 {
-    if (!m_debugSettings.overlayVisible) {
+    if (!m_debugManager.IsOverlayEnabled()) {
         return;
     }
 
@@ -393,7 +396,7 @@ void Game::DrawDebugInfo()
         ImGui::TextColored(color, "Press [2]: Destroy Entity %d", m_config.spawn.userDestroyNum);
         ImGui::TextColored(color, "Press [3]: Toggle Enable Debug Overlay");
 
-#ifdef ENABLE_DEBUG_DRAW
+#ifdef ENABLE_DEBUG
         ImGui::TextColored(color, "Press [4]: Toggle Enable Debug 3D Draw");
 #endif
     }

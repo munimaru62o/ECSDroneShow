@@ -13,6 +13,7 @@
 #include <functional>
 
 class ThreadPool;
+class DebugDrawManager;
 
 /**
  * @class Coordinator
@@ -214,6 +215,12 @@ public:
     T* GetSystem()
     {
         return m_systemManager->GetSystem<T>();
+    }
+
+    template<typename Func>
+    void ForEachSystem(Func&& func)
+    {
+        m_systemManager->ForEachSystem(std::forward<Func>(func));
     }
 
     void InitSystems();

@@ -11,6 +11,7 @@
 #include <functional>
 
 class Coordinator;
+class DebugManager;
 
 /**
  * @class System
@@ -45,6 +46,8 @@ public:
         return m_entitySet.GetEntities();
     }
 
+    void SetDebugManager(DebugManager* manager) { m_debugManager = manager; }
+
 protected:
     template<typename Func>
     void ParallelFor(int totalElements, Func&& task)
@@ -76,6 +79,9 @@ private:
     {
         m_entitySet.Remove(entity);
     }
+
+protected:
+    DebugManager* m_debugManager = nullptr;
 
 private:
     friend class SystemManager;

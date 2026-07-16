@@ -6,7 +6,7 @@
 #include "Engine/Components/CoreComponents.h"
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Math/SeededRandom.h"
-#include "Engine/Debug/DebugDrawHelpers.h"
+#include "Engine/Debug/DebugManager.h"
 
 #include <cmath>
 
@@ -39,10 +39,12 @@ void DartSystem::ProcessEntity(Entity entity, Coordinator& coordinator, double s
     Vector3 forceDir = dart.cachedDirection * dart.strength;
     force.value += forceDir;
 
-#if ENABLE_DEBUG_DRAW
+#if ENABLE_DEBUG
     if (coordinator.HasComponent<TransformComponent>(entity)) {
         const auto& transform = coordinator.GetComponent<TransformComponent>(entity);
-        DebugDraw::Force(entity, transform.position, forceDir, Debug::DrawColor::Force::Dart);
+        if (m_debugManager) {
+            m_debugManager->DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Dart);
+        }
     }
 #endif
 }

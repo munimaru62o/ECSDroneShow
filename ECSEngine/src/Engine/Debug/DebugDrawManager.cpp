@@ -16,7 +16,7 @@ DebugDrawManager::DebugDrawManager() = default;
 DebugDrawManager::~DebugDrawManager() = default;
 
 
-void DebugDrawManager::AddLine(const Vector3& start, const Vector3& end, Color color)
+void DebugDrawManager::AddLine(const Vector3& start, const Vector3& end, const Color& color)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_lines.push_back({ start, end, color });
@@ -36,6 +36,10 @@ void DebugDrawManager::EndFrame()
 
 void DebugDrawManager::Render(const Camera& camera)
 {
+    if (m_linesToDraw.empty()) {
+        return;
+    }
+
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
     for (const auto& line : m_linesToDraw) {
         Vector2 screenStart, screenEnd;
