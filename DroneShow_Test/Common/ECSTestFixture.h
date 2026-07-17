@@ -31,9 +31,7 @@ class ECSTestFixture : public ::testing::Test
 
         SetUpSystems();
         coordinator.InitSystems();
-
-        DebugManager debugManager;
-        coordinator.SetDebugManager(&debugManager);
+        coordinator.SetDebugManager(&m_debugManager);
     }
 
     /**
@@ -56,6 +54,7 @@ class ECSTestFixture : public ::testing::Test
 
 // sonar-ignore-next-line
 protected:
+    DebugManager m_debugManager;
     Coordinator coordinator;
     ComponentRegistry registry;
 };
