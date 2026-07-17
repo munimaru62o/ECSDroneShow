@@ -89,6 +89,16 @@ public:
         return static_cast<T*>(m_systems[typeId].system.get());
     }
 
+    template<typename Func>
+    void ForEachSystem(Func&& func)
+    {
+        for (auto& record : m_systems) {
+            if (auto* system = record.system.get()) {
+                func(system);
+            }
+        }
+    }
+
     void EntityDestroyed(Entity entity)
     {
         for (const auto& record : m_systems) {

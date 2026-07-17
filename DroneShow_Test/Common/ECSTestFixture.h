@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include "Engine/ECS/Coordinator.h"
+#include "Engine/Debug/DebugManager.h"
 #include "Game/Registry/ComponentRegistry.h"
 #include "Game/Registration/RegisterAllComponents.h"
 #include "Game/Registration/RegisterAllSystems.h"
@@ -27,6 +28,7 @@ class ECSTestFixture : public ::testing::Test
         coordinator.Init();
         GameRegistrations::RegisterAllComponents(registry, coordinator);
         GameRegistrations::RegisterAllSystems(coordinator);
+        coordinator.SetDebugManager(&m_debugManager);
 
         SetUpSystems();
         coordinator.InitSystems();
@@ -52,6 +54,7 @@ class ECSTestFixture : public ::testing::Test
 
 // sonar-ignore-next-line
 protected:
+    DebugManager m_debugManager;
     Coordinator coordinator;
     ComponentRegistry registry;
 };

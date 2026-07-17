@@ -6,8 +6,7 @@
 #include "Engine/Components/CoreComponents.h"
 #include "Engine/Components/ForceComponents.h"
 #include "Engine/Physics/ForceProfile.h"
-#include "Engine/Debug/DebugTypes.h"
-#include "Engine/Debug/DebugDrawManager.h"
+#include "Engine/Debug/DebugManager.h"
 
 #include <cmath>
 #include <cassert>
@@ -48,11 +47,5 @@ void LiftSystem::ProcessEntity(Entity entity, const TransformComponent& transfor
     Vector3 forceDir = lift.axis * magnitude;
     force.value += forceDir;
 
-    if (Debug::Config::IsEnabled && (entity % Debug::Config::EntitySamplingInterval == 0)) {
-        DebugDrawManager::GetInstance().AddLine(
-            transform.position,
-            transform.position + forceDir * Debug::Scale::Force,
-            Debug::DrawColor::Force::Lift
-        );
-    }
+    GetDebugManager().DrawForce(entity, transform.position, forceDir, Debug::DrawColor::Force::Lift);
 }

@@ -49,6 +49,7 @@ target_include_directories(imgui PUBLIC
 )
 target_link_libraries(imgui PRIVATE glfw d3d11 d3dcompiler)
 
+option(ENABLE_DEBUG "Enable debug" OFF)
 
 add_subdirectory(ECSEngine)
 add_subdirectory(DroneShow_Game)

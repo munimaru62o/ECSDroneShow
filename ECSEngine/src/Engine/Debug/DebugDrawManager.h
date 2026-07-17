@@ -15,27 +15,23 @@ class Camera;
 
 /**
  * @class DebugDrawManager
- * @brief A thread-safe manager for rendering debug primitives (e.g., lines, shapes) in the 3D world.
+ * @brief Stores and renders debug primitives for the current frame.
  *
- * This singleton utility allows various systems (AI, Physics, etc.) to queue debug geometry
- * for visualization. It handles thread safety for concurrent additions and automatically
- * clears the draw buffer after each frame rendering, ensuring efficient and safe debugging.
+ * Debug primitives can be safely queued from multiple threads during simulation.
+ * At the beginning of the render phase, the queued primitives are swapped into a
+ * render buffer and rendered. The render buffer is cleared at the end of the frame.
  */
 class DebugDrawManager final : private NonCopyable
 {
-private:
+public:
     DebugDrawManager();
     ~DebugDrawManager();
 
-public:
-    [[nodiscard]] inline static DebugDrawManager& GetInstance()
-    {
-        static DebugDrawManager instance;
-        return instance;
-    }
+    void BeginFrame();
+    void EndFrame();
 
-    void AddLine(const Vector3& start, const Vector3& end, Color color);
-    void RenderAndClear(const Camera& camera);
+    void Render(const Camera& camera);
+    void AddLine(const Vector3& start, const Vector3& end, const Color& color);
 
 private:
     std::vector<Debug::Line> m_lines;

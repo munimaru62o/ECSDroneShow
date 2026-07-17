@@ -5,6 +5,7 @@
 #include "Engine/ECS/Coordinator.h"
 #include "Engine/Scene/Camera.h"
 #include "Game/Data/Config/GameConfig.h"
+#include "Engine/Debug/DebugManager.h"
 
 #include <memory>
 
@@ -65,6 +66,7 @@ private:
     std::unique_ptr<ComponentRegistry> m_registry;
 
     TimelineDirectorSystem* m_directorSystem = nullptr;
+    DebugManager m_debugManager;
 
     bool m_isRunning = false;
 };

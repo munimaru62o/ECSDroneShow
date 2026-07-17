@@ -120,3 +120,10 @@ void Coordinator::FlushCommandContext(ThreadCommandContext& context)
         }
     }
 }
+
+void Coordinator::SetDebugManager(DebugManager* manager)
+{
+    m_systemManager->ForEachSystem([&](System* system) {
+        system->SetDebugManager(manager);
+    });
+}

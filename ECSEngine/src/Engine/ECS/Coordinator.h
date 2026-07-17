@@ -13,6 +13,7 @@
 #include <functional>
 
 class ThreadPool;
+class DebugManager;
 
 /**
  * @class Coordinator
@@ -216,6 +217,12 @@ public:
         return m_systemManager->GetSystem<T>();
     }
 
+    template<typename Func>
+    void ForEachSystem(Func&& func)
+    {
+        m_systemManager->ForEachSystem(std::forward<Func>(func));
+    }
+
     void InitSystems();
     void UpdatePhase(SystemPhase phase, float dt, double simulationTime);
 
@@ -237,6 +244,11 @@ public:
         ThreadCommandContext& context = GetCommandContext();
         context.GetBuffer<T>(GetComponentType<T>()).removes.push_back({ entity });
     }
+
+    // ---------------------------------------------------------
+    // Debug Interface
+    // ---------------------------------------------------------
+    void SetDebugManager(DebugManager* manager);
 
 private:
     [[nodiscard]] ThreadCommandContext& GetCommandContext();

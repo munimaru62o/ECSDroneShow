@@ -6,9 +6,14 @@
 #include "Engine/Math/Vector3.h"
 
 
+struct DebugSettings
+{
+    bool overlayVisible = true;
+    bool draw3DVisible = true;
+};
+
 namespace Debug
 {
-
 struct Line
 {
     Vector3 start = {};
@@ -18,16 +23,7 @@ struct Line
 
 namespace Config
 {
-constexpr bool IsEnabled = false;
 constexpr int EntitySamplingInterval = 1000;
-}
-namespace Overlay
-{
-inline bool IsVisible = true;
-}
-namespace Draw3D
-{
-inline bool IsVisible = true;
 }
 
 namespace Scale
