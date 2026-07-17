@@ -34,7 +34,9 @@ void DebugManager::Render(const Camera& camera)
 void DebugManager::DrawLine(const Vector3& start, const Vector3& end, const Color& color)
 {
 #ifdef ENABLE_DEBUG
-    m_drawManager.AddLine(start, end, color);
+    if (m_settings.draw3DVisible) {
+        m_drawManager.AddLine(start, end, color);
+    }
 #endif
 }
 
