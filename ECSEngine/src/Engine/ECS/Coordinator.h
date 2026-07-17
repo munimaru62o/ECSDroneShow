@@ -13,7 +13,7 @@
 #include <functional>
 
 class ThreadPool;
-class DebugDrawManager;
+class DebugManager;
 
 /**
  * @class Coordinator
@@ -244,6 +244,11 @@ public:
         ThreadCommandContext& context = GetCommandContext();
         context.GetBuffer<T>(GetComponentType<T>()).removes.push_back({ entity });
     }
+
+    // ---------------------------------------------------------
+    // Debug Interface
+    // ---------------------------------------------------------
+    void SetDebugManager(DebugManager* manager);
 
 private:
     [[nodiscard]] ThreadCommandContext& GetCommandContext();

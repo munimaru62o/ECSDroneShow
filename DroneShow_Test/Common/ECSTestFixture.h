@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include "Engine/ECS/Coordinator.h"
+#include "Engine/Debug/DebugManager.h"
 #include "Game/Registry/ComponentRegistry.h"
 #include "Game/Registration/RegisterAllComponents.h"
 #include "Game/Registration/RegisterAllSystems.h"
@@ -30,6 +31,9 @@ class ECSTestFixture : public ::testing::Test
 
         SetUpSystems();
         coordinator.InitSystems();
+
+        DebugManager debugManager;
+        coordinator.SetDebugManager(&debugManager);
     }
 
     /**

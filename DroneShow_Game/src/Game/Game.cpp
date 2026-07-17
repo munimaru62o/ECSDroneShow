@@ -74,6 +74,7 @@ bool Game::Init()
 
     SetupSystems();
     m_coordinator.InitSystems();
+    m_coordinator.SetDebugManager(&m_debugManager);
 
     SpawnEntity(m_config.spawn.initialSpawnCount, m_config.prefab.spawnName);
 
@@ -232,12 +233,6 @@ bool Game::ShouldRun()
 
 void Game::SetupSystems()
 {
-    m_coordinator.ForEachSystem([this](System* system) {
-        if (system) {
-            system->SetDebugManager(&m_debugManager);
-        }
-    });
-
     auto* partition = m_coordinator.GetSystem<SpatialPartitionSystem>();
     auto* cache = m_coordinator.GetSystem<SpatialBoidCacheSystem>();
     auto* boids = m_coordinator.GetSystem<BoidsSystem>();
