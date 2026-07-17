@@ -69,12 +69,12 @@ bool Game::Init()
 
     GameRegistrations::RegisterAllComponents(*m_registry, m_coordinator);
     GameRegistrations::RegisterAllSystems(m_coordinator);
+    m_coordinator.SetDebugManager(&m_debugManager);
 
     LoadGameData();
 
     SetupSystems();
     m_coordinator.InitSystems();
-    m_coordinator.SetDebugManager(&m_debugManager);
 
     SpawnEntity(m_config.spawn.initialSpawnCount, m_config.prefab.spawnName);
 

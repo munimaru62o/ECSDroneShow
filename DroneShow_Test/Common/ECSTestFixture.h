@@ -28,10 +28,10 @@ class ECSTestFixture : public ::testing::Test
         coordinator.Init();
         GameRegistrations::RegisterAllComponents(registry, coordinator);
         GameRegistrations::RegisterAllSystems(coordinator);
+        coordinator.SetDebugManager(&m_debugManager);
 
         SetUpSystems();
         coordinator.InitSystems();
-        coordinator.SetDebugManager(&m_debugManager);
     }
 
     /**
