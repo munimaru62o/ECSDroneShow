@@ -34,9 +34,10 @@ struct UniversalArg
 {
     ServiceContainer& container;
 
+    // Defined out-of-line, after ServiceContainer is complete.
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
-    operator T& () const;   // Defined out-of-line, after ServiceContainer is complete.
+    operator T& () const;
 
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
@@ -63,9 +64,8 @@ constexpr std::size_t DeduceConstructorArity()
     } else if constexpr (N == 0) {
         static_assert(N != 0,
                       "ServiceContainer: no viable constructor found for T "
-                      "(tried up to kMaxConstructorArgs parameters, including default "
-                      "construction). Make sure every dependency is registered, or "
-                      "raise kMaxConstructorArgs.");
+                      "(tried up to kMaxConstructorArgs parameters, including default construction)."
+                      "Make sure every dependency is registered, or raise kMaxConstructorArgs.");
         return 0;
     } else {
         return DeduceConstructorArity<T, N - 1>();
@@ -210,7 +210,6 @@ private:
 
 /**
  * @brief Resolves dependencies and provides services.
- * Equivalent to SOL-AVES's `phx::ServiceContainer`.
  *
  * Holds a copy of the registrations from a ServiceList,
  * so multiple ServiceContainer instances built from the same ServiceList (e.g. a
