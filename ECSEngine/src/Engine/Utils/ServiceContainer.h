@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <typeindex>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class ServiceContainer;
@@ -29,7 +30,18 @@ class ServiceContainer;
 namespace detail
 {
 
-// Self is the type currently being constructed. Excluding it is  required: without it,
+// Helper to strip cv-qualifiers (const/volatile) and treat as a raw type.
+// This normalizes types deduced from constructor parameters like `const Dep&` to `Dep`.
+template <typename T>
+using ServiceType = std::remove_cv_t<T>;
+
+template <typename T>
+inline std::type_index ServiceKey()
+{
+    return std::type_index(typeid(ServiceType<T>*));
+}
+
+// Self is the type currently being constructed. Excluding it is required: without it,
 // UniversalArg would also be a viable conversion target for T's own copy/move constructor, making the constructor call ambiguous.
 template <typename Self>
 struct UniversalArg
@@ -39,15 +51,15 @@ struct UniversalArg
     // Defined out-of-line, after ServiceContainer is complete.
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
-    operator T& () const;
+        operator T& () const;
 
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
-    operator T* () const;
+        operator T* () const;
 
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
-    operator std::shared_ptr<T>() const;
+        operator std::shared_ptr<T>() const;
 };
 
 // Is T constructible from N UniversalArg values?
@@ -164,7 +176,7 @@ public:
         static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>,
                       "Implementation must derive from Interface.");
 
-        m_table.Add(typeid(Interface*), policy, ServiceFactory{
+        m_table.Add(detail::ServiceKey<Interface>(), policy, ServiceFactory{
             .lifetime = Lifetime::Singleton,
             .creator = [](ServiceContainer& container) -> std::any {
                 std::shared_ptr<Implementation> impl = detail::Instantiate<Implementation>(container);
@@ -187,7 +199,7 @@ public:
         static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>,
                       "Implementation must derive from Interface.");
 
-        m_table.Add(typeid(Interface*), policy, ServiceFactory{
+        m_table.Add(detail::ServiceKey<Interface>(), policy, ServiceFactory{
             .lifetime = Lifetime::Transient,
             .creator = [](ServiceContainer& container) -> std::any {
                 std::shared_ptr<Implementation> impl = detail::Instantiate<Implementation>(container);
@@ -197,14 +209,14 @@ public:
                     });
     }
 
-
     template <typename T>
     void RegisterInstance(T& instance, RegistrationPolicy policy = RegistrationPolicy::Forbid)
     {
-        m_table.Add(typeid(T*), policy, ServiceFactory{
+        m_table.Add(detail::ServiceKey<T>(), policy, ServiceFactory{
             .lifetime = Lifetime::Instance,
             .creator = nullptr,
-            .instance = &instance,
+            // Match the stored pointer type to the un-cv-qualified type for std::any_cast<ServiceType<T>*> on retrieval.
+            .instance = const_cast<detail::ServiceType<T>*>(&instance),
                     });
     }
 
@@ -224,6 +236,26 @@ private:
  */
 class ServiceContainer
 {
+private:
+    // RAII guard class to detect circular dependencies (infinite loops) during resolution.
+    struct ConstructGuard
+    {
+        std::unordered_set<std::type_index>& constructingSet;
+        std::type_index key;
+
+        ConstructGuard(std::unordered_set<std::type_index>& set, std::type_index k)
+            : constructingSet(set), key(k)
+        {
+            if (!constructingSet.insert(key).second) {
+                throw std::logic_error("ServiceContainer: Circular dependency detected for type: " + std::string(key.name()));
+            }
+        }
+        ~ConstructGuard()
+        {
+            constructingSet.erase(key);
+        }
+    };
+
 public:
     explicit ServiceContainer(const ServiceList& list)
         : m_factories(list.GetFactories())
@@ -252,28 +284,33 @@ public:
     template <typename T>
     T& Resolve()
     {
-        auto it = m_factories.find(typeid(T*));
+        auto key = detail::ServiceKey<T>();
+        auto it = m_factories.find(key);
+
         if (it == m_factories.end()) {
-            throw std::runtime_error(std::string("Service not registered: ") + typeid(T*).name());
+            throw std::runtime_error(std::string("Service not registered: ") + key.name());
         }
 
         ServiceList::ServiceFactory& factory = it->second;
 
         switch (factory.lifetime) {
             case ServiceList::Lifetime::Instance:
-                return *std::any_cast<T*>(factory.instance);
+                return *std::any_cast<detail::ServiceType<T>*>(factory.instance);
 
             case ServiceList::Lifetime::Singleton:
                 if (!factory.instance.has_value()) {
+                    // Track the construction state using the RAII guard. Throws if a circular dependency is detected.
+                    ConstructGuard guard(m_constructing, key);
+
                     factory.instance = factory.creator(*this);
-                    m_creationOrder.push_back(typeid(T*));
+                    m_creationOrder.push_back(key);
                 }
-                return *std::any_cast<std::shared_ptr<T>>(factory.instance);
+                return *std::any_cast<std::shared_ptr<detail::ServiceType<T>>>(factory.instance);
 
             case ServiceList::Lifetime::Transient:
                 throw std::logic_error(
                     std::string("ServiceContainer::Resolve<T>(): type is registered as Transient, which cannot be held by reference/pointer. ")
-                    + "Take it as std::shared_ptr<T> in the constructor (or call CreateNew<T>() directly): " + typeid(T*).name());
+                    + "Take it as std::shared_ptr<T> in the constructor (or call CreateNew<T>() directly): " + key.name());
         }
 
         throw std::logic_error("ServiceContainer::Resolve<T>(): unhandled Lifetime value.");
@@ -284,9 +321,11 @@ public:
     template <typename T>
     std::shared_ptr<T> CreateNew()
     {
-        auto it = m_factories.find(typeid(T*));
+        auto key = detail::ServiceKey<T>();
+        auto it = m_factories.find(key);
+
         if (it == m_factories.end()) {
-            throw std::runtime_error(std::string("Service not registered: ") + typeid(T*).name());
+            throw std::runtime_error(std::string("Service not registered: ") + key.name());
         }
 
         ServiceList::ServiceFactory& factory = it->second;
@@ -294,15 +333,18 @@ public:
         if (factory.lifetime != ServiceList::Lifetime::Transient) {
             throw std::logic_error(
                 std::string("ServiceContainer::CreateNew<T>(): type is not registered as Transient. ")
-                + "Use Resolve<T>() instead: " + typeid(T*).name());
+                + "Use Resolve<T>() instead: " + key.name());
         }
 
-        return std::any_cast<std::shared_ptr<T>>(factory.creator(*this));
+        // Apply the guard for Transient creation as well, since circular dependencies can still occur.
+        ConstructGuard guard(m_constructing, key);
+        return std::any_cast<std::shared_ptr<detail::ServiceType<T>>>(factory.creator(*this));
     }
 
 private:
     std::unordered_map<std::type_index, ServiceList::ServiceFactory> m_factories;
     std::vector<std::type_index> m_creationOrder;
+    std::unordered_set<std::type_index> m_constructing; // Tracks keys currently under construction.
 };
 
 namespace detail
@@ -323,7 +365,7 @@ UniversalArg<Self>::operator T* () const
 
 template <typename Self>
 template <typename T, typename>
-UniversalArg<Self>::operator std::shared_ptr<T> () const
+UniversalArg<Self>::operator std::shared_ptr<T>() const
 {
     return container.CreateNew<T>();
 }
