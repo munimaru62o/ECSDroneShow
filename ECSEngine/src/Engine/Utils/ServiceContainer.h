@@ -19,7 +19,7 @@ class ServiceContainer;
 // UniversalArg is a dummy argument that implicitly converts to any reference or pointer type.
 // Overloading it against the real constructor T(A&, B&, ...) forces the compiler to deduce, per parameter,
 // which concrete type is being requested (the template parameter T of operator T&() is deduced from context).
-// That deduced type is forwarded straight into container.Get<T>(), which recursively resolves the rest of the dependency graph.
+// That deduced type is forwarded straight into container.Resolve<T>(), which recursively resolves the rest of the dependency graph.
 // ---------------------------------------------------------------------
 //
 // Migration note: once C++26 std::meta is available on MSVC,
@@ -242,7 +242,7 @@ public:
 
     // Resolves T, automatically constructing its dependencies as needed.
     template <typename T>
-    T& Get()
+    T& Resolve()
     {
         auto it = m_factories.find(typeid(T*));
         if (it == m_factories.end()) {
@@ -274,7 +274,7 @@ public:
             }
         }
 
-        throw std::logic_error("ServiceContainer::Get<T>(): unhandled Lifetime value.");
+        throw std::logic_error("ServiceContainer::Resolve<T>(): unhandled Lifetime value.");
     }
 
 private:
@@ -289,13 +289,13 @@ template <typename Self>
 template <typename T, typename>
 UniversalArg<Self>::operator T& () const
 {
-    return container.Get<T>();
+    return container.Resolve<T>();
 }
 
 template <typename Self>
 template <typename T, typename>
 UniversalArg<Self>::operator T* () const
 {
-    return &container.Get<T>();
+    return &container.Resolve<T>();
 }
 } // namespace detail

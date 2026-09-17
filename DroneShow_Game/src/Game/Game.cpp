@@ -67,7 +67,7 @@ bool Game::Init()
 
     m_coordinator.Init();
 
-    GameRegistrations::RegisterAllComponents(m_services->Get<ComponentRegistry>(), m_coordinator);
+    GameRegistrations::RegisterAllComponents(m_services->Resolve<ComponentRegistry>(), m_coordinator);
     GameRegistrations::RegisterAllSystems(m_coordinator);
     m_coordinator.SetDebugManager(&m_debugManager);
 
@@ -149,8 +149,8 @@ void Game::InitializeManagers()
 void Game::LoadGameData()
 {
     // Load game assets (must be executed after component registration)
-    m_services->Get<PrefabManager>().LoadPrefabsFromDirectory(m_config.prefab.folderPath);
-    m_services->Get<TimelineManager>().LoadTimelinesFromDirectory(m_config.timeline.folderPath);
+    m_services->Resolve<PrefabManager>().LoadPrefabsFromDirectory(m_config.prefab.folderPath);
+    m_services->Resolve<TimelineManager>().LoadTimelinesFromDirectory(m_config.timeline.folderPath);
 }
 
 
@@ -249,7 +249,7 @@ void Game::SetupSystems()
     auto* formationWire = m_coordinator.GetSystem<FormationSystemWireframe>();
     auto* formationPoint = m_coordinator.GetSystem<FormationSystemPointCloud>();
 
-    auto& timelineManager = m_services->Get<TimelineManager>();
+    auto& timelineManager = m_services->Resolve<TimelineManager>();
     formationWire->SetTimelineManager(&timelineManager);
     formationPoint->SetTimelineManager(&timelineManager);
 
@@ -258,7 +258,7 @@ void Game::SetupSystems()
 
     auto* director = m_coordinator.GetSystem<TimelineDirectorSystem>();
     director->SetTimeline(timeline);
-    director->SetRegistry(&m_services->Get<ComponentRegistry>());
+    director->SetRegistry(&m_services->Resolve<ComponentRegistry>());
 
     m_directorSystem = director;
 }
@@ -279,7 +279,7 @@ void Game::SpawnEntity(int spawnNum, const std::string& prefabName)
     }
 
     for (int i = 0; i < spawnNum; ++i) {
-        Entity entity = m_services->Get<PrefabManager>().Instantiate(prefabName);
+        Entity entity = m_services->Resolve<PrefabManager>().Instantiate(prefabName);
         if (entity != INVALID_ENTITY) {
             if (m_directorSystem) {
                 m_directorSystem->CatchUpNewEntity(m_coordinator, entity);
@@ -328,7 +328,7 @@ void Game::InitRenderState()
 
 void Game::HandleInput()
 {
-    auto& inputManager = m_services->Get<InputManager>();
+    auto& inputManager = m_services->Resolve<InputManager>();
     inputManager.Update();
 
     if (inputManager.IsKeyDown(GLFW_KEY_ESCAPE)) {

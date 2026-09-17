@@ -36,13 +36,13 @@ TEST(ServiceContainerTest, ConstructorInjectionResolvesDependency)
     list.RegisterSingleton<Character>();
 
     ServiceContainer container(list);
-    Character& character = container.Get<Character>();
+    Character& character = container.Resolve<Character>();
 
     EXPECT_EQ(character.GetInput().value, 42);
 
     // Get<InputManager>() should return the exact same instance that
     // was injected into Character, not a freshly constructed one.
-    EXPECT_EQ(&container.Get<InputManager>(), &character.GetInput());
+    EXPECT_EQ(&container.Resolve<InputManager>(), &character.GetInput());
 }
 
 // ---------------------------------------------------------
@@ -74,10 +74,10 @@ TEST(ServiceContainerTest, ResolvesMultipleConstructorArguments)
     list.RegisterSingleton<Hud>();
 
     ServiceContainer container(list);
-    Hud& hud = container.Get<Hud>();
+    Hud& hud = container.Resolve<Hud>();
 
-    EXPECT_EQ(&hud.m_input, &container.Get<InputManager>());
-    EXPECT_EQ(&hud.m_audio, &container.Get<AudioManager>());
+    EXPECT_EQ(&hud.m_input, &container.Resolve<InputManager>());
+    EXPECT_EQ(&hud.m_audio, &container.Resolve<AudioManager>());
 }
 
 // ---------------------------------------------------------
@@ -113,7 +113,7 @@ TEST(ServiceContainerTest, InterfaceResolvesToRegisteredImplementation)
 
     // Get<IRenderer>() must return the concrete StandardRenderer,
     // even though the caller only ever names the interface type.
-    EXPECT_STREQ(container.Get<IRenderer>().Name(), "StandardRenderer");
+    EXPECT_STREQ(container.Resolve<IRenderer>().Name(), "StandardRenderer");
 }
 
 TEST(ServiceContainerTest, AllowOverrideReplacesPreviousRegistration)
@@ -124,7 +124,7 @@ TEST(ServiceContainerTest, AllowOverrideReplacesPreviousRegistration)
 
     ServiceContainer container(list);
 
-    EXPECT_STREQ(container.Get<IRenderer>().Name(), "NullRenderer");
+    EXPECT_STREQ(container.Resolve<IRenderer>().Name(), "NullRenderer");
 }
 
 // ---------------------------------------------------------
@@ -162,8 +162,8 @@ TEST(ServiceContainerTest, TransientProducesDistinctInstances)
     list.RegisterTransient<RequestContext>();
 
     ServiceContainer container(list);
-    RequestContext& first = container.Get<RequestContext>();
-    RequestContext& second = container.Get<RequestContext>();
+    RequestContext& first = container.Resolve<RequestContext>();
+    RequestContext& second = container.Resolve<RequestContext>();
 
     EXPECT_NE(first.m_id, second.m_id);
 }
@@ -200,7 +200,7 @@ TEST(ServiceContainerTest, RegisterInstanceIsInjectedByPointer)
 
     // The container must not have constructed a new WindowHandle; it
     // should be exactly the pre-existing one that was registered.
-    EXPECT_EQ(container.Get<InputManagerWithWindow>().m_window, &window);
+    EXPECT_EQ(container.Resolve<InputManagerWithWindow>().m_window, &window);
 }
 
 // ---------------------------------------------------------
@@ -239,7 +239,7 @@ TEST(ServiceContainerTest, SingletonsAreDestroyedInReverseOrder)
         ServiceContainer container(list);
         // Requesting Character first forces InputManager to be
         // constructed first as its dependency, then Character.
-        container.Get<LoggedCharacter>();
+        container.Resolve<LoggedCharacter>();
     } // container destroyed here
 
     // Destruction should be the exact reverse of construction order:
@@ -269,5 +269,5 @@ TEST(ServiceContainerTest, GetOnUnregisteredTypeThrows)
     ServiceList list;
     ServiceContainer container(list);
 
-    EXPECT_THROW(container.Get<UnregisteredService>(), std::runtime_error);
+    EXPECT_THROW(container.Resolve<UnregisteredService>(), std::runtime_error);
 }
