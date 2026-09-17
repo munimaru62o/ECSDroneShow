@@ -34,10 +34,12 @@ struct UniversalArg
 {
     ServiceContainer& container;
 
-    template <typename T, typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, Self>>>
+    template <typename T, typename = std::enable_if_t<
+        std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
     operator T& () const;   // Defined out-of-line, after ServiceContainer is complete.
 
-    template <typename T, typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, Self>>>
+    template <typename T, typename = std::enable_if_t<
+        std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
     operator T* () const;
 };
 
