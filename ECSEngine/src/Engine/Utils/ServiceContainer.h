@@ -173,8 +173,9 @@ public:
     template <typename Interface, typename Implementation>
     void RegisterSingleton(RegistrationPolicy policy = RegistrationPolicy::Forbid)
     {
-        static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>,
-                      "Implementation must derive from Interface.");
+        static_assert(!std::is_const_v<Interface> && !std::is_volatile_v<Interface>, "Interface must be non-cv-qualified.");
+        static_assert(!std::is_const_v<Implementation> && !std::is_volatile_v<Implementation>, "Implementation must be non-cv-qualified.");
+        static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>, "Implementation must derive from Interface.");
 
         m_table.Add(detail::ServiceKey<Interface>(), policy, ServiceFactory{
             .lifetime = Lifetime::Singleton,
@@ -196,8 +197,9 @@ public:
     template <typename Interface, typename Implementation>
     void RegisterTransient(RegistrationPolicy policy = RegistrationPolicy::Forbid)
     {
-        static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>,
-                      "Implementation must derive from Interface.");
+        static_assert(!std::is_const_v<Interface> && !std::is_volatile_v<Interface>, "Interface must be non-cv-qualified.");
+        static_assert(!std::is_const_v<Implementation> && !std::is_volatile_v<Implementation>, "Implementation must be non-cv-qualified.");
+        static_assert(std::is_base_of_v<Interface, Implementation> || std::is_same_v<Interface, Implementation>, "Implementation must derive from Interface.");
 
         m_table.Add(detail::ServiceKey<Interface>(), policy, ServiceFactory{
             .lifetime = Lifetime::Transient,
@@ -212,6 +214,8 @@ public:
     template <typename T>
     void RegisterInstance(T& instance, RegistrationPolicy policy = RegistrationPolicy::Forbid)
     {
+        static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "RegisterInstance requires a non-cv-qualified service type (Cannot register 'const' instances).");
+
         m_table.Add(detail::ServiceKey<T>(), policy, ServiceFactory{
             .lifetime = Lifetime::Instance,
             .creator = nullptr,
