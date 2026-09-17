@@ -193,12 +193,12 @@ public:
 
 
     template <typename T>
-    void RegisterInstance(T* instance, RegistrationPolicy policy = RegistrationPolicy::Forbid)
+    void RegisterInstance(T& instance, RegistrationPolicy policy = RegistrationPolicy::Forbid)
     {
         m_table.Add(typeid(T*), policy, ServiceFactory{
             .lifetime = Lifetime::Instance,
             .creator = nullptr,
-            .instance = instance,
+            .instance = &instance,
                     });
     }
 
@@ -266,11 +266,11 @@ public:
 
             case ServiceList::Lifetime::Transient:
                 throw std::logic_error(
-                    std::string("ServiceContainer::Get<T>(): type is registered as Transient. ")
+                    std::string("ServiceContainer::Resolve<T>(): type is registered as Transient. ")
                     + "Use CreateNew<T>() instead: " + typeid(T*).name());
         }
 
-        throw std::logic_error("ServiceContainer::Get<T>(): unhandled Lifetime value.");
+        throw std::logic_error("ServiceContainer::Resolve<T>(): unhandled Lifetime value.");
     }
 
     // Creates a new instance of T and returns ownership to the caller.

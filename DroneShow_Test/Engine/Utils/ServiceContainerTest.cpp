@@ -162,8 +162,8 @@ TEST(ServiceContainerTest, TransientProducesDistinctInstances)
     list.RegisterTransient<RequestContext>();
 
     ServiceContainer container(list);
-    RequestContext& first = container.CreateNew<RequestContext>();
-    RequestContext& second = container.CreateNew<RequestContext>();
+    auto first = container.CreateNew<RequestContext>();
+    auto second = container.CreateNew<RequestContext>();
 
     EXPECT_NE(first->m_id, second->m_id);
     EXPECT_NE(first.get(), second.get());
@@ -194,7 +194,7 @@ TEST(ServiceContainerTest, RegisterInstanceIsInjectedByPointer)
     WindowHandle window;
 
     ServiceList list;
-    list.RegisterInstance<WindowHandle>(&window);
+    list.RegisterInstance<WindowHandle>(window);
     list.RegisterSingleton<InputManagerWithWindow>();
 
     ServiceContainer container(list);

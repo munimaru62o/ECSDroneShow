@@ -134,8 +134,10 @@ bool Game::InitializeGraphics()
 
 void Game::InitializeManagers()
 {
-    m_serviceList.RegisterInstance<GLFWwindow>(m_window);
-    m_serviceList.RegisterInstance<Coordinator>(&m_coordinator);
+    assert(m_window && "InitializeManagers called before window creation");
+
+    m_serviceList.RegisterInstance<GLFWwindow>(*m_window);
+    m_serviceList.RegisterInstance<Coordinator>(m_coordinator);
 
     m_serviceList.RegisterSingleton<ComponentRegistry>();
     m_serviceList.RegisterSingleton<InputManager>();
