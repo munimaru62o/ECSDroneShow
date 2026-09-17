@@ -28,11 +28,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG        v1.92.8
 )
-
-FetchContent_GetProperties(imgui)
-if(NOT imgui_POPULATED)
-    FetchContent_Populate(imgui)
-endif()
+FetchContent_MakeAvailable(imgui)
 
 add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/imgui.cpp
