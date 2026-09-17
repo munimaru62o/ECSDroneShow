@@ -241,6 +241,8 @@ public:
     }
 
     // Resolves T, automatically constructing its dependencies as needed.
+    // Only valid for Singleton and Instance lifetimes.
+    // For Transient services, use CreateNew<T>() instead.
     template <typename T>
     T& Resolve()
     {
@@ -263,24 +265,38 @@ public:
                 return *std::any_cast<std::shared_ptr<T>>(factory.instance);
 
             case ServiceList::Lifetime::Transient:
-            {
-                // Built fresh on every call. With no owner,
-                // the returned reference would dangle immediately,
-                // so the instance is kept alive for the container's lifetime instead.
-                std::any created = factory.creator(*this);
-                auto ptr = std::any_cast<std::shared_ptr<T>>(created);
-                m_transients.push_back(created);
-                return *ptr;
-            }
+                throw std::logic_error(
+                    std::string("ServiceContainer::Get<T>(): type is registered as Transient. ")
+                    + "Use CreateNew<T>() instead: " + typeid(T*).name());
         }
 
-        throw std::logic_error("ServiceContainer::Resolve<T>(): unhandled Lifetime value.");
+        throw std::logic_error("ServiceContainer::Get<T>(): unhandled Lifetime value.");
+    }
+
+    // Creates a new instance of T and returns ownership to the caller.
+    // Only valid for Transient lifetimes.
+    template <typename T>
+    std::shared_ptr<T> CreateNew()
+    {
+        auto it = m_factories.find(typeid(T*));
+        if (it == m_factories.end()) {
+            throw std::runtime_error(std::string("Service not registered: ") + typeid(T*).name());
+        }
+
+        ServiceList::ServiceFactory& factory = it->second;
+
+        if (factory.lifetime != ServiceList::Lifetime::Transient) {
+            throw std::logic_error(
+                std::string("ServiceContainer::CreateNew<T>(): type is not registered as Transient. ")
+                + "Use Resolve<T>() instead: " + typeid(T*).name());
+        }
+
+        return std::any_cast<std::shared_ptr<T>>(factory.creator(*this));
     }
 
 private:
     std::unordered_map<std::type_index, ServiceList::ServiceFactory> m_factories;
     std::vector<std::type_index> m_creationOrder;
-    std::vector<std::any> m_transients;
 };
 
 namespace detail

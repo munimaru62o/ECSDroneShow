@@ -162,10 +162,11 @@ TEST(ServiceContainerTest, TransientProducesDistinctInstances)
     list.RegisterTransient<RequestContext>();
 
     ServiceContainer container(list);
-    RequestContext& first = container.Resolve<RequestContext>();
-    RequestContext& second = container.Resolve<RequestContext>();
+    RequestContext& first = container.CreateNew<RequestContext>();
+    RequestContext& second = container.CreateNew<RequestContext>();
 
-    EXPECT_NE(first.m_id, second.m_id);
+    EXPECT_NE(first->m_id, second->m_id);
+    EXPECT_NE(first.get(), second.get());
 }
 
 // ---------------------------------------------------------
