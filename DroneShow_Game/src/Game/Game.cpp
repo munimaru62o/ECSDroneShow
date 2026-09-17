@@ -67,7 +67,7 @@ bool Game::Init()
 
     m_coordinator.Init();
 
-    GameRegistrations::RegisterAllComponents(*m_registry, m_coordinator);
+    GameRegistrations::RegisterAllComponents(m_services->Get<ComponentRegistry>(), m_coordinator);
     GameRegistrations::RegisterAllSystems(m_coordinator);
     m_coordinator.SetDebugManager(&m_debugManager);
 
@@ -134,18 +134,23 @@ bool Game::InitializeGraphics()
 
 void Game::InitializeManagers()
 {
-    m_registry = std::make_unique<ComponentRegistry>();
-    m_inputManager = std::make_unique<InputManager>(m_window);
-    m_prefabManager = std::make_unique<PrefabManager>(m_coordinator, *m_registry);
-    m_timelineManager = std::make_unique<TimelineManager>();
+    m_serviceList.RegisterInstance<GLFWwindow>(m_window);
+    m_serviceList.RegisterInstance<Coordinator>(&m_coordinator);
+
+    m_serviceList.RegisterSingleton<ComponentRegistry>();
+    m_serviceList.RegisterSingleton<InputManager>();
+    m_serviceList.RegisterSingleton<TimelineManager>();
+    m_serviceList.RegisterSingleton<PrefabManager>();
+
+    m_services = std::make_unique<ServiceContainer>(m_serviceList);
 }
 
 
 void Game::LoadGameData()
 {
     // Load game assets (must be executed after component registration)
-    m_prefabManager->LoadPrefabsFromDirectory(m_config.prefab.folderPath);
-    m_timelineManager->LoadTimelinesFromDirectory(m_config.timeline.folderPath);
+    m_services->Get<PrefabManager>().LoadPrefabsFromDirectory(m_config.prefab.folderPath);
+    m_services->Get<TimelineManager>().LoadTimelinesFromDirectory(m_config.timeline.folderPath);
 }
 
 
@@ -244,15 +249,16 @@ void Game::SetupSystems()
     auto* formationWire = m_coordinator.GetSystem<FormationSystemWireframe>();
     auto* formationPoint = m_coordinator.GetSystem<FormationSystemPointCloud>();
 
-    formationWire->SetTimelineManager(m_timelineManager.get());
-    formationPoint->SetTimelineManager(m_timelineManager.get());
+    auto& timelineManager = m_services->Get<TimelineManager>();
+    formationWire->SetTimelineManager(&timelineManager);
+    formationPoint->SetTimelineManager(&timelineManager);
 
-    const auto& timeline = m_timelineManager->GetTimelineData(m_config.timeline.playName);
+    const auto& timeline = timelineManager.GetTimelineData(m_config.timeline.playName);
     assert(timeline && "Timeline data is invalid.");
 
     auto* director = m_coordinator.GetSystem<TimelineDirectorSystem>();
     director->SetTimeline(timeline);
-    director->SetRegistry(m_registry.get());
+    director->SetRegistry(&m_services->Get<ComponentRegistry>());
 
     m_directorSystem = director;
 }
@@ -265,11 +271,6 @@ void Game::SpawnEntity(int spawnNum, const std::string& prefabName)
         return;
     }
 
-    if (!m_prefabManager) {
-        assert(false);
-        return;
-    }
-
     const auto& drones = m_directorSystem->GetEntities();
     int currentCount = static_cast<int>(drones.size());
 
@@ -278,7 +279,7 @@ void Game::SpawnEntity(int spawnNum, const std::string& prefabName)
     }
 
     for (int i = 0; i < spawnNum; ++i) {
-        Entity entity = m_prefabManager->Instantiate(prefabName);
+        Entity entity = m_services->Get<PrefabManager>().Instantiate(prefabName);
         if (entity != INVALID_ENTITY) {
             if (m_directorSystem) {
                 m_directorSystem->CatchUpNewEntity(m_coordinator, entity);
@@ -327,30 +328,28 @@ void Game::InitRenderState()
 
 void Game::HandleInput()
 {
-    if (m_inputManager) {
-        m_inputManager->Update();
+    auto& inputManager = m_services->Get<InputManager>();
+    inputManager.Update();
 
-        if (m_inputManager->IsKeyDown(GLFW_KEY_ESCAPE)) {
-            m_isRunning = false;
-        }
+    if (inputManager.IsKeyDown(GLFW_KEY_ESCAPE)) {
+        m_isRunning = false;
+    }
 
-        // Press [1] to spawn entities
-        if (m_inputManager->IsKeyDown(GLFW_KEY_1)) {
-            SpawnEntity(m_config.spawn.userSpawnNum, m_config.prefab.spawnName);
-        }
-        // Press [2] to destroy entities
-        else if (m_inputManager->IsKeyDown(GLFW_KEY_2)) {
-            DestroyEntity(m_config.spawn.userDestroyNum);
-        }
-        // Press [3] to toggle debug overlay (2D Text)
-        else if (m_inputManager->IsKeyDown(GLFW_KEY_3)) {
-            m_debugManager.SetOverlayEnabled(!m_debugManager.IsOverlayEnabled());
-        }
-        // Press [4] to toggle debug drawing (3D Primitives)
-        else if (m_inputManager->IsKeyDown(GLFW_KEY_4)) {
-            m_debugManager.SetDraw3DEnabled(!m_debugManager.IsDraw3DEnabled());
-        }
-
+    // Press [1] to spawn entities
+    if (inputManager.IsKeyDown(GLFW_KEY_1)) {
+        SpawnEntity(m_config.spawn.userSpawnNum, m_config.prefab.spawnName);
+    }
+    // Press [2] to destroy entities
+    else if (inputManager.IsKeyDown(GLFW_KEY_2)) {
+        DestroyEntity(m_config.spawn.userDestroyNum);
+    }
+    // Press [3] to toggle debug overlay (2D Text)
+    else if (inputManager.IsKeyDown(GLFW_KEY_3)) {
+        m_debugManager.SetOverlayEnabled(!m_debugManager.IsOverlayEnabled());
+    }
+    // Press [4] to toggle debug drawing (3D Primitives)
+    else if (inputManager.IsKeyDown(GLFW_KEY_4)) {
+        m_debugManager.SetDraw3DEnabled(!m_debugManager.IsDraw3DEnabled());
     }
 }
 
