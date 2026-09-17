@@ -6,6 +6,7 @@
 #include "Engine/Scene/Camera.h"
 #include "Game/Data/Config/GameConfig.h"
 #include "Engine/Debug/DebugManager.h"
+#include "Engine/Utils/ServiceContainer.h"
 
 #include <memory>
 
@@ -60,10 +61,8 @@ private:
     Coordinator m_coordinator;
     GameConfig m_config;
 
-    std::unique_ptr<InputManager> m_inputManager;
-    std::unique_ptr<PrefabManager> m_prefabManager;
-    std::unique_ptr<TimelineManager> m_timelineManager;
-    std::unique_ptr<ComponentRegistry> m_registry;
+    ServiceList m_serviceList;
+    std::unique_ptr<ServiceContainer> m_services;
 
     TimelineDirectorSystem* m_directorSystem = nullptr;
     DebugManager m_debugManager;
