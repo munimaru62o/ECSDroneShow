@@ -42,6 +42,10 @@ struct UniversalArg
     template <typename T, typename = std::enable_if_t<
         std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
     operator T* () const;
+
+    template <typename T, typename = std::enable_if_t<
+        std::is_class_v<T> && !std::is_same_v<std::decay_t<T>, Self>>>
+    operator std::shared_ptr<T>() const;
 };
 
 // Is T constructible from N UniversalArg values?
@@ -266,8 +270,8 @@ public:
 
             case ServiceList::Lifetime::Transient:
                 throw std::logic_error(
-                    std::string("ServiceContainer::Resolve<T>(): type is registered as Transient. ")
-                    + "Use CreateNew<T>() instead: " + typeid(T*).name());
+                    std::string("ServiceContainer::Resolve<T>(): type is registered as Transient, which cannot be held by reference/pointer. ")
+                    + "Take it as std::shared_ptr<T> in the constructor (or call CreateNew<T>() directly): " + typeid(T*).name());
         }
 
         throw std::logic_error("ServiceContainer::Resolve<T>(): unhandled Lifetime value.");
@@ -313,5 +317,12 @@ template <typename T, typename>
 UniversalArg<Self>::operator T* () const
 {
     return &container.Resolve<T>();
+}
+
+template <typename Self>
+template <typename T, typename>
+UniversalArg<Self>::operator std::shared_ptr<T> () const
+{
+    return container.CreateNew<T>();
 }
 } // namespace detail

@@ -162,11 +162,65 @@ TEST(ServiceContainerTest, TransientProducesDistinctInstances)
     list.RegisterTransient<RequestContext>();
 
     ServiceContainer container(list);
-    auto first = container.CreateNew<RequestContext>();
-    auto second = container.CreateNew<RequestContext>();
+    std::shared_ptr<RequestContext> first = container.CreateNew<RequestContext>();
+    std::shared_ptr<RequestContext> second = container.CreateNew<RequestContext>();
 
     EXPECT_NE(first->m_id, second->m_id);
-    EXPECT_NE(first.get(), second.get());
+}
+
+// A Transient dependency taken by reference/pointer would be a
+// "captive dependency": once embedded in a longer-lived object it
+// stops being transient in any meaningful sense. Resolve<T>() refuses
+// this case outright rather than silently keeping the instance alive
+// for the container's whole lifetime.
+namespace
+{
+class RefHandler
+{
+public:
+    explicit RefHandler(RequestContext& ctx) : m_ctx(ctx) {}
+    RequestContext& m_ctx;
+};
+} // namespace
+
+TEST(ServiceContainerTest, TransientByReferenceThrowsAsCaptiveDependency)
+{
+    ServiceList list;
+    list.RegisterTransient<RequestContext>();
+    list.RegisterSingleton<RefHandler>();
+
+    ServiceContainer container(list);
+    EXPECT_THROW(container.Resolve<RefHandler>(), std::logic_error);
+}
+
+// The supported way to inject a Transient dependency into another
+// service is std::shared_ptr<T>: ownership then belongs to whichever
+// object holds the shared_ptr, not to the container.
+namespace
+{
+class SharedPtrHandler
+{
+public:
+    explicit SharedPtrHandler(std::shared_ptr<RequestContext> ctx) : m_ctx(std::move(ctx)) {}
+    std::shared_ptr<RequestContext> m_ctx;
+};
+} // namespace
+
+TEST(ServiceContainerTest, TransientBySharedPtrIsOwnedByDependent)
+{
+    ServiceList list;
+    list.RegisterTransient<RequestContext>();
+    list.RegisterSingleton<SharedPtrHandler>();
+
+    ServiceContainer container(list);
+    SharedPtrHandler& handler1 = container.Resolve<SharedPtrHandler>();
+    SharedPtrHandler& handler2 = container.Resolve<SharedPtrHandler>();
+
+    // SharedPtrHandler is itself a Singleton, so the second Resolve()
+    // returns the same instance and therefore the same RequestContext
+    // it was constructed with - it is not recreated on every access.
+    EXPECT_EQ(&handler1, &handler2);
+    EXPECT_EQ(handler1.m_ctx.get(), handler2.m_ctx.get());
 }
 
 // ---------------------------------------------------------
