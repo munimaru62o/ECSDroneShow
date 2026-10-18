@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <ranges>
 
 
 PrimitiveMeshRenderSystem::PrimitiveMeshRenderSystem() = default;
@@ -87,9 +88,9 @@ void PrimitiveMeshRenderSystem::Update(Coordinator& coordinator, float dt, doubl
     }
 
     // 3. Clear and reserve final buffers (Avoiding per-frame dynamic allocations)
-    for (size_t batch = 0; batch < NUM_BATCH_TYPES; ++batch) {
-        m_finalBuffers[batch].clear();
-        m_finalBuffers[batch].reserve(totalCounts[batch]);
+    for (auto&& [finalBuffer, count] : std::views::zip(m_finalBuffers, totalCounts)) {
+        finalBuffer.clear();
+        finalBuffer.reserve(count);
     }
 
     // 4. Merge Thread-Local Buffers into Final Buffers (Gather)

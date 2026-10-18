@@ -84,16 +84,10 @@ public:
         }
     }
 
-    [[nodiscard]] T& GetData(Entity entity)
+    [[nodiscard]] decltype(auto) GetData(this auto&& self, Entity entity)
     {
-        assert(m_entitySet.Has(entity) && "Retrieving non-existent component.");
-        return m_componentArray[m_entitySet.GetIndex(entity)];
-    }
-
-    [[nodiscard]] const T& GetData(Entity entity) const
-    {
-        assert(m_entitySet.Has(entity) && "Retrieving non-existent component.");
-        return m_componentArray[m_entitySet.GetIndex(entity)];
+        assert(self.m_entitySet.Has(entity) && "Retrieving non-existent component.");
+        return (self.m_componentArray[self.m_entitySet.GetIndex(entity)]);
     }
 
     void EntityDestroyed(Entity entity) override

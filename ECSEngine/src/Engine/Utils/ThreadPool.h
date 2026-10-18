@@ -41,7 +41,7 @@ public:
                 s_workerIndex = static_cast<int>(i);
 
                 for (;;) {
-                    std::function<void()> task;
+                    std::move_only_function<void()> task;
                     {
                         // Lock the queue to safely retrieve a task
                         std::unique_lock<std::mutex> lock(this->queue_mutex);
@@ -86,20 +86,24 @@ public:
      */
     template<class F, class... Args>
     [[nodiscard]] auto Enqueue(F&& f, Args&&... args)
-        -> std::future<typename std::invoke_result<F, Args...>::type>
+        -> std::future<std::invoke_result_t<std::decay_t<F>, std::decay_t<Args>...>>
     {
-        using return_type = typename std::invoke_result<F, Args...>::type;
+        using return_type = std::invoke_result_t<std::decay_t<F>, std::decay_t<Args>...>;
 
-        auto task = std::make_shared<std::packaged_task<return_type()>>(
-            std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+        // Capture the callable and its arguments by decay-copy (moved when given rvalues).
+        // The task runs exactly once, so they are moved into the invocation.
+        std::packaged_task<return_type()> task(
+            [f = std::forward<F>(f), ...args = std::forward<Args>(args)]() mutable -> return_type {
+                return std::invoke(std::move(f), std::move(args)...);
+            }
         );
 
-        std::future<return_type> res = task->get_future();
+        std::future<return_type> res = task.get_future();
         {
             std::unique_lock<std::mutex> lock(queue_mutex);
             if (stop) throw std::runtime_error("enqueue on stopped ThreadPool");
 
-            tasks.emplace([task]() { (*task)(); });
+            tasks.emplace([task = std::move(task)]() mutable { task(); });
         }
         // Wake up one waiting thread
         condition.notify_one();
@@ -166,7 +170,7 @@ public:
 
 private:
     std::vector<std::thread> workers;
-    std::queue<std::function<void()>> tasks;
+    std::queue<std::move_only_function<void()>> tasks;
 
     std::mutex queue_mutex;
     std::condition_variable condition;

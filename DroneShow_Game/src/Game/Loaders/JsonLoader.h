@@ -4,7 +4,7 @@
 
 #include <string>
 #include <fstream>
-#include <iostream>
+#include <print>
 #include <json.hpp>
 
 /**
@@ -31,7 +31,7 @@ inline bool Load(const std::string& filePath, T& outData)
 {
     std::ifstream file(filePath);
     if (!file.is_open()) {
-        std::cerr << "[JsonLoader] Failed to open JSON file: " << filePath << std::endl;
+        std::println(stderr, "[JsonLoader] Failed to open JSON file: {}", filePath);
         return false;
     }
 
@@ -41,7 +41,7 @@ inline bool Load(const std::string& filePath, T& outData)
         outData = j.get<T>();
         return true;
     } catch (const nlohmann::json::exception& e) {
-        std::cerr << "[JsonLoader] JSON parsing error in " << filePath << ": " << e.what() << std::endl;
+        std::println(stderr, "[JsonLoader] JSON parsing error in {}: {}", filePath, e.what());
         return false;
     }
 }

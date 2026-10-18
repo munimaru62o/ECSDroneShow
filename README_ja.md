@@ -1,6 +1,6 @@
 # ECS Drone Show
 
-![C++20](https://img.shields.io/badge/C++-20-blue.svg)
+![C++23](https://img.shields.io/badge/C++-23-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
 **Code Quality:**  
@@ -97,7 +97,7 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 
 | 項目 | 内容 |
 |---|---|
-| 言語 | C++20 |
+| 言語 | C++23 |
 | 描画 | DirectX 11（GPU Instancing） |
 | ウィンドウ管理 | GLFW 3.4 |
 | デバッグ UI | Dear ImGui 1.92.8 |
@@ -152,7 +152,7 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 ### 2.1 開発・動作環境
 - **OS**: Windows 10 / 11 (64bit)
 - **IDE**: Visual Studio 2022
-- **プログラミング言語**: C++20
+- **プログラミング言語**: C++23
 - **検証環境**: 
   - CPU: インテル® Core™ Ultra 7 プロセッサー 265K
   - メモリ: 64 GB

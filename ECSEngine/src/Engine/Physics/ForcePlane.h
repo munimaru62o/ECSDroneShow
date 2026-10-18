@@ -7,6 +7,7 @@
 #include <string>
 #include <cassert>
 #include <string_view>
+#include <utility>
 
 /**
  * @enum ForcePlaneType
@@ -60,7 +61,7 @@ namespace ForcePlane
         case ForcePlaneType::X:   return { direction.x, 0.0f, 0.0f };
         case ForcePlaneType::Y:   return { 0.0f, direction.y, 0.0f };
         case ForcePlaneType::Z:   return { 0.0f, 0.0f, direction.z };
+        default: std::unreachable();
     }
-    return direction;
 }
 }

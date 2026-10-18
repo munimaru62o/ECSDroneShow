@@ -10,6 +10,7 @@
 #include <cassert>
 #include <string_view>
 #include <vector>
+#include <utility>
 
 /**
  * @brief A unique identifier for a registered mesh resource within the RenderManager.
@@ -50,7 +51,7 @@ enum class PrimitiveMeshType
     Sphere,
     Count
 };
-constexpr int NUM_MESH_TYPES = static_cast<int>(PrimitiveMeshType::Count);
+constexpr int NUM_MESH_TYPES = std::to_underlying(PrimitiveMeshType::Count);
 
 /**
  * @struct MeshSourceData
@@ -77,7 +78,7 @@ enum class PixelShaderType
     Toon,
     Count
 };
-constexpr int NUM_SHADERS = static_cast<int>(PixelShaderType::Count);
+constexpr int NUM_SHADERS = std::to_underlying(PixelShaderType::Count);
 
 /**
  * @brief Converts a string representation to its corresponding PrimitiveMeshType enum.

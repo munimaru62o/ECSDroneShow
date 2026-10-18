@@ -2,6 +2,7 @@
 #include "Engine/ECS/SystemManager.h"
 #include "Engine/ECS/SystemPhases.h"
 #include "Engine/ECS/Coordinator.h"
+#include <ranges>
 
 // ---------------------------------------------------------
 // Dummy Systems and Globals for Testing
@@ -26,7 +27,7 @@ class DummyTrackingSystem : public System
 {
 public:
     size_t GetEntityCount() const { return GetEntities().size(); }
-    bool Contains(Entity e) const { return std::find(GetEntities().begin(), GetEntities().end(), e) != GetEntities().end(); }
+    bool Contains(Entity e) const { return std::ranges::contains(GetEntities(), e); }
 };
 
 // ---------------------------------------------------------

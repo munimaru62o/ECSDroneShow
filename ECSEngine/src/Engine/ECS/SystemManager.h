@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <utility>
 
 class Coordinator;
 
@@ -75,7 +76,7 @@ public:
         record.system = std::move(system);
         record.signature = signature;
 
-        m_systemsByPhase[static_cast<size_t>(phase)].push_back({ order, systemPtr });
+        m_systemsByPhase[std::to_underlying(phase)].push_back({ order, systemPtr });
 
         return systemPtr;
     }
@@ -139,7 +140,7 @@ public:
 
     void UpdateSystems(SystemPhase phase, Coordinator& coordinator, float dt, double simulationTime)
     {
-        for (const auto& node : m_systemsByPhase[static_cast<size_t>(phase)]) {
+        for (const auto& node : m_systemsByPhase[std::to_underlying(phase)]) {
             node.system->Update(coordinator, dt, simulationTime);
         }
     }
@@ -158,5 +159,5 @@ private:
     };
 
     std::array<SystemRecord, MAX_SYSTEMS> m_systems{};
-    std::array<std::vector<PhaseNode>, static_cast<size_t>(SystemPhase::Count)> m_systemsByPhase;
+    std::array<std::vector<PhaseNode>, std::to_underlying(SystemPhase::Count)> m_systemsByPhase;
 };

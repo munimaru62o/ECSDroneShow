@@ -30,6 +30,8 @@
 #include <GLFW/glfw3native.h>
 #include <chrono>
 #include <memory>
+#include <print>
+#include <ranges>
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 
@@ -51,7 +53,7 @@ Game::~Game() = default;
 bool Game::Init()
 {
     if (!JsonLoader::Load("data/config/game_config.json", m_config)) {
-        std::cerr << "Warning: Could not load config file. Using default settings." << std::endl;
+        std::println(stderr, "Warning: Could not load config file. Using default settings.");
         return false;
     }
 
@@ -86,7 +88,7 @@ bool Game::Init()
 bool Game::InitializeWindow()
 {
     if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
+        std::println(stderr, "Failed to initialize GLFW");
         return false;
     }
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -101,7 +103,7 @@ bool Game::InitializeWindow()
     );
 
     if (!m_window) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
+        std::println(stderr, "Failed to create GLFW window");
         glfwTerminate();
         return false;
     }
@@ -123,7 +125,7 @@ bool Game::InitializeGraphics()
 
     HWND hwnd = glfwGetWin32Window(m_window);
     if (!RenderManager::GetInstance().Init(hwnd, width, height)) {
-        std::cerr << "Failed to initialize RenderManager" << std::endl;
+        std::println(stderr, "Failed to initialize RenderManager");
         return false;
     }
     RenderManager::GetInstance().InitImGui();
@@ -305,10 +307,12 @@ void Game::DestroyEntity(int destroyNum)
         return;
     }
 
-    std::vector<Entity> safeEntities = entities;
-    for (int i = 0; i < actualDestroyNum; ++i) {
-        Entity entityToDestroy = safeEntities.back();
-        safeEntities.pop_back();
+    auto toDestroy = entities 
+        | std::views::reverse 
+        | std::views::take(actualDestroyNum) 
+        | std::ranges::to<std::vector>();
+
+    for (Entity entityToDestroy : toDestroy) {
         m_coordinator.DestroyEntity(entityToDestroy);
     }
 }

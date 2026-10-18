@@ -7,6 +7,7 @@
 #include <string>
 #include <cassert>
 #include <string_view>
+#include <utility>
 
 /**
  * @enum ForceDistanceType
@@ -58,8 +59,10 @@ namespace ForceDistance
 
         case ForceDistanceType::AxisZ:
             return std::abs(offset.z);
+
+        default:
+            std::unreachable();
     }
-    return offset.Length();
 }
 }
 
@@ -101,8 +104,8 @@ namespace ForceFalloff
         case ForceFalloffType::Constant:  return 0.0f;
         case ForceFalloffType::Linear:    return t;
         case ForceFalloffType::Quadratic: return t * t;
+        default: std::unreachable();
     }
-    return 0.0f;
 }
 }
 

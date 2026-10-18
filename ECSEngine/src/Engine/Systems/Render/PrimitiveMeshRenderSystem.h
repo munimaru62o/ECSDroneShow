@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <array>
+#include <utility>
 
 struct TransformComponent;
 struct MaterialComponent;
@@ -45,7 +46,7 @@ private:
     static constexpr size_t GetBatchIndex(PixelShaderType shader, PrimitiveMeshType mesh)
     {
         // [Shader][Mesh] -> Flat Index
-        return static_cast<size_t>(shader) * NUM_MESH_TYPES + static_cast<size_t>(mesh);
+        return std::to_underlying(shader) * NUM_MESH_TYPES + std::to_underlying(mesh);
     }
 
     void ProcessEntity(const TransformComponent& transform, const MaterialComponent& material, const PrimitiveMeshComponent& mesh, ThreadLocalBuffer& localBuffer) const;
