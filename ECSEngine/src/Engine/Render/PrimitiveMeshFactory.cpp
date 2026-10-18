@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <cassert>
-#include <utility>
 
 
 MeshSourceData PrimitiveMeshFactory::CreateMesh(PrimitiveMeshType type)
@@ -15,10 +14,11 @@ MeshSourceData PrimitiveMeshFactory::CreateMesh(PrimitiveMeshType type)
             return CreateCube();
         case PrimitiveMeshType::Sphere:
             return CreateSphere();
-
-        default:
-            std::unreachable();
+        case PrimitiveMeshType::Count:
+            break;
     }
+    assert(false && "Unknown PrimitiveMeshType requested.");
+    return MeshSourceData{};
 }
 
 
