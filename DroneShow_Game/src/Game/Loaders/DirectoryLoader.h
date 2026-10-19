@@ -5,7 +5,8 @@
 #include <string>
 #include <string_view>
 #include <vector>
-#include <iostream>
+#include <print>
+#include <ranges>
 #include <filesystem>
 
 /**
@@ -26,26 +27,19 @@ namespace DirectoryLoader
  */
 inline std::vector<std::string> Load(std::string_view path, std::string_view extension = "")
 {
-    std::vector<std::string> pathList;
     namespace fs = std::filesystem;
 
     if (!fs::exists(path) || !fs::is_directory(path)) {
-        std::cerr << "Directory not found or is not a directory: " << path << std::endl;
-        return pathList;
+        std::println(stderr, "Directory not found or is not a directory: {}", path);
+        return {};
     }
 
-    for (const auto& entry : fs::directory_iterator(path)) {
-        if (!entry.is_regular_file()) {
-            continue;
-        }
-
-        if (!extension.empty()) {
-            if (entry.path().extension() != extension) {
-                continue;
-            }
-        }
-        pathList.emplace_back(entry.path().generic_string());
-    }
-    return pathList;
+    return fs::directory_iterator(path)
+        | std::views::filter([](const auto& entry) { return entry.is_regular_file(); })
+        | std::views::filter([extension](const auto& entry) {
+              return extension.empty() || entry.path().extension() == extension;
+          })
+        | std::views::transform([](const auto& entry) { return entry.path().generic_string(); })
+        | std::ranges::to<std::vector>();
 }
 }

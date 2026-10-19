@@ -7,6 +7,7 @@
 #include "Game/Parsers/Json/DataJsonParsers.h"
 
 #include <vector>
+#include <print>
 
 
 PrefabManager::PrefabManager(Coordinator& coordinator, ComponentRegistry& registry)
@@ -51,7 +52,7 @@ Entity PrefabManager::Instantiate(const std::string& prefabName)
 {
     auto it = m_appliers.find(prefabName);
     if (it == m_appliers.end()) {
-        std::cerr << "[PrefabManager] Prefab not found: " << prefabName << std::endl;
+        std::println(stderr, "[PrefabManager] Prefab not found: {}", prefabName);
         return INVALID_ENTITY;
     }
 

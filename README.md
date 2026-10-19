@@ -1,6 +1,6 @@
 # ECS Drone Show
 
-![C++20](https://img.shields.io/badge/C++-20-blue.svg)
+![C++23](https://img.shields.io/badge/C++-23-blue.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
 **Code Quality:**  
@@ -96,7 +96,7 @@ https://github.com/user-attachments/assets/4f89d097-1cb6-4274-8011-4bbf2c030510
 
 | Item | Description |
 |---|---|
-| Language | C++20 |
+| Language | C++23 |
 | Rendering | DirectX 11 (GPU Instancing) |
 | Window Management | GLFW 3.4 |
 | Debug UI | Dear ImGui 1.92.8 |
@@ -148,7 +148,7 @@ You can switch the timeline that plays just by changing `timeline.playName` in `
 ### 2.1 Development & Runtime Environment
 - **OS**: Windows 10 / 11 (64-bit)
 - **IDE**: Visual Studio 2022
-- **Language**: C++20
+- **Language**: C++23
 - **Test Environment**: 
   - CPU: Intel® Core™ Ultra 7 Processor 265K
   - RAM: 64 GB

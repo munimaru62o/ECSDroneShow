@@ -14,8 +14,7 @@ MeshSourceData PrimitiveMeshFactory::CreateMesh(PrimitiveMeshType type)
             return CreateCube();
         case PrimitiveMeshType::Sphere:
             return CreateSphere();
-
-        default:
+        case PrimitiveMeshType::Count:
             break;
     }
     assert(false && "Unknown PrimitiveMeshType requested.");

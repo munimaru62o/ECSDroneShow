@@ -11,6 +11,8 @@
 
 #include <unordered_map>
 #include <functional>
+#include <utility>
+#include <ranges>
 #include <json.hpp>
 
 
@@ -88,8 +90,8 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
     // Record the absolute simulation time at the exact moment the sequence switches
     m_currentSequenceStartTime = simulationTime;
 
-    std::array<std::vector<ComponentAssignOperation>, static_cast<size_t>(SequenceTrait::ApplyTarget::Count)> appliersToRun{};
-    std::array<std::vector<ComponentRemoveOperation>, static_cast<size_t>(SequenceTrait::ApplyTarget::Count)> removersToRun{};
+    std::array<std::vector<ComponentAssignOperation>, std::to_underlying(SequenceTrait::ApplyTarget::Count)> appliersToRun{};
+    std::array<std::vector<ComponentRemoveOperation>, std::to_underlying(SequenceTrait::ApplyTarget::Count)> removersToRun{};
     std::vector<std::string> newComponents;
     m_currentAppliers.clear();
 
@@ -100,7 +102,7 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
         const auto& descriptor = m_registry->GetDescriptor(compName);
         const SequenceTrait::ApplyTarget target = descriptor.target;
         const auto operation = descriptor.applier(compParams);
-        appliersToRun[static_cast<size_t>(target)].push_back(operation);
+        appliersToRun[std::to_underlying(target)].push_back(operation);
         if (!descriptor.isOneShot) {
             // Retain non-one-shot appliers for entities that might spawn mid-sequence (CatchUp)
             m_currentAppliers.push_back(operation);
@@ -110,10 +112,10 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
 
     // Identify components that existed in the previous sequence but are missing in the new one
     for (const auto& lastComp : m_lastComponents) {
-        if (std::find(newComponents.begin(), newComponents.end(), lastComp) == newComponents.end()) {
+        if (!std::ranges::contains(newComponents, lastComp)) {
             const auto& descriptor = m_registry->GetDescriptor(lastComp);
             const SequenceTrait::ApplyTarget target = descriptor.target;
-            removersToRun[static_cast<size_t>(target)].push_back(descriptor.remover());
+            removersToRun[std::to_underlying(target)].push_back(descriptor.remover());
         }
     }
 
@@ -134,12 +136,12 @@ void TimelineDirectorSystem::SwitchState(Coordinator& coordinator, const Sequenc
 
     // 1. Removal Phase: Strip obsolete components first
     ComponentOperationContext context{ .creationTime = m_currentSequenceStartTime };
-    ExecuteToSceneEntity(removersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::Scene)], context);
-    ExecuteToSystemEntities(removersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context, GetEntities());
+    ExecuteToSceneEntity(removersToRun[std::to_underlying(SequenceTrait::ApplyTarget::Scene)], context);
+    ExecuteToSystemEntities(removersToRun[std::to_underlying(SequenceTrait::ApplyTarget::System)], context, GetEntities());
 
     // 2. Addition/Update Phase: Attach or update components for the new sequence
-    ExecuteToSceneEntity(appliersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::Scene)], context);
-    ExecuteToSystemEntities(appliersToRun[static_cast<size_t>(SequenceTrait::ApplyTarget::System)], context, GetEntities());
+    ExecuteToSceneEntity(appliersToRun[std::to_underlying(SequenceTrait::ApplyTarget::Scene)], context);
+    ExecuteToSystemEntities(appliersToRun[std::to_underlying(SequenceTrait::ApplyTarget::System)], context, GetEntities());
 
     m_lastComponents = newComponents;
 }

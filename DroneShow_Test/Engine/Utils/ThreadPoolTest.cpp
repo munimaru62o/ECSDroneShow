@@ -2,6 +2,7 @@
 #include "Engine/Utils/ThreadPool.h"
 
 #include <atomic>
+#include <memory>
 #include <numeric>
 #include <vector>
 
@@ -15,12 +16,25 @@ TEST(ThreadPoolTest, ExecuteTaskAndGetResult)
     // Task with no arguments, returning a value
     auto future1 = pool.Enqueue([]() { return 42; });
 
-    // Task with arguments, returning a value (Testing std::bind and std::forward)
+    // Task with arguments, returning a value (Testing argument forwarding into the task)
     auto future2 = pool.Enqueue([](int a, int b) { return a + b; }, 10, 20);
 
     // .get() blocks the calling thread until the asynchronous computation is complete
     EXPECT_EQ(future1.get(), 42);
     EXPECT_EQ(future2.get(), 30);
+}
+
+// ---------------------------------------------------------
+// 1b. Move-Only Argument Test
+//     Arguments are moved into the invocation, so move-only types can be passed by value.
+// ---------------------------------------------------------
+TEST(ThreadPoolTest, ExecuteTaskWithMoveOnlyArgument)
+{
+    ThreadPool pool(2);
+
+    auto future = pool.Enqueue([](std::unique_ptr<int> value) { return *value; }, std::make_unique<int>(7));
+
+    EXPECT_EQ(future.get(), 7);
 }
 
 // ---------------------------------------------------------
